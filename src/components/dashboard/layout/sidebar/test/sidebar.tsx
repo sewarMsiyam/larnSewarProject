@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Nav } from '@/components/dashboard/layout/sidebar/nav'
+import { Nav } from '@/components/dashboard/layout/sidebar/test/nav'
 import {
     ChevronRight,
     LayoutDashboard,

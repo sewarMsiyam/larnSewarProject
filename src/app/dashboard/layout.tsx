@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import Link from "next/link";
-import Sidebar from "@/components/dashboard/layout/sidebar/sidebar";
+import Sidebar from "@/components/dashboard/layout/sidebar/test/sidebar";
 import { cn } from "@/lib/utils";
+import HomeDash from '@/components/dashboard/content/home/home';
+import HomeHeaderDash from '@/components/dashboard/layout/header/header';
+import Aside from '@/components/dashboard/layout/sidebar/aside';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,23 +29,19 @@ export default function RootLayout({
         { "debug-screens": process.env.NODE_ENV === "development" }
       )}
       >
-        {/* <div className="bg-orange-300 py-3">
-          <nav className="flex justify-center align-middle gap-8 font-semibold">
-            <Link href="/">home sewar</Link>
-            <Link href="/dashboard">dashboard</Link>
-            <Link href="/login">login</Link>
-          </nav>
-        </div>
-        
-        <footer className="bg-orange-400 py-3">
-          <nav className="flex justify-center align-middle gap-8 font-semibold">
-            <p> Footer dashboard sewar</p>
-          </nav>
-        </footer>
-        */}
 
-        {/* <Sidebar /> */}
-        <div className="w-full">{children}</div>
+
+    <div className="flex w-full flex-col bg-muted/40">
+      <Aside />
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-52">
+        <HomeHeaderDash />
+        <main>
+          {children}
+        </main>
+      </div>
+    </div>
+
+        
       </body>
     </html>
   );
