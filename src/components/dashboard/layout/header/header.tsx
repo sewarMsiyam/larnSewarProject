@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-
+import LanguageSwitcher from "@/components/LanguageSwitcher"
 
 export default function HomeHeaderDash() {
     return (
@@ -30,6 +30,7 @@ export default function HomeHeaderDash() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
+          <LanguageSwitcher />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

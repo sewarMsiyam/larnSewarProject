@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-// const { t } = useTranslation('common');
 
 export default function HomeDash() {
     return (
@@ -11,4 +9,3 @@ export default function HomeDash() {
     );
   }
   
-

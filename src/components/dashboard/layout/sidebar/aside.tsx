@@ -7,6 +7,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { DataTable } from '../../../../app/dashboard/test2/data-table';
 
 import {
   DropdownMenu,
@@ -30,21 +31,21 @@ export default function Aside() {
        </Link>
        <div className="w-full h-px bg-gray-200 my-3"></div>
 
-         <Link href="#" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
+         <Link href="/dashboard" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
            <Home className="h-5 w-5 mx-2" />
            <span className="">Dashboard</span>
          </Link>
-         <Link href="#" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
+         <Link href="/dashboard/test1" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
            <ShoppingCart className="h-5 w-5 mx-2" />
-           <span className="">Shopping</span>
+           <span className=""> DataTable</span>
          </Link>
-         <Link href="#" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
+         <Link href="/dashboard/test2" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
            <Home className="h-5 w-5 mx-2" />
-           <span className="">Dashboard</span>
+           <span className="">DataTable custom</span>
          </Link>
-         <Link href="#" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
+         <Link href="/dashboard/student" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
            <ShoppingCart className="h-5 w-5 mx-2" />
-           <span className="">Shopping</span>
+           <span className="">Dashboard 2 </span>
          </Link>
        </nav>
      </aside>
