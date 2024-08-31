@@ -1,25 +1,11 @@
-import { Photos, columns } from "./columns"
-import { DataTable } from "./data-table"
+import React from 'react';
 
-async function getData(): Promise<Photos[]> {
-  
-  // try{
-  //   const response = await fetch('https://jsonplaceholder.typicode.com/photos');
-  //   const data =response.json()
-  //   return  data;
-  // }catch(error){
-  //   console.log(error)
-  //   return  [];
-  // }
-  return  [];
-}
-
-export default async function DemoPage() {
-  const data = await getData()
-
+const Test1Page: React.FC = () => {
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+    <div>
+      {/* Page content */}
     </div>
-  )
-}
+  );
+};
+
+export default Test1Page;
