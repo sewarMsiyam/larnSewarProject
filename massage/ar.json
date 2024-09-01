@@ -1,0 +1,9 @@
+  {
+    "base":{
+      "dir": "rtl"
+    },
+    "HomePage": {
+      "title": "مرحبا بالعالم!",
+      "about": "Go to the about page"
+    }
+  }

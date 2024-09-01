@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-export default function NotFound() {
+export default function notFound() {
   return (
     <div style={{ textAlign: 'center', marginTop: '100px' }}>
       <h1>404 - Page Not Found</h1>
