@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        expo: ['ExpoArabic', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

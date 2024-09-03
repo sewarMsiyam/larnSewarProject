@@ -4,6 +4,15 @@
       "en": "الانجليزية",
       "label": "اللغة"
     },
+    "LayoutLanding": {
+      "home": "الرئيسية",
+      "framework": "إطار العمل",
+      "features": "المميزات",
+      "packages": "الباقات",
+      "contact_us": "اتصل بنا",
+      "login": "تسجيل دخول",
+      "register": "إنشاء حساب"
+    },
     "HomePage": {
       "title": "مرحبا بالعالم!",
       "about": "Go to the about page",

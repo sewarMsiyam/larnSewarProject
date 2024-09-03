@@ -8,7 +8,7 @@ import LocaleSwitcher from "@/components/LocaleSwitcher"
 const inter = Inter({ subsets: ["latin"] });
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-
+import '@/app/globals.css'
 
 export const metadata: Metadata = {
   title: "dashboard",

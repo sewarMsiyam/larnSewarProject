@@ -4,6 +4,15 @@
     "en": "English",
     "label": "Language"
   },
+  "LayoutLanding": {
+    "home": "Home",
+    "framework": "Framework",
+    "features": "Features",
+    "packages": "Packages",
+    "contact_us": "Contact Us",
+    "login": "Login",
+    "register": "Register"
+  },
   "HomePage": {
     "title": "Hello world!",
     "about": "Go to the about page",
