@@ -7,7 +7,6 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { DataTable } from '../../../../app/dashboard/test2/data-table';
 
 import {
   DropdownMenu,
@@ -22,15 +21,21 @@ import {
 export default function Aside() {
     return (
       <>
-       <aside className="fixed inset-y-0 left-0 z-10 hidden w-52 flex-col border-r bg-background sm:flex">
+       <sidebar className="fixed inset-y-0 left-0 z-10 hidden w-52 flex-col border-r sm:flex">
        
        <nav className="flex flex-col items-start ps-5 gap-4 px-2 sm:py-5">
 
        <Link href="#" className="flex text-center">
-         <div className="">logo</div>
+         <div className="">
+          <Image src="/logo.png" alt="logo" width={100} height={100} />
+         </div>
        </Link>
-       <div className="w-full h-px bg-gray-200 my-3"></div>
+       {/* <div className="w-full h-px bg-gray-200 my-3"></div> */}
 
+         <Link href="/" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
+           <Home className="h-5 w-5 mx-2" />
+           <span className="">Home</span>
+         </Link>
          <Link href="/dashboard" className="flex h-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 ">
            <Home className="h-5 w-5 mx-2" />
            <span className="">Dashboard</span>
@@ -48,7 +53,7 @@ export default function Aside() {
            <span className="">Dashboard 2 </span>
          </Link>
        </nav>
-     </aside>
+     </sidebar>
       </>
     );
   }

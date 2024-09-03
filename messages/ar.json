@@ -1,0 +1,12 @@
+  {
+    "LocaleSwitcher": {
+      "ar": "العربية",
+      "en": "الانجليزية",
+      "label": "اللغة"
+    },
+    "HomePage": {
+      "title": "مرحبا بالعالم!",
+      "about": "Go to the about page",
+      "dashboard": "dashboard sewar ar"
+    }
+  }

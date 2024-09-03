@@ -1,0 +1,16 @@
+{
+  "LocaleSwitcher": {
+    "ar": "Aribic",
+    "en": "English",
+    "label": "Language"
+  },
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page",
+    "dashboard": "dashboard sewar en",
+    "switchLocale": "Switch Language"
+
+
+  }
+
+}
