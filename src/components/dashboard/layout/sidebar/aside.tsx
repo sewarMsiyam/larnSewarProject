@@ -21,7 +21,7 @@ import {
 export default function Aside() {
     return (
       <>
-       <sidebar className="fixed inset-y-0 left-0 z-10 hidden w-52 flex-col border-r sm:flex">
+       <div className="fixed inset-y-0 left-0 z-10 hidden w-52 flex-col border-r sm:flex">
        
        <nav className="flex flex-col items-start ps-5 gap-4 px-2 sm:py-5">
 
@@ -53,7 +53,7 @@ export default function Aside() {
            <span className="">Dashboard 2 </span>
          </Link>
        </nav>
-     </sidebar>
+     </div>
       </>
     );
   }
