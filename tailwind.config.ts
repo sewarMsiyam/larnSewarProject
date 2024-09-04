@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      space:{
+        sidebar:"14rem",
+      },
       fontFamily: {
         expo: ['ExpoArabic', 'sans-serif'],
       },
