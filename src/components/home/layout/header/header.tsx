@@ -1,8 +1,7 @@
 import Logo from "@/components/home/layout/header/logo"
-import Navbar from "@/components/home/layout/header/itemnav"
+import Navbar from "@/components/home/layout/header/itemNav"
 import EndNav from "@/components/home/layout/header/endnav"
 import MobNav from "@/components/home/layout/header/resMobNav"
-
 
 
 export default function Header() {

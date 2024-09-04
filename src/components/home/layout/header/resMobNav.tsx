@@ -7,7 +7,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/navResponsev"
 import Logo from "@/components/home/layout/header/logo"
-// import Navbar from "@/components/home/layout/header/itemnav"
+import Navbar from "@/components/home/layout/header/itemNav"
 import EndNav from "@/components/home/layout/header/endnav"
 
 export default function MobNav() {
@@ -23,7 +23,7 @@ export default function MobNav() {
           <br />
           <SheetTitle><Logo /></SheetTitle>
           <SheetDescription>
-            {/* <Navbar /> */}
+            <Navbar />
             <EndNav />
           </SheetDescription>
         </SheetHeader>
