@@ -6,9 +6,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/navResponsev"
-import Logo from "@/components/home/layout/header/logo"
 import Navbar from "@/components/home/layout/header/itemNav"
 import EndNav from "@/components/home/layout/header/endnav"
+import Image from "next/image"
+import Link from 'next/link';
 
 export default function MobNav() {
   return (
@@ -21,7 +22,8 @@ export default function MobNav() {
       <SheetContent side="left">
         <SheetHeader>
           <br />
-          <SheetTitle><Logo /></SheetTitle>
+          <SheetTitle>
+          </SheetTitle>
           <SheetDescription>
             <Navbar />
             <EndNav />

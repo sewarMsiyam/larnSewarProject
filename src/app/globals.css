@@ -76,19 +76,26 @@
   .btn-primary{
     background: linear-gradient(90deg, #0AD491 1.35%, #003366 139.17%);
     color:#fff;
-    padding:10px 25px;
     border-radius:16px;
   }
   .btn-outLine-primary{
     border: 1px solid #0ABC8C;
     color:#0ABC8C;
-    padding:10px 25px;
     border-radius:16px;
   }
-  .btn-rounded{
 
-  }
   body {
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  .bg-gradient {
+    @apply bg-gradient-to-r;
+    background: linear-gradient(87.18deg, #003366 2.47%, #0AD491 96.66%);
+  }
+}
+
+
+  .clip-custom {
+    clip-path: polygon(0% 0%, 100% 10%, 100% 100%, 0% 100%);
+  }
