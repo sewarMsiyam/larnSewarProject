@@ -6,21 +6,18 @@ export default function HomePage() {
   const t = useTranslations('HomePage');
 
   return (
-    <section className="container">
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center rounded gap-5 lg:gap-20 p-7 bg-[url('/hero_section.png')] bg-cover bg-center"> 
+    <section className="md:container">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-5 lg:gap-20 p-8 pb-16 md:pb-8 bg-[url('/hero_section.hero_section.webp')] bg-cover bg-center rounded-2xl"> 
         <div>
-          <div><Image src="/logoW.png" alt="logo" width={150} height={20} className="inline-block" /><span className="text-4xl text-white font-bold leading-relaxed">- نظم تعليمك بسهولة وفعالية أكثر</span></div>
-          <p className="text-lg text-white opacity-95 px-5 mb-4">
+          <div><Image src="/logoW.png" alt="logo" width={150} height={20} className="w-[95px] md:w-[150px] inline-block" /><span className="text-2xl md:text-4xl text-white font-bold leading-relaxed">- نظم تعليمك بسهولة وفعالية أكثر</span></div>
+          <p className="text-base	md:text-lg text-white opacity-95 md:px-5 mb-4">
             تحقق التنظيم الكامل لجداولك الدراسية وحصصك الخاصة بفضل أدواتنا المتكاملة. استمتع بتجربة تعليمية تفاعلية وسلسة بين الطلاب والمعلمين في بيئة رقمية متقدمة.
           </p>
-          {/* <div>
-            <Link href="" className="bg-white text-primary py-2.5 w- md:px-3 lg:px-6 m-1 rounded-[30px]">
-            ابدأ الآن
-            </Link>
-            <Link href="" className="border border-white py-2.5 px-6 md:px-3 lg:px-6 m-1 rounded-[30px]">
-            احجز معلم
-            </Link>
-          </div> */}
+          <div className="flex flex-row items-center">
+            <Link href="/login" className="bg-white text-primary font-bold text-center py-2.5 w-40 m-1 rounded-2xl">ابدأ الأن</Link>
+            <Link href="/login" className="border border-white text-white font-bold text-center py-2.5 w-40 m-1 rounded-2xl">احجز معلم</Link>
+          </div>
+
         </div>
         <div className="relative">
           <img src="/heroBgImg.png" alt="heroBgImg" className="" />
@@ -32,62 +29,9 @@ export default function HomePage() {
             />
           </div>
         </div>
-      
       </div>
-
-<br/><br/><br/>
-
-      {/* bg-gradient 
-      
-       <div className="relative h-64">
-            <Image
-              src="/heroBgImg.png"
-              alt="Hero Image"
-              fill
-              style={{ objectFit: 'contain' }}
-              priority
-            />
-            <Image
-              src="/hero.png"
-              alt="Hero Image"
-              width="10"
-              height="20"
-              priority
-            />
-          </div>
-          
-          <section className="container">
-      <div className="flex flex-col md:flex-row items-center rounded bg-gradient"> 
-        <div className="basis-1/2">
-          <div className="flex items-center">
-            <Image src="/logoW.png" alt="logo" width={110} height={36} />
-            <h3 className="text-white"> - نظم تعليمك بسهولة وفعالية أكثر</h3>
-          </div>
-          <p  className="text-white opacity-80">
-            تحقق التنظيم الكامل لجداولك الدراسية وحصصك الخاصة بفضل أدواتنا المتكاملة. استمتع بتجربة تعليمية تفاعلية وسلسة بين الطلاب والمعلمين في بيئة رقمية متقدمة.
-          </p>
-          <div>
-            <Link href="" className="btn-primary py-2.5 px-6 md:px-3 lg:px-6 m-1">
-              Link
-            </Link>
-          </div>
-        </div>
-        <div className="basis-1/2">
-          <div className="relative h-64">
-            <Image
-              src="/hero.png"
-              alt="Hero Image"
-              fill
-              style={{ objectFit: 'contain' }}
-              priority
-            />
-          </div>
-        </div>
-     
-      </div>
-    </section> */}
-
-
     </section>
+
+
   );
 }
