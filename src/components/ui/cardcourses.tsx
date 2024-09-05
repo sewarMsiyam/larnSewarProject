@@ -8,9 +8,9 @@ interface CourseCardProps {
   imageSrc: string;
   title: string;
   duration: string;
-  lessonsCount: number;
-  examsCount: number;
-  summariesCount: number;
+  lessons: string;
+  exam: string;
+  summary: string;
   teacherImage: string;
   teacherName: string;
   price: string;
@@ -20,9 +20,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
   imageSrc,
   title,
   duration,
-  lessonsCount,
-  examsCount,
-  summariesCount,
+  lessons,
+  exam,
+  summary,
   teacherImage,
   teacherName,
   price
@@ -41,23 +41,23 @@ const CourseCard: React.FC<CourseCardProps> = ({
       <div className='flex justify-between items-center mb-4'>
         <div className='flex gap-1 items-center'>
           <Shares />
-          <span>{lessonsCount} حصص</span>
+          <span>{lessons} حصص</span>
         </div>
         <div className='flex gap-1 items-center'>
           <Exam />
-          <span>اختبار واحد</span>
+          <span>{exam} اختبار</span>
         </div>
         <div className='flex gap-1 items-center'>
           <Summary />
-          <span> {summariesCount} ملخص</span>
+          <span> {summary} ملخص</span>
         </div>
       </div>
       <div className="flex justify-between items-center mb-4">
         <div className='flex gap-2 items-center'>
-          <img src={teacherImage} alt="" className='w-10 h-10 rounded-full' />
+          <img src={teacherImage} alt="teacherImage" className='w-10 h-10 rounded-full' />
           <span className="font-bold">{teacherName}</span>
         </div>
-        <p className="text-[#FE7A36]"><span className="text-bold">{price}</span>/ حصة</p>
+        <p className="text-[#FE7A36]"><span className="font-bold">{price}</span>/ حصة</p>
       </div>
       <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
         <Link href="/" className="btn-primary font-medium py-2.5 w-1/2">اشترك في الكورس</Link>

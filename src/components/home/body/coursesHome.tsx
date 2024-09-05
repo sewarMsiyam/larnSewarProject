@@ -9,55 +9,55 @@ export default function CoursesHome() {
             imageSrc: "/course2.png",
             title: "لغة الانجليزية",
             duration: "40 دقيقة",
-            lessons: "08 حصص",
-            exam: "اختبار واحد",
-            summary: "01 ملخص",
-            instructorName: "الأستاذ محمد علي",
-            instructorImage: "https://www.w3schools.com/howto/img_avatar.png",
+            lessons: "08",
+            exam: "1",
+            summary: "01",
+            teacherName: "الأستاذ محمد علي",
+            teacherImage: "https://www.w3schools.com/howto/img_avatar.png",
             price: "20$",
         },
         {
             imageSrc: "/course2.png",
             title: "لغة الانجليزية",
             duration: "40 دقيقة",
-            lessons: "08 حصص",
-            exam: "اختبار واحد",
-            summary: "01 ملخص",
-            instructorName: "الأستاذ محمد علي",
-            instructorImage: "https://www.w3schools.com/howto/img_avatar.png",
+            lessons: "08",
+            exam: "1",
+            summary: "01",
+            teacherName: "الأستاذ محمد علي",
+            teacherImage: "https://www.w3schools.com/howto/img_avatar.png",
             price: "20$",
         },
         {
             imageSrc: "/course2.png",
             title: "لغة الانجليزية",
             duration: "40 دقيقة",
-            lessons: "08 حصص",
-            exam: "اختبار واحد",
-            summary: "01 ملخص",
-            instructorName: "الأستاذ محمد علي",
-            instructorImage: "https://www.w3schools.com/howto/img_avatar.png",
+            lessons: "08",
+            exam: "1",
+            summary: "01",
+            teacherName: "الأستاذ محمد علي",
+            teacherImage: "https://www.w3schools.com/howto/img_avatar.png",
             price: "20$",
         },
         {
             imageSrc: "/course2.png",
             title: "لغة الانجليزية",
             duration: "40 دقيقة",
-            lessons: "08 حصص",
-            exam: "اختبار واحد",
-            summary: "01 ملخص",
-            instructorName: "الأستاذ محمد علي",
-            instructorImage: "https://www.w3schools.com/howto/img_avatar.png",
+            lessons: "08",
+            exam: "1",
+            summary: "01",
+            teacherName: "الأستاذ محمد علي",
+            teacherImage: "https://www.w3schools.com/howto/img_avatar.png",
             price: "20$",
         },
         {
             imageSrc: "/course2.png",
             title: "لغة الانجليزية",
             duration: "40 دقيقة",
-            lessons: "08 حصص",
-            exam: "اختبار واحد",
-            summary: "01 ملخص",
-            instructorName: "الأستاذ محمد علي",
-            instructorImage: "https://www.w3schools.com/howto/img_avatar.png",
+            lessons: "08",
+            exam: "1",
+            summary: "01",
+            teacherName: "الأستاذ محمد علي",
+            teacherImage: "https://www.w3schools.com/howto/img_avatar.png",
             price: "20$",
         },
 
@@ -86,8 +86,8 @@ export default function CoursesHome() {
                                     lessons={course.lessons}
                                     exam={course.exam}
                                     summary={course.summary}
-                                    instructorName={course.instructorName}
-                                    instructorImage={course.instructorImage}
+                                    teacherName={course.teacherName}
+                                    teacherImage={course.teacherImage}
                                     price={course.price}
                                 />
                             ))}
@@ -100,33 +100,33 @@ export default function CoursesHome() {
                                 imageSrc="/course2.png"
                                 title="لغة الانجليزية"
                                 duration="40 دقيقة"
-                                lessons="08 حصص"
-                                exam="اختبار واحد"
-                                summary="01 ملخص"
-                                instructorName="الأستاذ محمد علي"
-                                instructorImage="https://www.w3schools.com/howto/img_avatar.png"
+                                lessons="08"
+                                exam="1"
+                                summary="01"
+                                teacherName="الأستاذ محمد علي"
+                                teacherImage="https://www.w3schools.com/howto/img_avatar.png"
                                 price="20$"
                             />
                             <CourseCard
                                 imageSrc="/course2.png"
                                 title="لغة الانجليزية"
                                 duration="40 دقيقة"
-                                lessons="08 حصص"
-                                exam="اختبار واحد"
-                                summary="01 ملخص"
-                                instructorName="الأستاذ محمد علي"
-                                instructorImage="https://www.w3schools.com/howto/img_avatar.png"
+                                lessons="08"
+                                exam="1"
+                                summary="01"
+                                teacherName="الأستاذ محمد علي"
+                                teacherImage="https://www.w3schools.com/howto/img_avatar.png"
                                 price="20$"
                             />
                             <CourseCard
                                 imageSrc="/course2.png"
                                 title="لغة الانجليزية"
                                 duration="40 دقيقة"
-                                lessons="08 حصص"
-                                exam="اختبار واحد"
-                                summary="01 ملخص"
-                                instructorName="الأستاذ محمد علي"
-                                instructorImage="https://www.w3schools.com/howto/img_avatar.png"
+                                lessons="08"
+                                exam="1"
+                                summary="01"
+                                teacherName="الأستاذ محمد علي"
+                                teacherImage="https://www.w3schools.com/howto/img_avatar.png"
                                 price="20$"
                             />
                         </div>
