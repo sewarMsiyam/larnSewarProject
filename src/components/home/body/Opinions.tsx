@@ -17,10 +17,10 @@ export default function Opinions() {
                 <div className='container'>
 
                     <Carousel dir='ltr'>
-                        <CarouselContent dir='rtl'>
+                        <CarouselContent>
                             {
-                                Array.from({ length: 5 }).map((_, index) => (
-                                <CarouselItem key={index} className="md:basis-1/2">
+                                Array.from({ length: 8 }).map((_, index) => (
+                                <CarouselItem key={index} className="md:basis-1/2" dir='rtl'>
                                      <div className="bg-[#F5F5F5] p-8 rounded-xl">
                                     <div className="flex gap-2 mb-3">
                                         <Star /><Star /><Star /><Star /><Star />
