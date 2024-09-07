@@ -19,7 +19,7 @@ export default function Navbar() {
           <Link
             key={item.name}
             href={item.href}
-            className='rounded-md px-3 py-2 text-sm font-medium'
+            className='rounded-md px-3 py-2 text-medium'
           >
             {item.name}
           </Link>

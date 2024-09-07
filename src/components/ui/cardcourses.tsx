@@ -59,7 +59,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </div>
         <p className="text-[#FE7A36]"><span className="font-bold">{price}</span>/ حصة</p>
       </div>
-      <div className="flex flex-col md:flex-row items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3">
         <Link href="/" className="btn-primary font-medium py-2.5 w-1/2">اشترك في الكورس</Link>
         <Link href="/" className="btn-outLine-primary font-medium py-2.5 w-1/2">احجز المعلم</Link>
       </div>

@@ -1,7 +1,9 @@
 import { useTranslations } from 'next-intl';
 import HeroHome from '@/components/home/body/heroHome';
 import CoursesHome from '@/components/home/body/coursesHome';
-
+import RegistrationSteps from '@/components/home/body/registrationSteps';
+import WhyUs from '@/components/home/body/whyus';
+import Opinions from '@/components/home/body/Opinions';
 export default function HomePage() {
   const t = useTranslations('HomePage');
 
@@ -9,11 +11,10 @@ export default function HomePage() {
     <>
       <HeroHome />
       <CoursesHome />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
-        <div className="bg-[url('/')] bg-cover bg-center rounded-2xl">
-            h1
-        </div>
-      </div>
+      <RegistrationSteps/>
+      <WhyUs />
+      <Opinions />
+      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     </>
   );
 }

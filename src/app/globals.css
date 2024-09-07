@@ -1,12 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @font-face {
   font-family: 'ExpoArabic';
   src: url('/fonts/ExpoArabic.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
+@import "aos/dist/aos.css";
 
 @layer base {
   :root {
