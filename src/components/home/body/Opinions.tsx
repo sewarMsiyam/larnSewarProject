@@ -17,7 +17,7 @@ export default function Opinions() {
                 <div className='container'>
 
                     <Carousel dir='ltr'>
-                        <CarouselContent>
+                        <CarouselContent dir='rtl'>
                             {
                                 Array.from({ length: 5 }).map((_, index) => (
                                 <CarouselItem key={index} className="md:basis-1/2">
