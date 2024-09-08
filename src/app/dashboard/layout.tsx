@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import type { Metadata } from "next";
+import LocaleSwitcher from "@/components/LocaleSwitcher"
 import "@/app/globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -26,6 +27,8 @@ export const metadata: Metadata = {
 };
 import Link from 'next/link';
 import Image from "next/image"
+import Aside from "@/components/dashboard/layout/sidebar/aside"
+
 type Props = {
   children: ReactNode;
 };
@@ -88,129 +91,7 @@ export default async function RootLayout({ children }: Props) {
 
 
           <div className="flex">
-            <aside className="hidden lg:flex flex-col fixed w-56 h-screen bg-gray-100 transition-all ease-in-out delay-150">
-              <div className="py-4">
-                <Link href="/">
-                  <Image src="/logo.png" alt="logo" width="110" height="36" className="m-auto" priority />
-                </Link>
-              </div>
-              <hr />
-              <div className="py-4">
-                <nav className="px-4">
-                  <ul>
-                    <li>
-                      <Accordion type="single" className="w-full" collapsible>
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg>
-                              <span className="ps-3">Dashboard</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="ps-3 border-s">
-                            <ul className="pl-6">
-                              <li className="mb-2">
-                                <Link href="#" className="flex items-center">
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                  </svg>
-                                  <span className="ps-3">Sub Dashboard 1</span>
-                                </Link>
-                              </li>
-                              <li className="mb-2">
-                                <Link href="#" className="flex items-center">
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                  </svg>
-                                  <span className="ps-3">Sub Dashboard 2</span>
-                                </Link>
-                              </li>
-                              <li className="mb-2">
-                                <Link href="#" className="flex items-center">
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                  </svg>
-                                  <span className="ps-3">Sub Dashboard 3</span>
-                                </Link>
-                              </li>
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </li>
-                  </ul>
-                </nav>
-
-
-
-
-
-
-
-                <nav className="px-4">
-                  <ul>
-                    <li>
-                      <Accordion type="single" className='w-full' collapsible>
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent className="ps-3 border-s">
-                            <Link href="#" className="flex items-center mb-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </Link>                         
-                            <Link href="#" className="flex items-center mb-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </Link>                         
-                            <Link href="#" className="flex items-center mb-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </Link>                         
-                            <Link href="#" className="flex items-center mb-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </Link>                         
-                            <Link href="#" className="flex items-center mb-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                              </svg> 
-                              <span className="ps-3">Dashboard</span>
-                            </Link>                       
-                      </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </li>
-                  </ul>
-                </nav>
-
-
-
-
-
-
-
-
-
-              </div>
-            </aside>
-
+            <Aside />
 
             <div className="lg:ms-56 transition-all ease-in-out delay-150">
               <header className="fixed flex justify-between items-center w-full bg-gray-100 h-16">
@@ -240,44 +121,15 @@ export default async function RootLayout({ children }: Props) {
                 <div className="lg:hidden">
                   icons
                 </div>
-
-                <div className="hidden lg:block">
-                  <Input type="search" placeholder="search" />
+                <div className="hidden lg:flex justify-between items-center w-full">
+                <LocaleSwitcher />
                 </div>
-
-                {/* <nav className="flex items-center justify-between p-4">
-                    <div className="flex items-center">
-                    header
-                    <LocaleSwitcher />
-                    </div>
-                  </nav> */}
-
               </header>
-              <main className="mt-16">{children}{children}{children}{children}{children}{children}{children}</main>
+              <main className="mt-16"><LocaleSwitcher /> {children}</main>
             </div>
           </div>
 
         </NextIntlClientProvider>
-
-
-        {/* <div className="flex w-full flex-col bg-muted">
-          <Aside />
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-52">
-            <HomeHeaderDash />
-            <LocaleSwitcher />
-            <NextIntlClientProvider messages={messages}>
-              <main className="">
-                {children}
-              </main>
-            </NextIntlClientProvider>
-
-          </div>
-        </div> */}
-
-
-
-
-
 
       </body>
     </html>

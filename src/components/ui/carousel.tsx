@@ -65,8 +65,8 @@ const Carousel = React.forwardRef<
       },
       plugins
     )
-    const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-    const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [canScrollPrev, setCanScrollPrev] = React.useState(true)
+    const [canScrollNext, setCanScrollNext] = React.useState(true)
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
@@ -78,12 +78,20 @@ const Carousel = React.forwardRef<
     }, [])
 
     const scrollPrev = React.useCallback(() => {
-      api?.scrollPrev()
-    }, [api])
+      if (document.documentElement.dir === 'rtl') {
+        api?.scrollNext();
+      } else {
+        api?.scrollPrev();
+      }
+    }, [api]);
 
     const scrollNext = React.useCallback(() => {
-      api?.scrollNext()
-    }, [api])
+      if (document.documentElement.dir === 'rtl') {
+        api?.scrollPrev();
+      } else {
+        api?.scrollNext();
+      }
+    }, [api]);
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -126,8 +134,7 @@ const Carousel = React.forwardRef<
           carouselRef,
           api: api,
           opts,
-          orientation:
-            orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+          orientation: orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
           scrollPrev,
           scrollNext,
           canScrollPrev,
@@ -206,13 +213,12 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-[#EEEEEE]",
+        "absolute h-10 w-10 bg-[#EEEEEE] rounded-full hover:btn-primary hover:rounded-full hover:text-white",
         orientation === "horizontal"
           ? "left-[46%] top-[115%] -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
-      disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
     >
@@ -235,13 +241,12 @@ const CarouselNext = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute h-10 w-10 rounded-full bg-[#EEEEEE]",
+        "absolute h-10 w-10 bg-[#EEEEEE] rounded-full text- hover:btn-primary hover:rounded-full hover:text-white",
         orientation === "horizontal"
           ? "right-[46%] top-[115%] -translate-y-1/2"
           : " left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
-      disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
     >

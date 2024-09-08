@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { useTranslations } from 'next-intl';
 import HeroHome from '@/components/home/body/heroHome';
 import CoursesHome from '@/components/home/body/coursesHome';
 import RegistrationSteps from '@/components/home/body/registrationSteps';
 import WhyUs from '@/components/home/body/whyus';
 import Opinions from '@/components/home/body/Opinions';
+
+export const metadata: Metadata = {
+  title: "سوار - الصفحة الئيسية",
+  description: "نظم تعليمك بسهولة وفعالية أكثر ",
+};
+
 export default function HomePage() {
   const t = useTranslations('HomePage');
 
