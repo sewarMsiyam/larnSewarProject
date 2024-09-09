@@ -2,22 +2,29 @@
 import { useEffect, useState } from "react"
 import shcFetch from "@/services/shcFetch"
 import Link from "next/link";
-type DataType = {
-  userId: number
+
+type Course = {
   id: number
-  title: string
-  completed: string
+  name: string
+}
+
+type ApiResponse = {
+  status: number
+  message: string
+  item: {
+    courses: Course[]
+  }
 }
 
 const ApiTestPage = () => {
-  const [data, setData] = useState<DataType[] | null>(null)
+  const [data, setData] = useState<Course[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await shcFetch<DataType[]>("/todos", { method: "GET" })
-        setData(result)
+        const result = await shcFetch<ApiResponse>("https://sewaar.net/api/v1/get_courses/tawjhi", { method: "GET" })
+        setData(result.item.courses)
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message)
@@ -30,19 +37,16 @@ const ApiTestPage = () => {
     fetchData()
   }, [])
 
-
-
-
   if (error) return <div>Error: {error}</div>
   if (!data) return <div className="">Loading...</div>
 
   return (
     <div>
-      <h1 className="text-5xl">Data from API </h1>
+      <h1 className="text-5xl">Data from API</h1>
       <ul>
         {data.map((item) => (
           <li key={item.id}>
-            <Link href="/${id}">{item.title}</Link>
+            <Link href={`/course/${item.id}`}>{item.name}</Link>
           </li>
         ))}
       </ul>
