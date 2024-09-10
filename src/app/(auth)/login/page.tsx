@@ -1,4 +1,5 @@
 'use client';
+import { NextPage } from 'next';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import Link from "next/link"
@@ -12,11 +13,9 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React from 'react';
 
-export default function SignIn() {
+const SignIn: NextPage = () => {
   const [phone, setPhone] = useState('');
   const [phoneCode, setPhoneCode] = useState('');
   const [password, setPassword] = useState('');
@@ -110,3 +109,4 @@ export default function SignIn() {
 }
 
 
+export default SignIn;
