@@ -80,6 +80,8 @@ const config = {
       },
       backgroundImage: {
         'color-gradient': 'linear-gradient(270deg, #0AD491 2.79%, #003366 100%)',
+        'footer-gradient': 'linear-gradient(184deg, #0AD491 -53.22%, #036 140.98%)',
+        'registerNow-gradient': 'linear-gradient(87deg, #036 2.47%, #0AD491 96.66%)',
       },
     },
   },

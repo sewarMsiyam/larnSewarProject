@@ -12,15 +12,15 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-export const description = "A login form with phone and password."
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 export default function SignIn() {
   const [phone, setPhone] = useState('');
   const [phoneCode, setPhoneCode] = useState('');
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await signIn('credentials', {
@@ -108,3 +108,5 @@ export default function SignIn() {
     </form>
   );
 }
+
+

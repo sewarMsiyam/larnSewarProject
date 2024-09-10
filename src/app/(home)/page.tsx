@@ -5,10 +5,12 @@ import CoursesHome from '@/components/home/body/coursesHome';
 import RegistrationSteps from '@/components/home/body/registrationSteps';
 import WhyUs from '@/components/home/body/whyus';
 import Opinions from '@/components/home/body/Opinions';
+import RegisterNow from '@/components/home/body/registerNow';
 
 export const metadata: Metadata = {
   title: "سوار - الصفحة الئيسية",
   description: "نظم تعليمك بسهولة وفعالية أكثر ",
+  keywords: ['Next.js', 'SEO', 'website'],
 };
 
 export default function HomePage() {
@@ -21,7 +23,9 @@ export default function HomePage() {
       <RegistrationSteps/>
       <WhyUs />
       <Opinions />
+      <RegisterNow />
       <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
     </>
   );
 }
