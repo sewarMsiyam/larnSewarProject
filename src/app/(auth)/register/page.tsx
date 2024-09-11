@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import IntlTelInput from 'intl-tel-input/react';
 import 'intl-tel-input/build/css/intlTelInput.css';
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,7 +71,7 @@ export default function RegisterForm() {
     }
 
     try {
-      const response = await fetch("https://sewaar.net/api/v1/students/register", {
+      const response = await fetch(process.env.API_URL + "/students/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,21 +114,22 @@ export default function RegisterForm() {
 
   return (
     <>
-      <Card className="mx-auto max-w-lg p-8 shadow-lg rounded-lg bg-white">
+      <Card className="mx-auto max-w-lg p-8 text-start">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
-          <CardDescription className="text-sm text-gray-600">Enter your information to create an account</CardDescription>
+          <CardTitle className="text-2xl font-bold">إنشاء حساب</CardTitle>
+          <CardDescription className="text-sm text-gray-500">مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">اسم الطالب</Label>
                 <Input
                   id="firstName"
-                  placeholder="Max"
+                  placeholder=""
                   value={formData.firstName}
                   onChange={handleChange}
+                  className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   required
                 />
               </div>
@@ -137,9 +137,10 @@ export default function RegisterForm() {
                 <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
-                  placeholder="Robinson"
+                  placeholder=""
                   value={formData.lastName}
                   onChange={handleChange}
+                  className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                   required
                 />
               </div>
@@ -152,6 +153,7 @@ export default function RegisterForm() {
                 placeholder="056"
                 value={formData.phone_code}
                 onChange={handleChange}
+                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 required
               />
             </div>
@@ -166,6 +168,7 @@ export default function RegisterForm() {
                 placeholder="056666666"
                 value={formData.phone}
                 onChange={handleChange}
+                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 required
               />
             </div>
@@ -177,6 +180,7 @@ export default function RegisterForm() {
                 placeholder="m@example.com"
                 value={formData.email}
                 onChange={handleChange}
+                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 required
               />
             </div>
@@ -188,20 +192,28 @@ export default function RegisterForm() {
                 placeholder="********"
                 value={formData.password}
                 onChange={handleChange}
+                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 required
               />
             </div>
+            <div className="space-y-3">
+             <label>
+                <input type="checkbox" className="accent-primary" /> أوافق على <Link href="/" className="text-primary">الشروط والأحكام</Link>
+              </label>
+            </div>
+
+            
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <Button
               type="submit"
-              className="w-full bg-primary text-white"
+              className="w-full bg-color-gradient rounded-2xl text-white"
               disabled={loading}
             >
-              {loading ? "Creating account..." : "Create an account"}
+              {loading ? "إنشاء حساب ..." : "إنشاء حساب"}
             </Button>
-            <Button variant="outline" className="w-full">
-              Sign up with GitHub
-            </Button>
+          
+
+
           </form>
           <div className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{" "}
