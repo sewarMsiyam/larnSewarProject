@@ -134,7 +134,7 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      <GoogleSignInButton />
+      {/* <GoogleSignInButton /> */}
 
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
