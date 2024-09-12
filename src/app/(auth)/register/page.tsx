@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import IntlTelInput from 'intl-tel-input/react';
 import 'intl-tel-input/build/css/intlTelInput.css';
 import Link from "next/link";
@@ -16,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,7 +28,7 @@ export default function RegisterForm() {
   });
 
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,24 +40,22 @@ export default function RegisterForm() {
   };
 
   const validateForm = () => {
-    let isValid = true;
     if (!formData.firstName) {
-      setError("First name is required.");
-      isValid = false;
-    } else if (!formData.lastName) {
-      setError("Last name is required.");
-      isValid = false;
-    } else if (!formData.phone) {
-      setError("Phone number is required.");
-      isValid = false;
-    } else if (!formData.email) {
-      setError("Email is required.");
-      isValid = false;
-    } else if (!formData.password) {
-      setError("Password is required.");
-      isValid = false;
+      return "الاسم الأول مطلوب.";
     }
-    return isValid;
+    if (!formData.lastName) {
+      return "اسم العائلة مطلوب.";
+    }
+    if (!formData.phone) {
+      return "رقم الهاتف مطلوب.";
+    }
+    if (!formData.email) {
+      return "البريد الإلكتروني مطلوب.";
+    }
+    if (!formData.password) {
+      return "كلمة المرور مطلوبة.";
+    }
+    return null;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,13 +63,16 @@ export default function RegisterForm() {
     setError(null);
     setLoading(true);
 
-    if (!validateForm()) {
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      toast.error(validationError);
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch(process.env.API_URL + "/students/register", {
+      const response = await fetch("https://sewaar.net/api/v1/students/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,19 +87,21 @@ export default function RegisterForm() {
         }),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || "Something went wrong");
-        toast.error(errorData.message || "Something went wrong");
+        const errorMessage = responseData.message || "حدث خطأ ما.";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } else {
-        toast.success("Account created successfully!");
+        toast.success("تم إنشاء الحساب بنجاح!");
         setTimeout(() => {
           router.push('/login');
-        }, 500);
+        }, 1000);
       }
     } catch (error) {
-      setError("Failed to create an account. Please try again later.");
-      toast.error("Failed to create an account. Please try again later.");
+      setError("فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
+      toast.error("فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
     } finally {
       setLoading(false);
     }
@@ -114,10 +117,12 @@ export default function RegisterForm() {
 
   return (
     <>
-      <Card className="mx-auto max-w-lg p-8 text-start">
+      <Card className="border-0 p-0 m-0 shadow-none">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">إنشاء حساب</CardTitle>
-          <CardDescription className="text-sm text-gray-500">مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!</CardDescription>
+          <CardDescription className="text-sm text-gray-500">
+            مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -126,26 +131,34 @@ export default function RegisterForm() {
                 <Label htmlFor="firstName">اسم الطالب</Label>
                 <Input
                   id="firstName"
-                  placeholder=""
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="border-none rounded-full mt-1 block w-full bg-gray-100"
                   required
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="lastName">Last Name</Label>
+                <Label htmlFor="lastName">اسم العائلة </Label>
                 <Input
                   id="lastName"
-                  placeholder=""
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="border-none rounded-full mt-1 block w-full bg-gray-100"
                   required
                 />
               </div>
             </div>
+{/* 
             <div className="space-y-3">
+              <Label htmlFor="phone">رقم الهاتف</Label>
+              <IntlTelInput
+                containerClassName="intl-tel-input"
+                inputClassName="form-control"
+                onPhoneNumberChange={handlePhoneChange}
+              />
+            </div> */}
+
+                   <div className="space-y-3">
               <Label htmlFor="phone_code">Phone Code</Label>
               <Input
                 id="phone_code"
@@ -161,7 +174,7 @@ export default function RegisterForm() {
             
             </div>
             <div className="space-y-3">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">رقم الهاتف</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -172,38 +185,40 @@ export default function RegisterForm() {
                 required
               />
             </div>
+            
             <div className="space-y-3">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
                 value={formData.email}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="border-none rounded-full mt-1 block w-full bg-gray-100"
                 required
               />
             </div>
+
             <div className="space-y-3">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">كلمة المرور</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="********"
                 value={formData.password}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="border-none rounded-full mt-1 block w-full bg-gray-100"
                 required
               />
             </div>
+
             <div className="space-y-3">
-             <label>
-                <input type="checkbox" className="accent-primary" /> أوافق على <Link href="/" className="text-primary">الشروط والأحكام</Link>
+              <label>
+                <input type="checkbox" className="accent-primary" /> أوافق على
+                <Link href="/" className="text-primary"> الشروط والأحكام </Link>
               </label>
             </div>
 
-            
             {error && <p className="text-red-600 text-sm">{error}</p>}
+
             <Button
               type="submit"
               className="w-full bg-color-gradient rounded-2xl text-white"
@@ -211,15 +226,10 @@ export default function RegisterForm() {
             >
               {loading ? "إنشاء حساب ..." : "إنشاء حساب"}
             </Button>
-          
-
-
           </form>
           <div className="mt-4 text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
-              Sign in
-            </Link>
+            لديك حساب بالفعل؟{" "}
+            <Link href="/login" className="text-blue-600 hover:underline"> تسجيل الدخول </Link>
           </div>
         </CardContent>
       </Card>

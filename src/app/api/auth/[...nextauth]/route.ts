@@ -13,7 +13,7 @@ if (!NEXTAUTH_SECRET || !GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !API_URL) 
   throw new Error('Missing environment variables');
 }
 
-export const authOptions: NextAuthOptions = {
+export const AuthOptions: NextAuthOptions = {
   secret: NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -99,6 +99,6 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(AuthOptions);
 
 export { handler as GET, handler as POST };
