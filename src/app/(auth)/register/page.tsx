@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import GoogleSignInButton from "@/components/auth/childLogin";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -25,10 +26,20 @@ export default function RegisterForm() {
     phone_code: "",
     email: "",
     password: "",
+    confirmPassword: ""
   });
 
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    phone_code: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
   const [loading, setLoading] = useState<boolean>(false);
+
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,39 +48,72 @@ export default function RegisterForm() {
       ...prev,
       [id]: value,
     }));
+    if (id === 'confirmPassword') {
+      setErrors((prev) => ({
+        ...prev,
+        confirmPassword: value !== formData.password ? "كلمات المرور غير متطابقة" : ""
+      }));
+    }
   };
 
   const validateForm = () => {
-    if (!formData.firstName) {
-      return "الاسم الأول مطلوب.";
+    let isValid = true;
+    const newErrors: { [key: string]: string } = {};
+
+    // Validate firstName
+    if (!formData.firstName || !/^[a-zA-Z\s]+$/.test(formData.firstName)) {
+      newErrors.firstName = "الاسم الأول مطلوب ويجب أن يكون نصًا.";
+      isValid = false;
     }
-    if (!formData.lastName) {
-      return "اسم العائلة مطلوب.";
+
+    // Validate lastName
+    if (!formData.lastName || !/^[a-zA-Z\s]+$/.test(formData.lastName)) {
+      newErrors.lastName = "اسم العائلة مطلوب ويجب أن يكون نصًا.";
+      isValid = false;
     }
-    if (!formData.phone) {
-      return "رقم الهاتف مطلوب.";
+
+    // Validate phone
+    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = "رقم الهاتف مطلوب ويجب أن يتكون من 10 أرقام.";
+      isValid = false;
     }
-    if (!formData.email) {
-      return "البريد الإلكتروني مطلوب.";
+
+    // Validate phone_code
+    if (!formData.phone_code) {
+      newErrors.phone_code = "رمز الهاتف مطلوب.";
+      isValid = false;
     }
-    if (!formData.password) {
-      return "كلمة المرور مطلوبة.";
+
+    // Validate email
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "البريد الإلكتروني مطلوب ويجب أن يكون عنوان بريد إلكتروني صالح.";
+      isValid = false;
     }
-    return null;
+
+    // Validate password
+    if (!formData.password || !/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(formData.password)) {
+      newErrors.password = "كلمة المرور مطلوبة ويجب أن تحتوي على نص وأرقام ورموز.";
+      isValid = false;
+    }
+
+    // Validate confirmPassword
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "تأكيد كلمة المرور مطلوب.";
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "كلمات المرور غير متطابقة.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
+    if (!validateForm()) return;
 
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
-      toast.error(validationError);
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
 
     try {
       const response = await fetch("https://sewaar.net/api/v1/students/register", {
@@ -91,7 +135,6 @@ export default function RegisterForm() {
 
       if (!response.ok) {
         const errorMessage = responseData.message || "حدث خطأ ما.";
-        setError(errorMessage);
         toast.error(errorMessage);
       } else {
         toast.success("تم إنشاء الحساب بنجاح!");
@@ -100,19 +143,10 @@ export default function RegisterForm() {
         }, 1000);
       }
     } catch (error) {
-      setError("فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
       toast.error("فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePhoneChange = (isValid: boolean, number: string, countryData: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      phone: number,
-      phone_code: countryData.dialCode,
-    }));
   };
 
   return (
@@ -133,9 +167,10 @@ export default function RegisterForm() {
                   id="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="border-none rounded-full mt-1 block w-full bg-gray-100"
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.firstName ? 'border-red-500' : ''}`}
                   required
                 />
+                {errors.firstName && <p className="text-red-600 text-sm">{errors.firstName}</p>}
               </div>
               <div className="space-y-3">
                 <Label htmlFor="lastName">اسم العائلة </Label>
@@ -143,35 +178,24 @@ export default function RegisterForm() {
                   id="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="border-none rounded-full mt-1 block w-full bg-gray-100"
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.lastName ? 'border-red-500' : ''}`}
                   required
                 />
+                {errors.lastName && <p className="text-red-600 text-sm">{errors.lastName}</p>}
               </div>
             </div>
-{/* 
             <div className="space-y-3">
-              <Label htmlFor="phone">رقم الهاتف</Label>
-              <IntlTelInput
-                containerClassName="intl-tel-input"
-                inputClassName="form-control"
-                onPhoneNumberChange={handlePhoneChange}
-              />
-            </div> */}
-
-                   <div className="space-y-3">
-              <Label htmlFor="phone_code">Phone Code</Label>
+              <Label htmlFor="phone_code">رمز الهاتف</Label>
               <Input
                 id="phone_code"
                 type="number"
                 placeholder="056"
                 value={formData.phone_code}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.phone_code ? 'border-red-500' : ''}`}
                 required
               />
-            </div>
-            <div>
-            
+              {errors.phone_code && <p className="text-red-600 text-sm">{errors.phone_code}</p>}
             </div>
             <div className="space-y-3">
               <Label htmlFor="phone">رقم الهاتف</Label>
@@ -181,11 +205,11 @@ export default function RegisterForm() {
                 placeholder="056666666"
                 value={formData.phone}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.phone ? 'border-red-500' : ''}`}
                 required
               />
+              {errors.phone && <p className="text-red-600 text-sm">{errors.phone}</p>}
             </div>
-            
             <div className="space-y-3">
               <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
@@ -193,11 +217,11 @@ export default function RegisterForm() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100"
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.email ? 'border-red-500' : ''}`}
                 required
               />
+              {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
             </div>
-
             <div className="space-y-3">
               <Label htmlFor="password">كلمة المرور</Label>
               <Input
@@ -205,9 +229,22 @@ export default function RegisterForm() {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="border-none rounded-full mt-1 block w-full bg-gray-100"
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.password ? 'border-red-500' : ''}`}
                 required
               />
+              {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
+            </div>
+            <div className="space-y-3 mt-4">
+              <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                required
+              />
+              {errors.confirmPassword && <p className="text-red-600 text-sm">{errors.confirmPassword}</p>}
             </div>
 
             <div className="space-y-3">
@@ -217,19 +254,28 @@ export default function RegisterForm() {
               </label>
             </div>
 
-            {error && <p className="text-red-600 text-sm">{error}</p>}
-
             <Button
               type="submit"
-              className="w-full bg-color-gradient rounded-2xl text-white"
+              className="w-full bg-color-gradient rounded-2xl space-y-3 text-white"
               disabled={loading}
             >
               {loading ? "إنشاء حساب ..." : "إنشاء حساب"}
             </Button>
           </form>
+           <div className="grid gap-4 my-5">
+        <div>
+          <div className="flex items-center">
+            <hr className='w-full' />
+            <span className="text-xs px-5 text-nowrap text-gray-400">أو التسجيل من خلال</span>
+            <hr className='w-full' />
+          </div>
+        </div>
+      </div>
+      
+          <GoogleSignInButton />
           <div className="mt-4 text-center text-sm text-gray-600">
             لديك حساب بالفعل؟{" "}
-            <Link href="/login" className="text-blue-600 hover:underline"> تسجيل الدخول </Link>
+            <Link href="/login" className="text-primary hover:underline"> تسجيل الدخول </Link>
           </div>
         </CardContent>
       </Card>

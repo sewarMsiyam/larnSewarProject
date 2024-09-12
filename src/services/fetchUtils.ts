@@ -1,14 +1,4 @@
-const BASE_URL = 'https://sewaar.net/api/v1';
-
-const buildUrl = (endpoint: string, mainCategory?: string, id?: string) => {
-  return mainCategory
-    ? id
-      ? `${BASE_URL}/${mainCategory}/${endpoint}/${id}`
-      : `${BASE_URL}/${mainCategory}/${endpoint}`
-    : id
-    ? `${BASE_URL}/${endpoint}/${id}`
-    : `${BASE_URL}/${endpoint}`;
-};
+// src/services/fetchUtils.ts
 
 type FetchOptionsBase = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -46,11 +36,20 @@ class FetchError extends Error {
 }
 
 const HEADERS_DEFAULT: Record<string, string> = { "Content-Type": "application/json" };
+const URL_BASE: string | undefined = 'https://sewaar.net/api/v1';
 
-const ERRORS_DETAILS: Record<
-  number | "maximumRetries" | "network" | "unknown",
-  { status: number; statusText: string; message: string }
-> = {
+type ERRORS_TYPES =
+  | 400
+  | 401
+  | 403
+  | 404
+  | 408
+  | 500
+  | "maximumRetries"
+  | "network"
+  | "unknown";
+
+const ERRORS_DETAILS: Record<ERRORS_TYPES, { status: number; statusText: string; message: string }> = {
   400: {
     status: 400,
     statusText: "BAD_REQUEST",
@@ -99,7 +98,7 @@ const ERRORS_DETAILS: Record<
 };
 
 const errorHandler = function errorHandler(
-  type: number | "maximumRetries" | "network" | "unknown",
+  type: ERRORS_TYPES,
   statusText?: string,
   message?: string,
   cause?: Error
@@ -112,7 +111,7 @@ const errorHandler = function errorHandler(
   const errorStatusText = statusText || statusTextDefault;
   const errorMessage = message || messageDefault;
   const fetchError = new FetchError(errorStatus, errorStatusText, errorMessage, cause);
-  console.error(`${type}:${errorMessage}`, fetchError);
+  console.error(`${type}: ${errorMessage}`, fetchError);
   throw fetchError;
 };
 
@@ -149,7 +148,7 @@ const fetchRetry = async function fetchRetry(
 ): Promise<Response> {
   try {
     const response = await fetchWithTimeout(url, options);
-    if (!response.ok) errorHandler(response.status as number);
+    if (!response.ok) errorHandler((response.status as ERRORS_TYPES) || "unknown");
     return response;
   } catch (error) {
     if (error instanceof FetchError && error.status === 408 && maximumRetries > 1)
@@ -158,63 +157,36 @@ const fetchRetry = async function fetchRetry(
     if (error instanceof FetchError) {
       if (maximumRetries <= 1)
         return errorHandler("maximumRetries", error.statusText, error.message, error);
-      return errorHandler(error.status as number, error.statusText, error.message, error);
+      return errorHandler(error.status as ERRORS_TYPES, error.statusText, error.message, error);
     }
 
     return errorHandler("unknown");
   }
 };
 
-export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
-  try {
-    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
-      headers: {
-        'Accept-Language': 'ar',
-      },
-      timeout: 8000,
-    });
-    const result = await response.json();
-    console.log('API result:', result); 
-       if (result.item) {
-      if (Array.isArray(result.item)) {
-        return result.item as T[];
-      } else if (result.item[endpoint]) {
-        return result.item[endpoint] as T[];
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return [];
-  }
-}
+export const fetchData = async function fetchData<TResponse>(
+  endpoint: string,
+  options: FetchOptions<undefined> = {},
+  maximumRetries: number = 3
+): Promise<TResponse> {
+  const { headers, timeout, ...optionsRest } = options;
+  const headersMerged: HeadersInit = { ...HEADERS_DEFAULT, ...headers };
 
-export async function fetchOne(endpoint: string, id: string, mainCategory?: string) {
-  try {
-    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
-      timeout: 8000,
-    });
-    const result = await response.json();
-    return result.item ? result.item : null;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    return null;
-  }
-}
+  const requestOptions: SHCRequestInit = {
+    ...optionsRest,
+    headers: headersMerged,
+    timeout
+  };
 
-export async function postData(endpoint: string, data: any, mainCategory?: string) {
   try {
-    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept-Language': 'ar',
-      },
-      body: JSON.stringify(data),
-      timeout: 8000,
-    });
-    return await response.json();
+    const response = await fetchRetry(`${URL_BASE}${endpoint}`, requestOptions, maximumRetries);
+    const data: TResponse = await response.json();
+    return data;
   } catch (error) {
-    console.error('Failed to post data:', error);
-    return null;
+    const status = error instanceof FetchError ? (error.status as ERRORS_TYPES) : "unknown";
+    const statusText = error instanceof FetchError ? error.statusText : undefined;
+    const message = error instanceof FetchError ? error.message : undefined;
+    return errorHandler(status, statusText, message, error as Error);
   }
-}
+};
+

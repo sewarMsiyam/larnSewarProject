@@ -11,3 +11,12 @@ export interface Course {
     number_of_office_time_per_week: string;
     price: string;
 }
+
+export interface Review {
+    id: number;
+    customer_img: string;
+    rating: number;
+    comment: string;
+    customer_name: string;
+    customer_position: string;
+}

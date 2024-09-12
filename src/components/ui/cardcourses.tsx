@@ -1,22 +1,18 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import Exam from '@/components/svgIcon/exam';
-import Shares from '@/components/svgIcon/shares';
-import Summary from '@/components/svgIcon/summary';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface CourseCardProps {
-  imageSrc: string;
-  title: string;
-  duration: string;
-  lessons: string;
-  exam: string;
-  summary: string;
-  teacherImage: string;
-  teacherName: string;
-  price: string;
+   imageSrc?: string;
+  title?: string;
+  duration?: string;
+  lessons?: string;
+  exam?: string;
+  summary?: string;
+  teacherImage?: string;
+  teacherName?: string;
+  price?: string;
 }
 
 const Skeleton = ({ className }: { className: string }) => (
@@ -37,14 +33,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulating a data fetch
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Adjust the duration as needed
-
+    }, 0); 
     return () => clearTimeout(timer);
   }, []);
-
 
   return (
     <div className="bg-white rounded-3xl p-5 shadow-sm hover:shadow-lg">
@@ -52,7 +45,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {loading ? (
           <Skeleton className="h-full w-full" />
         ) : (
-          <img src={imageSrc} alt="Course Image" className="w-full h-full object-cover" />
+          <img src={imageSrc} alt="Course Image" className="w-full h-full object-fill" />
         )}
       </div>
 
@@ -74,7 +67,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
       <div className="flex justify-between items-center mb-4">
         {loading ? (
-           <>
+          <>
             <Skeleton className="h-7 w-full rounded-lg" />
             <Skeleton className="h-7 w-full mx-10 rounded-lg" />
             <Skeleton className="h-7 w-full rounded-lg" />
@@ -101,7 +94,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               <Skeleton className="w-10 h-10 rounded-full mr-2" />
               <Skeleton className="h-6 w-32 rounded-lg" />
             </div>
-              <Skeleton className="h-6 w-24 rounded-lg" />
+            <Skeleton className="h-6 w-24 rounded-lg" />
           </>
         ) : (
           <>

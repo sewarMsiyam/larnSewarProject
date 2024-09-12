@@ -9,30 +9,30 @@ export default function WhyUs() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start mt-20">
                     <div className='relative'>
                         <div className='bg-primary flex gap-10 justify-center items-center w-fit h-20 rounded-3xl px-5 absolute -top-12 right-24'>
-                            <h6 className="text-center text-white text-xs"><span className="text-base font-bold">2000</span><br/>طالب وأكثر</h6>
+                            <h6 className="text-center text-white text-xs"><span className="text-base font-bold">2000</span><br />طالب وأكثر</h6>
                             <div>
                                 <div className='flex'>
-                                <Avatar className='border-2 border-white -ms-5'>
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <Avatar className='border-2 border-white -ms-5'>
-                                    <AvatarImage src="https://www.w3schools.com/howto/img_avatar.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <Avatar className='border-2 border-white -ms-5'>
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                                <Avatar className='border-2 border-white -ms-5'>
-                                    <AvatarImage src="https://www.w3schools.com/howto/img_avatar.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
+                                    <Avatar className='border-2 border-white -ms-5'>
+                                        <AvatarImage src="https://github.com/shadcn.png" />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className='border-2 border-white -ms-5'>
+                                        <AvatarImage src="https://www.w3schools.com/howto/img_avatar.png" />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className='border-2 border-white -ms-5'>
+                                        <AvatarImage src="https://github.com/shadcn.png" />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className='border-2 border-white -ms-5'>
+                                        <AvatarImage src="https://www.w3schools.com/howto/img_avatar.png" />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
                                 </div>
                             </div>
                         </div>
                         <div className="bg-[url('/whyusbg.svg')] bg-contain bg-no-repeat bg-center flex justify-center items-center">
-                            <img src="/whyus.png" alt="" className="w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }}  />
+                            <img src="/whyus.png" alt="" className="w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }} />
                         </div>
                     </div>
                     <div>

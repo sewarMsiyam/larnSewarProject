@@ -1,61 +1,72 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { fetchAll, fetchOne } from '@/app/api/dataFetch';
-import { Course } from '@/app/api/interfaces';
+import React, { useEffect, useState } from 'react';
+import { fetchAll } from '@/app/api/dataFetch';
+// import { Review } from '@/app/api/interfaces';
 
+export interface Review {
+  id: number;
+  customer_img: string | null;
+  rating: number;
+  comment: string;
+  customer_name: string;
+  customer_position: string;
+}
 
-const CoursesPage = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+// مكون عرض المراجعات
+const ReviewsComponent: React.FC = () => {
+  const [reviews, setReviews] = useState<Review[]>([]); // تأكد من أن المصفوفة فارغة في البداية
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingCourse, setLoadingCourse] = useState<boolean>(false);
-  const mainCategory = 'tawjhi';
-  const endpoint = 'courses';
 
   useEffect(() => {
-    setLoading(true);
-    fetchAll(endpoint, mainCategory).then(data => {
-      setCourses(data);
-      setLoading(false);
-    });
-  }, [mainCategory, endpoint]);
-
-  const fetchCourse = (id: string) => {
-    setLoadingCourse(true);
-    fetchOne(endpoint, id, mainCategory).then(data => {
-      setSelectedCourse(data);
-      setLoadingCourse(false);
-    });
+  const fetchData = async () => {
+    const reviewsData = await fetchAll('reviews');
+    console.log('Fetched reviews data:', reviewsData); // عرض البيانات في الكونسول
+    if (reviewsData && Array.isArray(reviewsData)) {
+      setReviews(reviewsData);
+    }
+    setLoading(false);
   };
+
+  fetchData();
+}, []);
+
+
+  if (loading) {
+    return <div>جاري تحميل المراجعات...</div>;
+  }
+
+  if (!reviews.length) {
+    return <div>لا توجد مراجعات لعرضها.</div>;
+  }
 
   return (
     <div>
-      <h1 className="text-5xl">Courses</h1>
+      <h2>المراجعات</h2>
       <ul>
-        {loading ? (
-          // عرض Skeleton Loading مخصص أثناء تحميل البيانات
-          Array(5).fill(null).map((_, index) => (
-            <li key={index} className="skeleton"></li>
-          ))
-        ) : (
-          courses.map(course => (
-            <li key={course.id} onClick={() => fetchCourse(course.id)}>
-              {loadingCourse ? (
-                // عرض Skeleton Loading عند تحميل دورة محددة
-                <div className="skeleton"></div>
-              ) : (
-                <>
-                  <h2>{course.name}</h2>
-                  <img src={course.image} alt={course.name} width={100} />
-                </>
-              )}
-            </li>
-          ))
-        )}
+        {reviews.map((review) => (
+          <li key={review.id} style={{ borderBottom: '1px solid #ddd', padding: '10px 0' }}>
+            <div>
+              <strong>الاسم:</strong> {review.customer_name}
+            </div>
+            <div>
+              <strong>المنصب:</strong> {review.customer_position}
+            </div>
+            <div>
+              <strong>التقييم:</strong> {review.rating} / 5
+            </div>
+            <div>
+              <strong>التعليق:</strong> {review.comment}
+            </div>
+            {review.customer_img && (
+              <div>
+                <img src={review.customer_img} alt={review.customer_name} style={{ width: '50px', height: '50px' }} />
+              </div>
+            )}
+          </li>
+        ))}
       </ul>
-
     </div>
   );
-}
+};
 
-export default CoursesPage;
+export default ReviewsComponent;

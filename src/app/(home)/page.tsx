@@ -6,6 +6,7 @@ import RegistrationSteps from '@/components/home/body/registrationSteps';
 import WhyUs from '@/components/home/body/whyus';
 import Opinions from '@/components/home/body/Opinions';
 import RegisterNow from '@/components/home/body/registerNow';
+import ContactUs from '@/components/home/body/ContactUs';
 
 export const metadata: Metadata = {
   title: "سوار - الصفحة الئيسية",
@@ -24,6 +25,7 @@ export default function HomePage() {
       <WhyUs />
       <Opinions />
       <RegisterNow />
+      {/* <ContactUs /> */}
       <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
     </>

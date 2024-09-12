@@ -8,7 +8,7 @@ import '@/app/globals.css';
 import AOSWrapper from '@/components/AOSWrapper';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Session } from 'next-auth'; // Import Session type
+import { Session } from 'next-auth';
 
 export const metadata: Metadata = {
   title: "سوار",

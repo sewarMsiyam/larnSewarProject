@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -13,12 +12,15 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import GoogleSignInButton from "@/components/auth/childLogin";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // Added state for success message
+  const [loading, setLoading] = useState(false); // Added state for loading
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -26,18 +28,26 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
+
     const result = await signIn('credentials', {
       redirect: false,
       email,
       password,
     });
 
+    setLoading(false); // Set loading to false after receiving the result
+
     if (result?.error) {
       setErrorMessage(result.error === 'These credentials do not match our records.'
         ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
         : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      setSuccessMessage(''); // Clear success message if there's an error
     } else {
-      window.location.href = '/';
+      setSuccessMessage('تم تسجيل الدخول بنجاح!'); // Set success message on successful login
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000); // Redirect after a short delay
     }
   };
 
@@ -106,14 +116,15 @@ const Login = () => {
                 <Link href="/" className="text-primary">هل نسيت كلمة المرور؟</Link>
               </div>
 
-              <Button type="submit" className="w-full text-white">
-                Login
-              </Button>
+              <Button type="submit" className="w-full text-white" disabled={loading}>
+                {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+              </Button>              
+              {errorMessage && <p className="text-red-600">{errorMessage}</p>}
             </div>
           </CardContent>
         </Card>
       </form>
-      <div className="grid gap-4">
+      <div className="grid gap-4 mb-5">
         <div>
           <div className="flex items-center">
             <hr className='w-full' />
@@ -123,8 +134,8 @@ const Login = () => {
         </div>
       </div>
 
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      
+      <GoogleSignInButton />
+
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
         <Link href="/register" className="text-primary px-1">
@@ -136,6 +147,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-    
