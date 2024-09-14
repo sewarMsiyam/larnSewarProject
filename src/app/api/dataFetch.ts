@@ -174,7 +174,6 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
       timeout: 8000,
     });
     const result = await response.json();
-    console.log('API result:', result); 
        if (result.item) {
       if (Array.isArray(result.item)) {
         return result.item as T[];
@@ -212,7 +211,6 @@ export async function postData(endpoint: string, data: any, mainCategory?: strin
       body: JSON.stringify(data),
       timeout: 8000,
     });
-    
     return await response.json();
   } catch (error) {
     console.error('Failed to post data:', error);

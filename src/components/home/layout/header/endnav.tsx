@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { getCsrfToken, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 

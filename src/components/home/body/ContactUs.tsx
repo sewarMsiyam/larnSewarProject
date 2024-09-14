@@ -27,28 +27,27 @@ export default function ContactUs() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await postData('/contact_us', { name, email, content });
+  try {
+    const response = await postData('contact_us', { name, email, content });
 
-      if (response && response.message === 'Message sent successfully!') {
-        toast.success('تم إرسال الرسالة بنجاح!');
-        setName('');
-        setEmail('');
-        setContent('');
-      } else {
-        toast.error('فشل في إرسال الرسالة.');
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast.error('حدث خطأ أثناء إرسال الرسالة.');
-    } finally {
-      setLoading(false);
+    if (response && response.status == 200) {
+      toast.success('تم إرسال الرسالة بنجاح!');
+      setName('');
+      setEmail('');
+      setContent('');
+    } else {
+      toast.error('فشل في إرسال الرسالة.');
     }
-  };
+  } catch (error) {
+    toast.error('حدث خطأ أثناء إرسال الرسالة.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>

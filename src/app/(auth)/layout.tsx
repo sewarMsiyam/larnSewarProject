@@ -4,7 +4,7 @@ import HeaderAuth from '@/components/auth/Header';
 import '@/app/globals.css';
 import AOSWrapper from '@/components/AOSWrapper';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/authOptions";
 import LogoFooter from "@/components/home/layout/footer/logoFooter"
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode; }) {
   const locale = await getLocale();
-  const messages = await getMessages(locale);
+  const messages = await getMessages();
   const session = await getServerSession(authOptions);
 
   return (
