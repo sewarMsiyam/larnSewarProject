@@ -19,8 +19,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // Added state for success message
-  const [loading, setLoading] = useState(false); // Added state for loading
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -28,7 +28,7 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when form is submitted
+    setLoading(true);
 
     const result = await signIn('credentials', {
       redirect: false,
@@ -36,15 +36,15 @@ const Login = () => {
       password,
     });
 
-    setLoading(false); // Set loading to false after receiving the result
+    setLoading(false);
 
     if (result?.error) {
       setErrorMessage(result.error === 'These credentials do not match our records.'
         ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
         : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
-      setSuccessMessage(''); // Clear success message if there's an error
+      setSuccessMessage('');
     } else {
-      setSuccessMessage('تم تسجيل الدخول بنجاح!'); // Set success message on successful login
+      setSuccessMessage('تم تسجيل الدخول بنجاح!');
       setTimeout(() => {
         window.location.href = '/';
       }, 1000); 
