@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GoogleSignInButton from "@/components/auth/childLogin";
 
-const Login: React.FC = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -28,27 +28,27 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // setLoading(true); // Set loading to true when form is submitted
+    setLoading(true); // Set loading to true when form is submitted
 
-    // const result = await signIn('credentials', {
-    //   redirect: false,
-    //   email,
-    //   password,
-    // });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    });
 
-    // setLoading(false); // Set loading to false after receiving the result
+    setLoading(false); // Set loading to false after receiving the result
 
-    // if (result?.error) {
-    //   setErrorMessage(result.error === 'These credentials do not match our records.'
-    //     ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
-    //     : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
-    //   setSuccessMessage(''); // Clear success message if there's an error
-    // } else {
-    //   setSuccessMessage('تم تسجيل الدخول بنجاح!'); // Set success message on successful login
-    //   setTimeout(() => {
-    //     window.location.href = '/';
-    //   }, 1000); // Redirect after a short delay
-    // }
+    if (result?.error) {
+      setErrorMessage(result.error === 'These credentials do not match our records.'
+        ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
+        : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      setSuccessMessage(''); // Clear success message if there's an error
+    } else {
+      setSuccessMessage('تم تسجيل الدخول بنجاح!'); // Set success message on successful login
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000); 
+    }
   };
 
   return (
