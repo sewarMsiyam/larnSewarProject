@@ -4,6 +4,7 @@ import Navbar from "@/components/home/layout/header/itemNav"
 import EndNav from "@/components/home/layout/header/endnav"
 import MobNav from "@/components/home/layout/header/resMobNav"
 import React from 'react';
+import SessionWrapper from '@/components/SessionWrapper';
 import { Session } from 'next-auth';
 
 interface HeaderProps {
@@ -13,6 +14,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ session }) => {
   return (
+    <SessionWrapper>
     <header className="d-flex w-full py-4">
       <div className="container">
         <div className="flex justify-between items-center">
@@ -27,7 +29,8 @@ const Header: React.FC<HeaderProps> = ({ session }) => {
           </div>
         </div>
       </div>
-    </header>
+      </header>
+      </SessionWrapper>
   );
 };
 
