@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { postData } from '@/app/api/dataFetch';
 import Image from 'next/image';
+import TitleSection from '@/components/title';
 import {
   Card,
   CardContent,
@@ -49,54 +50,59 @@ export default function ContactUs() {
 
   return (
     <>
-      <div className='container'>
+      <div className='container my-20'>
+        <TitleSection text="اتصل بنا" />
+
         <div className='grid grid-cols-1 md:grid-cols-2 items-center gap-5'>
           <div>
-            <Image src="/concatus.png" width="400" height="20" alt="" className="w-full" />
+            <Image src="/concatus.png" width="400" height="20" alt="" className="w-full w-[590px]" />
           </div>
           <div className="">
 
-            <Card>
+            <Card className='lg:rounded-[40px] lg:p-7'>
               <CardHeader>
-                <CardTitle>نحن هنا لمساعدتك!</CardTitle>
-                <CardDescription>فريقنا المتخصص هنا للإجابة على جميع استفساراتك ومساعدتك في تحقيق أهدافك بكل سهولة.</CardDescription>
+                <CardTitle className="text-xl text-center mb-2">نحن هنا لمساعدتك!</CardTitle>
+                <CardDescription className="text-center text-[#707070] w-4/5 mx-auto">فريقنا المتخصص هنا للإجابة على جميع استفساراتك ومساعدتك في تحقيق أهدافك بكل سهولة.</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 mt-5">
                   <div className="space-y-1">
-                    <Label htmlFor="name">{t('name')}</Label>
+                    <Label htmlFor="name">الاسم كامل</Label>
                     <Input
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                    className="border rounded-2xl mt-1 block w-full  ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="border bg-white rounded-xl mt-1 block w-full  ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       required
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="email">{t('email')}</Label>
+                    <Label htmlFor="email">البريد الإلكتروني</Label>
                     <Input
                       id="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                    className="border rounded-2xl mt-1 block w-full ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="border bg-white rounded-xl mt-1 block w-full ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       required
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="message">{t('message')}</Label>
+                    <Label htmlFor="message">رسالتك</Label>
                     <textarea
                       id="message"
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
-                    className="border rounded-2xl mt-1 block w-full ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                      rows={5}
+                    className="border bg-white rounded-xl mt-1 block w-full ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       required
                     />
                   </div>
-                  <Button type="submit" disabled={loading} className='text-white-foreground'>
-                    {loading ? 'Sending...' : 'Send Message'}
-                  </Button>
+                  <div className="text-end">
+                    <Button type="submit" disabled={loading} className="btn-primary rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 text-white">
+                      {loading ? 'Sending...' : 'Send Message'}
+                    </Button>
+                  </div>
                 </form>
                 {status && <p className="mt-4 text-green-500">{status}</p>}
               </CardContent>

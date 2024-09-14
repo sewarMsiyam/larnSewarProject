@@ -25,9 +25,7 @@ export default function HomePage() {
       <WhyUs />
       <Opinions />
       <RegisterNow />
-      {/* <ContactUs /> */}
-      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
+      <ContactUs />
     </>
   );
 }

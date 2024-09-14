@@ -83,6 +83,7 @@ const config = {
         'footer-gradient': 'linear-gradient(184deg, #0AD491 -53.22%, #036 140.98%)',
         'registerNow-gradient': 'linear-gradient(87deg, #036 2.47%, #0AD491 96.66%)',
         'Auth-gradient': 'linear-gradient(0deg, #0ABC8C 0.31%, #036 106.29%)',
+        'btn-authColor':'linear-gradient(90deg, #0AD491 1.35%, #036 139.17%)'
       },
 
 

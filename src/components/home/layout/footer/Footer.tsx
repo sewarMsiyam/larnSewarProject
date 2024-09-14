@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <footer className="bg-footer-gradient">
             <div className="container">
-                <div className="grid grid-cols-1 lg:grid-cols-5 py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-5 py-20 gap-10">
                     <div className="col-span-2 space-y-10 text-center">
                         <LogoFooter />
                         <div className="flex justify-center items-center gap-4 text-white">
@@ -37,18 +37,18 @@ const Footer = () => {
                         </div>
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">
-                        <h5 className="mb-4 font-bold text-base">لينكات سريعة</h5>
+                        <h5 className="lg:mb-4 font-bold text-base">لينكات سريعة</h5>
                         <Link href="/">انضم كمعلم</Link>
                         <Link href="/">الدروس التعليمية</Link>
                         <Link href="/">بنك الأسئلة</Link>
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">
-                        <h5 className="mb-4 font-bold text-base">اتصل بنا</h5>
+                        <h5 className="lg:mb-4 font-bold text-base">اتصل بنا</h5>
                         <Link href="/">+20 1545 734 8996</Link>
                         <Link href="/">Info@SewarCompany.com</Link>
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">
-                        <h5 className="mb-4 font-bold text-base">الخصوصية</h5>
+                        <h5 className="lg:mb-4 font-bold text-base">الخصوصية</h5>
                         <Link href="/">سياسة الخصوصية</Link>
                         <Link href="/">الشروط والأحكام</Link>
                     </div>

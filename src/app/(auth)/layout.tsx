@@ -35,8 +35,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <HeaderAuth session={session} />
                 <div className="flex flex-row items-center justify-center flex-grow">
                   <div className='flex justify-center'>
-
-
                     <div className='bg-Auth-gradient hidden lg:block lg:basis-1/4 '>
                       <div className="flex flex-col justify-center items-center h-full p-12 m-auto" >
                         <LogoFooter />
@@ -59,20 +57,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                       </div>
                     </div>
 
-
                     <div className='bg-white w-fall lg:basis-2/4'>
                       <div className='p-10 lg:p-10'>
-
                         {children}
-
-
                       </div>
-
                     </div>
-
-
-
-
 
                   </div>
                 </div>

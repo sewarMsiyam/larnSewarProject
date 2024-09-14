@@ -32,7 +32,7 @@ export default function WhyUs() {
                             </div>
                         </div>
                         <div className="bg-[url('/whyusbg.svg')] bg-contain bg-no-repeat bg-center flex justify-center items-center">
-                            <img src="/whyus.png" alt="" className="w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }} />
+                            <img src="/whyus.png" alt="" className="w-100 lg:w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }} />
                         </div>
                     </div>
                     <div>

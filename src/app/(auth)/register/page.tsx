@@ -152,13 +152,13 @@ export default function RegisterForm() {
   return (
     <>
       <Card className="border-0 p-0 m-0 shadow-none">
-        <CardHeader>
+        <CardHeader className='p-0'>
           <CardTitle className="text-2xl font-bold">إنشاء حساب</CardTitle>
           <CardDescription className="text-sm text-gray-500">
             مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='p-0'>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
@@ -167,7 +167,7 @@ export default function RegisterForm() {
                   id="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.firstName ? 'border-red-500' : ''}`}
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.lastName ? 'border-red-500' : ''}`}
                   required
                 />
                 {errors.firstName && <p className="text-red-600 text-sm">{errors.firstName}</p>}
@@ -178,36 +178,39 @@ export default function RegisterForm() {
                   id="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.lastName ? 'border-red-500' : ''}`}
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.lastName ? 'border-red-500' : ''}`}
                   required
                 />
                 {errors.lastName && <p className="text-red-600 text-sm">{errors.lastName}</p>}
               </div>
             </div>
             <div className="space-y-3">
-              <Label htmlFor="phone_code">رمز الهاتف</Label>
-              <Input
-                id="phone_code"
-                type="number"
-                placeholder="056"
-                value={formData.phone_code}
-                onChange={handleChange}
-                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.phone_code ? 'border-red-500' : ''}`}
-                required
-              />
-              {errors.phone_code && <p className="text-red-600 text-sm">{errors.phone_code}</p>}
-            </div>
-            <div className="space-y-3">
               <Label htmlFor="phone">رقم الهاتف</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="056666666"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.phone ? 'border-red-500' : ''}`}
-                required
-              />
+              <div className="flex gap-3">
+                <div className="w-5/6">
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="056666666"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.phone ? 'border-red-500' : ''}`}
+                    required
+                  />
+                </div>
+                <div className="w-1/6">
+                  <Input
+                    id="phone_code"
+                    type="number"
+                    placeholder="056"
+                    value={formData.phone_code}
+                    onChange={handleChange}
+                    className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.phone_code ? 'border-red-500' : ''}`}
+                    required
+                  />
+                </div>
+              </div> 
+              {errors.phone_code && <p className="text-red-600 text-sm">{errors.phone_code}</p>}
               {errors.phone && <p className="text-red-600 text-sm">{errors.phone}</p>}
             </div>
             <div className="space-y-3">
@@ -217,7 +220,7 @@ export default function RegisterForm() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.email ? 'border-red-500' : ''}`}
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.email ? 'border-red-500' : ''}`}
                 required
               />
               {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
@@ -229,7 +232,7 @@ export default function RegisterForm() {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.password ? 'border-red-500' : ''}`}
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.password ? 'border-red-500' : ''}`}
                 required
               />
               {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
@@ -241,7 +244,7 @@ export default function RegisterForm() {
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.confirmPassword ? 'border-red-500' : ''}`}
                 required
               />
               {errors.confirmPassword && <p className="text-red-600 text-sm">{errors.confirmPassword}</p>}
@@ -256,7 +259,7 @@ export default function RegisterForm() {
 
             <Button
               type="submit"
-              className="w-full bg-color-gradient rounded-2xl space-y-3 text-white"
+              className="w-full bg-btn-authColor rounded-xl text-white space-y-3"
               disabled={loading}
             >
               {loading ? "إنشاء حساب ..." : "إنشاء حساب"}

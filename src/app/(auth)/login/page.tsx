@@ -113,10 +113,10 @@ const Login: React.FC = () => {
                 <label>
                   <input type="checkbox" className="h-4 w-4 shrink-0 bg-gray-10 rounded-sm " /> تذكرني
                 </label>
-                <Link href="/" className="text-primary">هل نسيت كلمة المرور؟</Link>
+                <Link href="/forgetpass" className="text-primary">هل نسيت كلمة المرور؟</Link>
               </div>
 
-              <Button type="submit" className="w-full text-white" disabled={loading}>
+              <Button type="submit" className="w-full bg-btn-authColor rounded-xl text-white" disabled={loading}>
                 {loading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
               </Button>              
               {errorMessage && <p className="text-red-600">{errorMessage}</p>}
@@ -134,7 +134,7 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* <GoogleSignInButton /> */}
+      <GoogleSignInButton />
 
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
