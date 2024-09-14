@@ -65,7 +65,8 @@ export default function CoursesHome() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {courses.map((course) => (
                     <CourseCard
-                        key={course.id} // Use a unique identifier for the key
+                        key={course.id}
+                        id={course.id}
                         imageSrc={course.image}
                         title={course.name}
                         duration={course.lesson_time}

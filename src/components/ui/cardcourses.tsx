@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface CourseCardProps {
+  id: number;
    imageSrc?: string;
   title?: string;
   duration?: string;
@@ -20,6 +21,7 @@ const Skeleton = ({ className }: { className: string }) => (
 );
 
 const CourseCard: React.FC<CourseCardProps> = ({
+  id,
   imageSrc,
   title,
   duration,
@@ -124,7 +126,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </>
         ) : (
           <>
-            <Link href="/" className="btn-primary font-medium py-2.5 w-1/2">اشترك في الكورس</Link>
+            <Link href={`/course/${id}`} className="btn-primary font-medium py-2.5 w-1/2">اشترك في الكورس</Link>
             <Link href="/" className="btn-outLine-primary font-medium py-2.5 w-1/2">احجز المعلم</Link>
           </>
         )}

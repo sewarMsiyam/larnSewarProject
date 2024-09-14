@@ -8,7 +8,7 @@ import CourseCard from '@/components/ui/cardcourses';
 import SkeletonCardcourses from '@/components/ui/SkeletonCardcourses';
 
 
-export default function CoursesHome() {
+export default function DetailCourse() {
     const t = useTranslations('HomePage');
 
     const [courses, setCourses] = useState<Course[]>([]);
@@ -42,17 +42,9 @@ export default function CoursesHome() {
 
     if (loading) {
         return (
-            <TabsContent value="tawjihi">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid">
                     <SkeletonCardcourses />
-                    <div className='hidden md:block'>
-                        <SkeletonCardcourses />
-                    </div>
-                    <div className='hidden lg:block'>
-                        <SkeletonCardcourses />
-                    </div>
                 </div>
-            </TabsContent>
         );
     }
 
@@ -61,24 +53,8 @@ export default function CoursesHome() {
     }
 
     return (
-        <TabsContent value="tawjihi">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {courses.map((course) => (
-                    <CourseCard
-                        key={course.id}
-                        id={course.id}
-                        imageSrc={course.image}
-                        title={course.name}
-                        duration={course.lesson_time}
-                        lessons={course.number_of_lessons}
-                        exam={course.number_of_office_time_per_week}
-                        summary={course.number_of_office_time_per_week}
-                        teacherName={course.instructor_name}
-                        teacherImage={course.instructor_image}
-                        price={course.price}
-                    />
-                ))}
+            <div className="grid ">
+
             </div>
-        </TabsContent>
     );
 }
