@@ -101,7 +101,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                   </li>
                 </ol>
               </nav>
-              <h1 className="font-bold text-2xl lg:text-3xl leading-10">{Course.name}</h1>
+              <h1 className="font-bold text-2xl lg:text-3xl leading-10">اسم الكورس</h1>
               <div className="flex gap-1">
                 <Star />
                 <Star />
