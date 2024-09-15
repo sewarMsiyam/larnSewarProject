@@ -9,7 +9,18 @@ export interface Course {
     lesson_time: string;
     number_of_workingـpapers: string;
     number_of_office_time_per_week: string;
+    duration:string;
     price: string;
+    course_features: Array<{
+        id: number;
+        feature: string;
+    }>;
+    course_durations: Array<{
+        id: number;
+        day: string;
+        from_time: string;
+        to_time: string;
+    }>;
 }
 
 export interface Review {
