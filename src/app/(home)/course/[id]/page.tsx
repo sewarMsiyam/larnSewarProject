@@ -61,20 +61,20 @@ export default function DetailCourse() {
           <div className="flex">
             <div className="p-10">
               <div>
-                الرئيسية 
+                الرئيسية
                 تفاصيل الكورس
               </div>
               <h1>كورس تعليمي لغة إنجليزية  للثانوية العامة</h1>
               <div className="flex gap-1">
-                <Star/>
-                <Star/>
-                <Star/>
+                <Star />
+                <Star />
+                <Star />
                 <span> (300) تقييم</span>
               </div>
               <div className='flex items-center justify-center'>
                 <Avatar>
                   <AvatarImage
-                    src="/" alt="Teacher Image" className="w-10 h-10 rounded-full"/>
+                    src="/" alt="Teacher Image" className="w-10 h-10 rounded-full" />
                   <AvatarFallback>م</AvatarFallback>
                 </Avatar>
                 <span className="font-bold">الأستاذ محمد علي</span>
@@ -82,7 +82,7 @@ export default function DetailCourse() {
             </div>
 
 
-            <div className='absolute end-0 top-1/4'>
+            <div className='absolute end-0 top-1/4 grow-0'>
               <div className='bg-white shadow-lg rounded-2xl'>
                 <div className='relative'>
                   <img src="/course2.png" alt='' className='w-[390px] rounded-t-2xl' />
@@ -99,16 +99,16 @@ export default function DetailCourse() {
                   </div>
                   <div>
                     <b>المميزات</b>
-                      <p className="flex gap-3"><Summary /> ملخص شامل لكل الحصص</p>
-                      <p className="flex gap-3"><Exam /> اختبار تحصيلي بعد الحصص</p>
-                      <p className="flex gap-3"><Shares /> 08 حصص مسجلة عبر زوم مييتنج</p>
-                      <p className="flex gap-3"><Time />مدة الحصة الواحدة 40 دقيقة</p>
+                    <p className="flex gap-3"><Summary /> ملخص شامل لكل الحصص</p>
+                    <p className="flex gap-3"><Exam /> اختبار تحصيلي بعد الحصص</p>
+                    <p className="flex gap-3"><Shares /> 08 حصص مسجلة عبر زوم مييتنج</p>
+                    <p className="flex gap-3"><Time />مدة الحصة الواحدة 40 دقيقة</p>
                   </div>
                   <div>
                     <Link href='/' className="btn-primary font-medium py-2.5 w-full">اشترك في الكورس</Link>
                   </div>
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
 
@@ -116,27 +116,37 @@ export default function DetailCourse() {
 
       </section>
       <section className='container'>
-        <div className="flex ">
-          <div>
+        <div className="grid  grid-cols-3">
+          <div className="col-span-2">
 
-          <h4>محتوى الكورس</h4>
-          <h6>تعلم اللغة الإنجليزية بسهولة وفعالية!</h6>
-          <p>
-            هل تبحث عن طريقة فعالة لتحسين مهاراتك في اللغة الإنجليزية؟ انضم إلى كورسنا المصمم خصيصًا لمساعدتك على اكتساب الثقة والقدرة على التحدث والكتابة بطلاقة. يركز الكورس على تقديم مجموعة من الدروس التفاعلية التي تغطي أساسيات اللغة، مثل القواعد الأساسية والمفردات اليومية والتعبيرات الشائعة.
+            <h4>محتوى الكورس</h4>
+            <h6>تعلم اللغة الإنجليزية بسهولة وفعالية!</h6>
+            <p>
+              هل تبحث عن طريقة فعالة لتحسين مهاراتك في اللغة الإنجليزية؟ انضم إلى كورسنا المصمم خصيصًا لمساعدتك على اكتساب الثقة والقدرة على التحدث والكتابة بطلاقة. يركز الكورس على تقديم مجموعة من الدروس التفاعلية التي تغطي أساسيات اللغة، مثل القواعد الأساسية والمفردات اليومية والتعبيرات الشائعة.
               مخرجات الكورس
               محتوى متكامل: يغطي الكورس كل ما تحتاجه من القواعد والمفردات إلى مهارات المحادثة والاستماع، مما يضمن لك بناء أساس قوي.
               تدريبات عملية: ستتمكن من ممارسة اللغة عبر تمارين تطبيقية وحوارات واقعية، تساعدك على تحسين نطقك وفهمك بسرعة.
               مناسب للجميع: سواء كنت مبتدئًا أو ترغب في تحسين مستواك الحالي، فالكورس مصمم ليتناسب مع جميع المستويات.
               تجربة تفاعلية: يقدم الكورس محتوى متنوعاً من الفيديوهات والتدريبات التفاعلية التي تجعل التعلم ممتعًا ومفيدًا.
               ابدأ رحلتك في تعلم اللغة الإنجليزية اليوم معنا واكتشف كيف يمكن لك تحقيق أهدافك اللغوية بسهولة ومرونة!
-          </p>
+            </p>
           </div>
-          <div> <p>sewar</p></div>
+          <div className="col-span-1"></div>
         </div>
-                  
+
 
       </section>
-      <Opinions />
+
+
+
+
+
+
+
+      <div className="my-20">
+        <Opinions />
+      </div>
+      
     </>
   );
 }

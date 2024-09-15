@@ -61,22 +61,23 @@ export const authOptions: NextAuthOptions = {
      maxAge: 1 * 24 * 60 * 60, // 1 day
    },
    callbacks: {
-     async jwt({ token, user }) {
-       if (user) {
-         token.email = user.email!;
-         token.name = user.name!;
-       }
-       return token;
-     },
-     async session({ session, token }) {
-       if (token) {
-         session.user = {
-           email: token.email as string,
-           name: token.name as string,
-         };
-       }
-       return session;
-     },
+    //  async jwt({ token, user }) {
+    //     console.log('User:', user);
+    //    if (user) {
+    //      token.email = user.email!;
+    //      token.name = user.name!;
+    //    }
+    //    return token;
+    //  },
+    //  async session({ session, token }) {
+    //    if (token) {
+    //      session.user = {
+    //        email: token.email as string,
+    //        name: token.name as string,
+    //      };
+    //    }
+    //    return session;
+    //  },
    },
 }
 
