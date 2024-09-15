@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Exam from "@/components/svgIcon/exam"
+import Shares from "@/components/svgIcon/shares"
+import Summary from "@/components/svgIcon/summary"
 
 interface CourseCardProps {
   id: number;
@@ -77,12 +80,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
         ) : (
           <>
             <div className="flex gap-1 items-center">
+              <Shares />
               <span>{lessons} حصص</span>
             </div>
             <div className="flex gap-1 items-center">
+              <Exam />
               <span>{exam} اختبار</span>
             </div>
             <div className="flex gap-1 items-center">
+              <Summary />
               <span>{summary} ملخص</span>
             </div>
           </>

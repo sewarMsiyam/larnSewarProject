@@ -190,6 +190,9 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
 export async function fetchOne(endpoint: string, id: string, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
       timeout: 8000,
     });
     const result = await response.json();

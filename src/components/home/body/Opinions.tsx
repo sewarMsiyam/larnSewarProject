@@ -47,7 +47,7 @@ export default function Opinions() {
         fetchData();
     }, []);
 
-    if (loading) {
+    if (loading && error) {
         return (
             <div className="container mt-20">
                 <TitleSection text="آراء طلابنا" />
@@ -79,15 +79,6 @@ export default function Opinions() {
                     <CarouselPrevious />
                     <CarouselNext />
                 </Carousel>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="container mt-20">
-                <TitleSection text="آراء طلابنا" />
-                <p className="text-red-500">{error}</p>
             </div>
         );
     }
