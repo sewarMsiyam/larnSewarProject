@@ -59,7 +59,7 @@ export default function ContactUs() {
             <Image src="/concatus.png" width="400" height="20" alt="" className="w-full lg:w-[590px]" />
           </div>
           <div className="">
-            <Card className='lg:rounded-[40px] lg:p-7'>
+            <Card className='border-[#DDDDDD] lg:rounded-[40px] lg:p-7'>
               <CardHeader>
                 <CardTitle className="text-xl text-center mb-2">نحن هنا لمساعدتك!</CardTitle>
                 <CardDescription className="text-center text-[#707070] w-4/5 mx-auto">فريقنا المتخصص هنا للإجابة على جميع استفساراتك ومساعدتك في تحقيق أهدافك بكل سهولة.</CardDescription>
@@ -100,7 +100,7 @@ export default function ContactUs() {
                   </div>
 
                   <div className="text-end">
-                    <Button type="submit" disabled={loading} className="btn-primary rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 text-white">
+                    <Button type="submit" disabled={loading} className="btn-primary rounded-2xl font-medium py-2.5 px-8 md:px-3 lg:px-16 m-1 text-white before:ease relative overflow-hidden btn-primary transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                       {loading ? 'جاري الارسال...' : 'إرسال'}
                     </Button>
                   </div>

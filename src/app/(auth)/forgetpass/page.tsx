@@ -18,7 +18,7 @@ const Forget: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // Added state for success message
+  const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
 
@@ -48,7 +48,6 @@ const Forget: React.FC = () => {
                   />
                 </div>
               </div>
-
 
               <Button type="submit" className="w-full bg-btn-authColor rounded-xl text-white" disabled={loading}>
                 {loading ? 'جاري إرسال الرمز...' : 'إرسال الرمز'}

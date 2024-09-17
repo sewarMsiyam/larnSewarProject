@@ -7,9 +7,8 @@ export default function Navbar() {
 
   const navigation = [
     { name: t('home'), href: '/' },
-    { name: t('framework'), href: '/login', },
-    { name: t('features'), href: '/' },
-    { name: t('packages'), href: '/' },
+    { name: 'الكورسات', href: '/course', },
+    { name: 'المعلمون', href: '/instructor' },
     { name: t('contact_us'), href: '/' },
   ]
   return (
@@ -19,8 +18,7 @@ export default function Navbar() {
           <Link
             key={item.name}
             href={item.href}
-            className='rounded-md px-3 py-2 text-medium'
-          >
+            className='rounded-md px-3 py-2 text-medium'>
             {item.name}
           </Link>
         ))}

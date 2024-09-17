@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from 'react';
-
 import { fetchOne } from '@/app/api/dataFetch';
 import { useTranslations } from 'next-intl';
 import { Course } from '@/app/api/interfaces';
+// import Skeleton from "@/components/ui/skeleton";
 import Star from '@/components/svgIcon/star';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -47,14 +47,13 @@ export default function DetailCourse({ params }: DetailCourseProps) {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [params.id]);
 
   if (loading) {
     return (
       <div className="grid">
-        {/* <SkeletonCardcourses /> */}
+        {/* <Skeleton className="h-10 w-40" /> */}
       </div>
     );
   }
@@ -71,11 +70,8 @@ export default function DetailCourse({ params }: DetailCourseProps) {
     <>
       <section className="bg-gridColor">
         <div className='lg:container relative'>
-
           <div className="flex flex-col lg:flex-row gap-5">
             <div className="p-5 lg:p-10 space-y-2 lg:space-y-5">
-
-
               <nav aria-label="Breadcrumb">
                 <ol role="list" className="flex items-center space-x-5 ">
                   <li>
@@ -95,7 +91,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                   </li>
                   <li>
                     <div className="flex items-center">
-                      <Link href="/" className="ms-3 font-medium text-primary">تفاصيل الكورس</Link>
+                      <Link href="/" className="ms-3 font-bold text-primary">تفاصيل الكورس</Link>
                     </div>
                   </li>
                 </ol>
@@ -116,8 +112,6 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                 <span className="font-bold">{course.instructor_name}</span>
               </div>
             </div>
-
-
             <div className='lg:absolute end-0 top-1/4 grow-0'>
               <div className='bg-white shadow-lg rounded-2xl'>
                 <div className='relative'>
@@ -134,19 +128,15 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                     </div>
                   </div>
                   <div className="space-y-3">
-
                     {course.course_features.length > 0 && (
-                    <>
-                       <b>المميزات</b>
-                    {course.course_features.map((feature) => (
-                      <p key={feature.id} className="flex gap-3">
-                        {feature.feature}
-                      </p>
-                    ))}
-                    
-                    </>)}
-                 
-
+                      <>
+                        <b>المميزات</b>
+                        {course.course_features.map((feature) => (
+                          <p key={feature.id} className="flex gap-3">
+                            {feature.feature}
+                          </p>
+                        ))}
+                      </>)}
                   </div>
                   <div className="flex w-full">
                     <Link href='/' className="btn-primary text-center rounded-2xl font-medium py-2.5 w-[100%]">اشترك في الكورس</Link>
@@ -157,42 +147,31 @@ export default function DetailCourse({ params }: DetailCourseProps) {
           </div>
         </div>
       </section>
-
       <section className='container my-5'>
         <div className="grid grid-cols-1 lg:grid-cols-3">
           <div className="col-span-2 lg:p-9 xl:p-5 text-justify leading-8">
-            <h4>محتوى الكورس</h4>
-            <h6>تعلم اللغة الإنجليزية بسهولة وفعالية!</h6>
-            <p>
-              هل تبحث عن طريقة فعالة لتحسين مهاراتك في اللغة الإنجليزية؟ انضم إلى كورسنا المصمم خصيصًا لمساعدتك على اكتساب الثقة والقدرة على التحدث والكتابة بطلاقة. يركز الكورس على تقديم مجموعة من الدروس التفاعلية التي تغطي أساسيات اللغة، مثل القواعد الأساسية والمفردات اليومية والتعبيرات الشائعة.
-              مخرجات الكورس
-              محتوى متكامل: يغطي الكورس كل ما تحتاجه من القواعد والمفردات إلى مهارات المحادثة والاستماع، مما يضمن لك بناء أساس قوي.
-              تدريبات عملية: ستتمكن من ممارسة اللغة عبر تمارين تطبيقية وحوارات واقعية، تساعدك على تحسين نطقك وفهمك بسرعة.
-              مناسب للجميع: سواء كنت مبتدئًا أو ترغب في تحسين مستواك الحالي، فالكورس مصمم ليتناسب مع جميع المستويات.
-              تجربة تفاعلية: يقدم الكورس محتوى متنوعاً من الفيديوهات والتدريبات التفاعلية التي تجعل التعلم ممتعًا ومفيدًا.
-              ابدأ رحلتك في تعلم اللغة الإنجليزية اليوم معنا واكتشف كيف يمكن لك تحقيق أهدافك اللغوية بسهولة ومرونة!
-            </p>
+            
+              {course.description}
+            
             {course.course_durations.length > 0 && (
-                    <>
-                      <h2 className="font-bold mb-5 mt-10">وقت الكورس <span className="text-[#EA4335]">(الأوقات مبدئية ويتم الاتفاق عليها في بداية الكورس)</span></h2>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        {course.course_durations.map((duration) => (
-                          <div key={duration.id} className="col-span-1">
-                            <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3.5 rounded-xl px-8">
-                              <span>{duration.day}</span>
-                              <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
-                              <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
-                            </div>
-                          </div>
-                        ))}
+              <>
+                <h2 className="font-bold mb-5 mt-10">وقت الكورس <span className="text-[#EA4335]">(الأوقات مبدئية ويتم الاتفاق عليها في بداية الكورس)</span></h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  {course.course_durations.map((duration) => (
+                    <div key={duration.id} className="col-span-1">
+                      <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3.5 rounded-xl px-8">
+                        <span>{duration.day}</span>
+                        <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
+                        <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
                       </div>
-                    </>
-                  )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           <div className="col-span-1"></div>
         </div>
-
-
 
       </section>
 

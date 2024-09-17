@@ -76,19 +76,19 @@ export default function RegisterForm() {
     const newErrors: FormErrors = {};
 
     // Validate firstName
-    if (!formData.firstName || !/^[a-zA-Z\s]+$/.test(formData.firstName)) {
+    if (!formData.firstName) {
       newErrors.firstName = "الاسم الأول مطلوب ويجب أن يكون نصًا.";
       isValid = false;
     }
 
     // Validate lastName
-    if (!formData.lastName || !/^[a-zA-Z\s]+$/.test(formData.lastName)) {
+    if (!formData.lastName) {
       newErrors.lastName = "اسم العائلة مطلوب ويجب أن يكون نصًا.";
       isValid = false;
     }
 
     // Validate phone
-    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
+    if (!formData.phone || !/^\d{9}$/.test(formData.phone)) {
       newErrors.phone = "رقم الهاتف مطلوب ويجب أن يتكون من 10 أرقام.";
       isValid = false;
     }

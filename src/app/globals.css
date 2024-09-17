@@ -88,9 +88,10 @@
     @apply bg-background text-foreground;
   }
 }
+
 @layer utilities {
   .bg-gradient {
-    @apply bg-gradient-to-r;
+    @apply vd;
     background: linear-gradient(87.18deg, #003366 2.47%, #0ad491 96.66%);
   }
 }

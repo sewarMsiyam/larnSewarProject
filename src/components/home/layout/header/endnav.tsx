@@ -8,7 +8,6 @@ interface HeaderProps {
 }
 const EndNav: React.FC<HeaderProps> = ({ session }) => {
     // const NameInitial = session.user?.first_name?.charAt(0) + session.user?.last_name?.charAt(0);
-    
     return (
         <>
             {session?.user ? (
@@ -20,7 +19,7 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
                             <AvatarImage src={session.user?.image as string} alt={session.user?.email || 'User Avatar'} />
                             <AvatarFallback>
                                 se
-                                {/* {NameInitial} */} 
+                                {/* {NameInitial} */}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
@@ -29,8 +28,12 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
                 </div>
             ) : (
                 <div className="flex flex-col md:flex-row items-center">
-                    <Link href="/login" className="btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1">تسجيل دخول</Link>
-                    <Link href="/register" className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1">إنشاء حساب</Link>
+                    <Link href="/login" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                        <span className="relative z-10">تسجيل دخول</span>
+                    </Link>
+                    <Link href="/register" className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 relative overflow-hidden border border-primary text-primary transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto before:h-0 before:w-0 before:rounded-sm before:bg-color-gradient before:duration-300 before:ease-out hover:text-white hover:shadow-color-gradient hover:before:h-40 hover:before:w-40 hover:before:opacity-80">
+                        <span className="relative z-10">إنشاء حساب</span> 
+                    </Link>
                 </div>
             )}
         </>

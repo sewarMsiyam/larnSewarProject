@@ -35,8 +35,8 @@ export default function WhyUs() {
                             <img src="/whyus.png" alt="" className="w-100 lg:w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }} />
                         </div>
                     </div>
-                    <div>
-                        <h2 className="text-2xl text-center md:text-right font-bold mb-10">تعلّم بتميز.. لماذا نحن خيارك الأفضل؟</h2>
+                    <div className="h-full flex flex-col justify-around items-start">
+                        <h2 className="text-2xl text-start md:text-right font-bold mb-10">تعلّم بتميز.. لماذا نحن خيارك الأفضل؟</h2>
                         <div className="flex items-start lg:w-[80%] mb-5">
                             <div className="flex justify-center items-center p-2 rounded-2xl me-4 bg-[#EEEEEE]">
                                 <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">

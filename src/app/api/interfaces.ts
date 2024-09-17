@@ -2,6 +2,7 @@
 export interface Course {
     id: number;
     name: string;
+    description: string;
     image: string;
     instructor_name: string;
     instructor_image: string;
@@ -30,4 +31,16 @@ export interface Review {
     comment: string;
     customer_name: string;
     customer_position: string;
+}
+
+
+export interface Instructors{
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    category: {
+        id: number;
+        name: string;
+    };
 }
