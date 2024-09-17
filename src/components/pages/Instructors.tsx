@@ -31,10 +31,10 @@ export default function InstructorsList() {
     async function fetchInstructors() {
       try {
         setLoading(true);
-        const tawjihiData = await fetchAll<Instructors[]>('instructors?main_category=tawjhi');
-        const universityData = await fetchAll<Instructors[]>('instructors?main_category=university');
-        setTawjihiInstructors(tawjihiData);
-        setUniversityInstructors(universityData);
+        const tawjihiData = await fetchAll<Instructors>('instructors?main_category=tawjhi');
+        const universityData = await fetchAll<Instructors>('instructors?main_category=university');
+        setTawjihiInstructors(tawjihiData|| []);
+        setUniversityInstructors(universityData|| []);
       } catch (err) {
         setError('Failed to fetch instructors');
       } finally {
