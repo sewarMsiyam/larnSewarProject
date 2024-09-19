@@ -88,8 +88,8 @@ export default function RegisterForm() {
     }
 
     // Validate phone
-    if (!formData.phone || !/^\d{9}$/.test(formData.phone)) {
-      newErrors.phone = "رقم الهاتف مطلوب ويجب أن يتكون من 10 أرقام.";
+    if (!formData.phone) {
+      newErrors.phone = "رقم الهاتف مطلوب.";
       isValid = false;
     }
 

@@ -1,14 +1,12 @@
 import { useTranslations } from 'next-intl';
 import TitleSection from '@/components/title';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Tawjihi from '@/components/home/body/tawjhi';
-import University from '@/components/home/body/university';
+import ShowCourses from '@/components/home/body/showCourses';
 export default function CoursesHome() {
     const t = useTranslations('HomePage');
 
     return (
         <>
-
             <section className="md:container my-11">
                 <TitleSection text="الدروس التعليمية" />
 
@@ -17,8 +15,7 @@ export default function CoursesHome() {
                         <TabsTrigger value="tawjihi">طالب توجيهي</TabsTrigger>
                         <TabsTrigger value="university">طالب جامعة</TabsTrigger>
                     </TabsList>
-                    <Tawjihi />
-                    <University />
+                    <ShowCourses />
                 </Tabs>
             </section>
         </>

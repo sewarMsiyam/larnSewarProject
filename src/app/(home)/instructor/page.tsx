@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function Instructors() {
+export default function InstructorsPage() {
   const t = useTranslations('HomePage');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [specialization, setSpecialization] = useState<string>('');
@@ -34,41 +34,7 @@ export default function Instructors() {
             <TabsTrigger value="university">معلم جامعة</TabsTrigger>
           </TabsList>
           
-           <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>  
-              <div className="grid gap-5 lg:grid-cols-5 items-end">
-                <div className="grid gap-2 col-span-2	">
-                  <Label htmlFor="search"> ابحث عن معلم</Label>
-                  <div className="relative">
-                    <Input
-                     id="search"
-                      type="text"
-                      className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="اسم المعلم"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="col-span-2	">
-                  <div className="grid gap-2 col-span-4	">
-                     <Label htmlFor="text"> التخصص</Label>
-                  <div className="relative">
-                    <Input
-                     id="specialization"
-                    type="text"
-                      className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="التخصص"
-                      value={specialization}
-                      onChange={(e) => setSpecialization(e.target.value)}
-                    />
-                  </div>
-                  </div>
-                </div>
-                <div className="col-span-1	">
-                <button type="submit" className='btn-primary font-medium py-2.5 w-full before:ease relative overflow-hidden px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60'>ابحث</button>
-                </div>
-              </div> 
-        </div>
+
 
 
           <InstructorsList />

@@ -22,6 +22,8 @@ export interface Course {
         from_time: string;
         to_time: string;
     }>;
+
+
 }
 
 export interface Review {
@@ -35,12 +37,29 @@ export interface Review {
 
 
 export interface Instructors{
+    params: {
+        id: string;
+    };
     id: number;
     name: string;
     description: string;
     image: string;
-    category: {
+    category: Array<{
         id: number;
         name: string;
-    };
+    }>;
+    instructor_durations: Array<{
+        id: number;
+        day: string;
+        from_time: string;
+        to_time: string;
+    }>;
+    courses : Array<{ 
+        id: number;
+        name: string;
+        description: string;
+        image: string;
+     }>;
+    
+
 }

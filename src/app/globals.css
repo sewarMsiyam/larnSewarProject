@@ -107,3 +107,27 @@
   margin-bottom: 16px;
   width: 100%;
 }
+.react-tel-input .flag-dropdown {
+  border: none !important;
+  background-color: #ffffff00 !important;
+  left: 30px !important;
+}
+.react-tel-input .flag-dropdown.open {
+  background: #ffffff00 !important;
+  border: none !important;
+}
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background: #ffffff00 !important;
+  border-radius: 50px !important;
+}
+.react-tel-input .selected-flag {
+  padding: 0 !important;
+  border: none !important;
+}
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background-color: #ffffff00 !important;
+}
+.react-tel-input .selected-flag .arrow {
+  left: -15px !important;
+}

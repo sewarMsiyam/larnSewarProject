@@ -112,7 +112,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                 <span className="font-bold">{course.instructor_name}</span>
               </div>
             </div>
-            <div className='lg:absolute end-0 top-1/4 grow-0'>
+            <div className='lg:absolute mx-4 end-0 top-1/4 grow-0'>
               <div className='bg-white shadow-lg rounded-2xl'>
                 <div className='relative'>
                   <img src={course.image} alt='' className='h-[288px] w-full rounded-t-2xl' />

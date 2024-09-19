@@ -8,7 +8,7 @@ import Summary from "@/components/svgIcon/summary"
 
 interface CourseCardProps {
   id: number;
-   imageSrc?: string;
+  imageSrc?: string;
   title?: string;
   duration?: string;
   lessons?: string;
@@ -40,7 +40,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 0); 
+    }, 0);
     return () => clearTimeout(timer);
   }, []);
 
@@ -124,7 +124,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         )}
       </div>
 
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 lg:gap-1 xl:gap-2 mb-3">
         {loading ? (
           <>
             <Skeleton className="h-10 w-full rounded-lg" />
@@ -132,7 +132,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </>
         ) : (
           <>
-            <Link href={`/course/${id}`} className="btn-primary font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">اشترك في الكورس</Link>
+            <Link href={`/course/${id}`} className="btn-primary font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">اشترك في الكورس</Link>
             <Link href="/" className="btn-outLine-primary relative overflow-hidden btn-outLine-primary font-medium py-2.5 w-1/2 px-3 transition-all before:absolute before:bottom-0 before:right-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-color-gradient before:transition-all before:duration-500 hover:text-white hover:before:right-0 hover:before:w-full "><span className="relative z-10">احجز المعلم</span></Link>
           </>
         )}

@@ -68,7 +68,7 @@ export default function Opinions() {
                                     <div className="flex gap-3">
                                         <Skeleton className="h-12 w-12 rounded-full" />
                                         <div>
-                                            <Skeleton className="w-[100px] h-[20px] mb-1" /> 
+                                            <Skeleton className="w-[100px] h-[20px] mb-1" />
                                             <Skeleton className="w-[80px] h-[16px]" />
                                         </div>
                                     </div>
