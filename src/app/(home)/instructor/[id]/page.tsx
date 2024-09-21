@@ -195,7 +195,7 @@ export default function InstructorsDetals({ params }: Instructors) {
                         </div>
                         <div>
                             <h4 className="text-xl font-bold">{instructor.name}</h4>
-                            <p className="text-primary">{instructor.category.name}</p>
+                            {/* <p className="text-primary">{instructor.category.name}</p> */}
                         </div>
                     </div>
                     <div className="hidden md:flex gap-1 items-center ">

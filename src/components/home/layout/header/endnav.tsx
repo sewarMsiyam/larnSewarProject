@@ -7,7 +7,6 @@ interface HeaderProps {
     session: Session | null;
 }
 const EndNav: React.FC<HeaderProps> = ({ session }) => {
-    // const NameInitial = session.user?.first_name?.charAt(0) + session.user?.last_name?.charAt(0);
     return (
         <>
             {session?.user ? (
@@ -18,8 +17,7 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
                         <Avatar>
                             <AvatarImage src={session.user?.image as string} alt={session.user?.email || 'User Avatar'} />
                             <AvatarFallback>
-                                se
-                                {/* {NameInitial} */}
+                                {session.user?.name?.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
                     </Link>

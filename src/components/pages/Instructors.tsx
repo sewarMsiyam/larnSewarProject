@@ -64,7 +64,7 @@ export default function InstructorsList() {
   );
 
   useEffect(() => {
-    fetchInstructors(); // جلب المعلمين عند التحميل الأولي
+    fetchInstructors();
   }, []);
 
 

@@ -9,24 +9,22 @@ const renderInstructorCard = (instructor: Instructors) => (
       <AvatarFallback>{instructor.name[0]}</AvatarFallback>
     </Avatar>
     <h3 className="font-bold text-lg">{instructor.name}</h3>
+    <p className="font-bold text-primary"> {instructor.specialist}</p>
+    <p className="text-ellipsis w-full px-5 text-sm whitespace-nowrap overflow-hidden text-overflow-ellipsis">
+      {instructor.description}
+    </p>
 
-     {/* <p key={cat.id} className="font-bold text-primary">
-            {cat.name}
-          </p> */}
-
-    {instructor.category.length > 0 && (
+      {instructor.skills.length > 0 && (
       <div className="flex flex-wrap justify-center gap-2">
-        {instructor.category.map((cat) => (
-          <p key={cat.id} className="text-sm bg-[#EEEEEE] px-4 py-2 rounded-2xl">
-            {cat.name}
+        {instructor.skills.map((skill, index) => (
+          <p key={index} className="text-sm bg-[#EEEEEE] px-4 py-2 rounded-2xl">
+            {skill}
           </p>
         ))}
       </div>
     )}
 
-    <p className="text-ellipsis w-full px-5 text-sm whitespace-nowrap overflow-hidden text-overflow-ellipsis">
-      {instructor.description}
-    </p>
+
 
     <Link
       href={`/instructor/${instructor.id}`}

@@ -12,49 +12,71 @@ import { Label } from '@/components/ui/label';
 export default function CoursesHome() {
     const t = useTranslations('HomePage');
 
-    const [courses, setCourses] = useState<Course[]>([]);
+    // const [courses, setCourses] = useState<Course[]>([]);
+      const [tawjihiCourses, setTawjihiCourse] = useState<Course[]>([]);
+  const [universityCourses, setUniversityCourse] = useState<Course[]>([]);
+  
+    
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [specialization, setSpecialization] = useState<string>('');
     const endpoint = 'courses';
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                // تحديث الاستعلامات
-                const query = searchQuery ? `&name=${searchQuery}&instructor_name=${searchQuery}` : '';
-                const data = await fetchAll<Course>(`${endpoint}?${query}`);
-                if (Array.isArray(data)) {
-                    setCourses(data);
-                } else {
-                    console.error('Invalid data format:', data);
-                    setError('Failed to load data.');
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                setError('An error occurred while fetching data.');
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchData();
-    }, [searchQuery]);
+      useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const tawjihiData = await fetchAll<Course>('courses?main_category=tawjhi');
+        const universityData = await fetchAll<Course>('courses?main_category=university');
+        setTawjihiCourse(tawjihiData || []);
+        setUniversityCourse(universityData || []);
+      } catch (err) {
+        setError('Failed to fetch instructors');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+    }, []);
+    
+
+//     useEffect(() => {
+//         const fetchData = async () => {
+//             try {
+//                 setLoading(true);
+//                 setError(null);
+//                 // تحديث الاستعلامات
+//                 const query = searchQuery ? `&name=${searchQuery}&instructor_name=${searchQuery}` : '';
+//                 const data = await fetchAll<Course>(`${endpoint}?${query}`);
+//                 if (Array.isArray(data)) {
+//                     setCourses(data);
+//                 } else {
+//                     console.error('Invalid data format:', data);
+//                     setError('Failed to load data.');
+//                 }
+//             } catch (error) {
+//                 console.error('Error fetching data:', error);
+//                 setError('An error occurred while fetching data.');
+//             } finally {
+//                 setLoading(false);
+//             }
+//         };
+
+//         fetchData();
+//     }, [searchQuery]);
 
 
-      const handleSearch = () => {
-    fetchInstructors(searchQuery, specialization);
-  };
+//       const handleSearch = () => {
+//     fetchInstructors(searchQuery, specialization);
+//   };
 
 
     if (loading) {
         return (
             <>
-               
-
                 <TabsContent value="tawjihi">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         <SkeletonCardcourses />
@@ -90,7 +112,7 @@ export default function CoursesHome() {
 
             <TabsContent value="tawjihi">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {courses.map((course) => (
+                    {tawjihiCourses.map((course) => (
                         <CourseCard
                             key={course.id}
                             id={course.id}
@@ -109,7 +131,7 @@ export default function CoursesHome() {
             </TabsContent>
             <TabsContent value="university">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {courses.map((course) => (
+                    {universityCourses.map((course) => (
                         <CourseCard
                             key={course.id}
                             id={course.id}

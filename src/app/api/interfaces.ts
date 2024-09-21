@@ -23,6 +23,8 @@ export interface Course {
         to_time: string;
     }>;
 
+    slug:string;
+
 
 }
 
@@ -37,17 +39,14 @@ export interface Review {
 
 
 export interface Instructors{
-    params: {
-        id: string;
-    };
+    slug:string;
     id: number;
     name: string;
-    description: string;
     image: string;
-    category: Array<{
-        id: number;
-        name: string;
-    }>;
+    description: string;
+    skills: string[];
+
+
     instructor_durations: Array<{
         id: number;
         day: string;

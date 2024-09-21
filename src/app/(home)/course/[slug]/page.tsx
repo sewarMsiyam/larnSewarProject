@@ -17,7 +17,7 @@ import Time from "@/components/svgIcon/time"
 
 interface DetailCourseProps {
   params: {
-    id: string;
+    slug: string;
   };
 }
 
@@ -34,7 +34,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchOne(endpoint, params.id);
+        const data = await fetchOne(endpoint, params.slug);
         if (data) {
           setCourse(data);
         } else {
@@ -48,7 +48,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
       }
     };
     fetchData();
-  }, [params.id]);
+  }, []);
 
   if (loading) {
     return (
