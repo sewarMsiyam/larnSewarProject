@@ -13,11 +13,7 @@ export default async function Courses() {
   return (
     <>
       <Breadcrumb breadcrumbs={breadcrumbs} />
-
       <CoursesHome />
-      {/* {
-        session?.user?.email ? <p>{session.user.email}</p> : <p>not logged in</p>
-      } */}
     </>
   );
 };

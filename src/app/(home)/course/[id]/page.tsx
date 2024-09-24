@@ -1,23 +1,20 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { fetchOne } from '@/app/api/dataFetch';
 import { useTranslations } from 'next-intl';
 import { Course } from '@/app/api/interfaces';
-// import Skeleton from "@/components/ui/skeleton";
 import Star from '@/components/svgIcon/star';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Opinions from "@/components/home/body/Opinions"
 import Video from "@/components/svgIcon/video"
-import Exam from "@/components/svgIcon/exam"
-import Shares from "@/components/svgIcon/shares"
-import Summary from "@/components/svgIcon/summary"
-import Time from "@/components/svgIcon/time"
+import { useSession } from "next-auth/react";
 
 
 interface DetailCourseProps {
   params: {
-    slug: string;
+    id: string;
   };
 }
 
@@ -26,15 +23,24 @@ export default function DetailCourse({ params }: DetailCourseProps) {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const session = useSession();
+  const token = session?.data?.user?.authToken;
 
   const endpoint = 'courses';
+
+const handleClick = () => {
+  if(token){
+      console.log('Button clicked ' + token);
+  }
+  
+};
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchOne(endpoint, params.slug);
+        const data = await fetchOne(endpoint, params.id);
         if (data) {
           setCourse(data);
         } else {
@@ -50,6 +56,9 @@ export default function DetailCourse({ params }: DetailCourseProps) {
     fetchData();
   }, []);
 
+ 
+
+  
   if (loading) {
     return (
       <div className="grid">
@@ -139,7 +148,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                       </>)}
                   </div>
                   <div className="flex w-full">
-                    <Link href='/' className="btn-primary text-center rounded-2xl font-medium py-2.5 w-[100%]">اشترك في الكورس</Link>
+                    <Button onClick={handleClick} className="btn-primary text-white text-center rounded-2xl font-medium py-2.5 w-[100%]">اشترك في الكورس</Button>
                   </div>
                 </div>
               </div>

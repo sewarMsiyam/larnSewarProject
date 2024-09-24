@@ -203,6 +203,36 @@ export async function fetchOne(endpoint: string, id: string, mainCategory?: stri
   }
 }
 
+export async function fetchOneToken(endpoint: string, id: string, token: string, mainCategory?: string) {
+  console.log(buildUrl(endpoint, mainCategory, id));
+
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
+      headers: {
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`, 
+      },
+      timeout: 8000,
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch data:', response.status, response.statusText);
+      return null;
+    }
+
+    const result = await response.json();
+    console.log('result = ' + result);
+
+    console.log('result = ' + JSON.stringify(result, null, 2)); 
+
+    return result.item ? result.item : null;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+}
+
+
 export async function postData(endpoint: string, data: any, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {

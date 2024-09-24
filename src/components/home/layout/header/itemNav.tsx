@@ -9,7 +9,7 @@ export default function Navbar() {
     { name: t('home'), href: '/' },
     { name: 'الكورسات', href: '/course', },
     { name: 'المعلمون', href: '/instructor' },
-    { name: t('contact_us'), href: '/' },
+    { name: t('contact_us'), href: '/contact_us' },
   ]
   return (
     <nav className="">

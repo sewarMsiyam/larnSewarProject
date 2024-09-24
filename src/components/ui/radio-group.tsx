@@ -26,8 +26,8 @@ const RadioGroupItem = React.forwardRef<
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
-      className={cn(
-        "relative flex items-center justify-between p-4 ps-10 ring-1 rounded-2xl ring-gray-300 transition-colors focus:outline-none focus-visible:ring-0", 
+       className={cn(
+        "relative flex items-center justify-between p-4 ps-10 ring-1 rounded-2xl ring-gray-300 transition-colors focus:outline-none focus-visible:ring-0 w-full", 
         "data-[state=checked]:ring-1 data-[state=checked]:ring-primary data-[state=checked]:bg-[#0ABC8C1A] border-transparent ",
       )}
       {...props}

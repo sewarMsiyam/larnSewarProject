@@ -14,6 +14,7 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Calendar } from "@/components/ui/calendar"
+import Link from 'next/link';
 
 
 export default function InstructorsDetals({ params }: Instructors) {
@@ -332,6 +333,9 @@ export default function InstructorsDetals({ params }: Instructors) {
                     </div>
                 </div>
             </section>
+
+                <Link href={{ pathname :'/checkout_private' , query: { id: instructor.id }}} className="btn-primary font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">احجز المعلم </Link>
+
 
         </>
     );
