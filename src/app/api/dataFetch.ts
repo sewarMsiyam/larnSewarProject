@@ -233,20 +233,45 @@ export async function fetchOneToken(endpoint: string, id: string, token: string,
 }
 
 
-export async function postData(endpoint: string, data: any, mainCategory?: string) {
+// export async function postData(endpoint: string, data: any, mainCategory?: string) {
+//   try {
+//     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Accept-Language': 'ar',
+//       },
+//       body: JSON.stringify(data),
+//       timeout: 8000,
+//     });
+//     return await response.json();
+//   } catch (error) {
+//     console.error('Failed to post data:', error);
+//     return null;
+//   }
+// }
+
+export async function postData(endpoint: string, token: string , data: any, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
       timeout: 8000,
     });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     return await response.json();
   } catch (error) {
     console.error('Failed to post data:', error);
     return null;
   }
 }
+

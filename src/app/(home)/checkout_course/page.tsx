@@ -5,14 +5,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
-import Link from 'next/link';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
 import Image from "next/image";
 import CheckoutForm from "@/components/pages/checkout/form";
 import Course from "@/components/pages/checkout/course_checkout";
+import Link from 'next/link';
+
+
 export default async function CheckoutCourse() {
-    const session = await getServerSession(authOptions);
+const session = await getServerSession(authOptions);
 
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },

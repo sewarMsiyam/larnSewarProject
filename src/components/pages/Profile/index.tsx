@@ -4,11 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsPr
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
 export default function ProfileIndex() {
     const t = useTranslations('HomePage');
-
-
     return (
         <>
             <section className="container">
@@ -28,28 +25,6 @@ export default function ProfileIndex() {
                             <TabsTrigger value="tawjihi">dd</TabsTrigger>
                             <TabsTrigger value="university">معلم جامعة</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="tawjihi">
-                            tawjihi
-
-
-                <div className="grid gap-2">
-                    <Label htmlFor="email">البريد الالكتروني</Label>
-                    <div className="relative">
-                    <Input
-                        id="email"
-                        type="email"
-                        className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                        placeholder="example@gmail.com"
-                        // value={}
-                        // onChange={}
-                        required
-                    />
-                    </div>
-                </div>
-
-
-
-                        </TabsContent>
                         <TabsContent value="university">
                             university
                         </TabsContent>
