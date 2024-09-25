@@ -23,20 +23,15 @@ export default async function Profile() {
     
   return (
     <>
-      
-       <Breadcrumb breadcrumbs={breadcrumbs} />
-        <section className="container">
-            <ProfileIndex />
-        </section>
 
-                    {/* {session ? (
+ {session ? (
                       <>
                       <p>Welcome, {session.user?.name}</p>
                         <Breadcrumb breadcrumbs={breadcrumbs} />
 
-        <section className="container">
-            <ProfileIndex />
-        </section>
+                        <section className="container">
+                            <ProfileIndex />
+                        </section>
                       
                       </>
                     ):(
@@ -54,7 +49,7 @@ export default async function Profile() {
                         </div>
                     </div>
                 </>
-                    )} */}
+                    )}
 
     </>
   );

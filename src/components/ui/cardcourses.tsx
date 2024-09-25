@@ -50,7 +50,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {loading ? (
           <Skeleton className="h-full w-full" />
         ) : (
-          <img src={imageSrc} alt="Course Image" className="w-full h-full object-fill" />
+            <Link href={`/course/${id}`}>
+              <img src={imageSrc} alt="Course Image" className="w-full h-full object-fill" />
+            </Link>
         )}
       </div>
 
