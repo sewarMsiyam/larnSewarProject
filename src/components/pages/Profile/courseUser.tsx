@@ -7,8 +7,8 @@ export default function UserCourse() {
     const t = useTranslations('HomePage');
     return (
         <>
-            <TabsContent value="course" className="bg-white">
-                <div className="flex justify-center items-center">
+            <TabsContent value="course" className="bg-white rounded-lg p-5 shadow-md">
+                <div className="flex justify-between items-center">
                     <h4 className='font-bold text-lg'> الكورسات </h4>
                     <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>03</span></p>
                 </div>
@@ -33,8 +33,8 @@ export default function UserCourse() {
                             <p>رابط الزوم</p>
                             <a href="#" className="text-[#226AC8] border px-5 py-2 rounded-3xl border-[#0000001A]">zoommtg://zoom.us/join?confno=8529015944&pwd 8529015944&pwd</a>
                             <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14.2881 10.4972V14.2472C14.2881 17.3722 13.0381 18.6222 9.91309 18.6222H6.16309C3.03809 18.6222 1.78809 17.3722 1.78809 14.2472V10.4972C1.78809 7.37222 3.03809 6.12222 6.16309 6.12222H9.91309C13.0381 6.12222 14.2881 7.37222 14.2881 10.4972Z" stroke="#226AC8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M18.4548 5.16387V7.91387C18.4548 10.2055 17.5381 11.1222 15.2464 11.1222H14.2881V10.4972C14.2881 7.3722 13.0381 6.1222 9.91309 6.1222H9.28809V5.16387C9.28809 2.8722 10.2048 1.95554 12.4964 1.95554H15.2464C17.5381 1.95554 18.4548 2.8722 18.4548 5.16387Z" stroke="#226AC8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14.2881 10.4972V14.2472C14.2881 17.3722 13.0381 18.6222 9.91309 18.6222H6.16309C3.03809 18.6222 1.78809 17.3722 1.78809 14.2472V10.4972C1.78809 7.37222 3.03809 6.12222 6.16309 6.12222H9.91309C13.0381 6.12222 14.2881 7.37222 14.2881 10.4972Z" stroke="#226AC8" strokeWidth="2" strokeLinecap="round" />
+                                <path d="M18.4548 5.16387V7.91387C18.4548 10.2055 17.5381 11.1222 15.2464 11.1222H14.2881V10.4972C14.2881 7.3722 13.0381 6.1222 9.91309 6.1222H9.28809V5.16387C9.28809 2.8722 10.2048 1.95554 12.4964 1.95554H15.2464C17.5381 1.95554 18.4548 2.8722 18.4548 5.16387Z" stroke="#226AC8" stroke-width="2" strokeLinecap="round" />
                             </svg>
 
                         </div>

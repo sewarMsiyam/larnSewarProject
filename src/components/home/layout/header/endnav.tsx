@@ -16,7 +16,7 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
                     <Link href="/profile" className="flex items-center gap-2">
                         <p>{session.user?.name}</p>
                         <Avatar>
-                            <AvatarImage src={session.user?.image as string} alt={session.user?.email || 'User Avatar'} />
+                            <AvatarImage src='' alt={session.user?.email || 'User Avatar'} />
                             <AvatarFallback>
                                 {session.user?.name?.charAt(0)}
                             </AvatarFallback>
