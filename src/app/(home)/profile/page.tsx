@@ -29,7 +29,7 @@ export default async function Profile() {
                       <p>Welcome, {session.user?.name}</p>
                         <Breadcrumb breadcrumbs={breadcrumbs} />
 
-                        <section className="container">
+                        <section>
                             <ProfileIndex />
                         </section>
                       

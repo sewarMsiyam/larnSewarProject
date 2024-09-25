@@ -221,10 +221,6 @@ export async function fetchOneToken(endpoint: string, id: string, token: string,
     }
 
     const result = await response.json();
-    console.log('result = ' + result);
-
-    console.log('result = ' + JSON.stringify(result, null, 2)); 
-
     return result.item ? result.item : null;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -251,7 +247,33 @@ export async function postData(endpoint: string, data: any, mainCategory?: strin
   }
 }
 
-export async function postDataProfile(endpoint: string, token: string , data: any, mainCategory?: string) {
+
+export async function fetchAllToken(endpoint: string,token: string, mainCategory?: string) {
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      headers: {
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      timeout: 8000,
+    });
+    const result = await response.json();
+       if (result.item) {
+      if (Array.isArray(result.item)) {
+        return result.item ;
+      } else if (result.item[endpoint]) {
+        return result.item[endpoint];
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
+}
+
+
+export async function updateProfile(endpoint: string, token?: string, data?: any, mainCategory?: string) {
+
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
@@ -263,15 +285,48 @@ export async function postDataProfile(endpoint: string, token: string , data: an
       body: JSON.stringify(data),
       timeout: 8000,
     });
-    
+  console.log('الداتا المرسلة للتعديل:', JSON.stringify(data));
+
+    const result = await response.json();
+    console.log('Server response:', result);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
+    }
+
+    if (result.status === 200 && result.item) {
+      console.log('Profile updated successfully. New data:', result.item);
+      return result;
+    } else {
+      throw new Error(result.message || 'Failed to update profile');
+    }
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    throw error; // Re-throw the error so the caller can handle it
+  }
+}
+
+
+export async function fetchProfileData(endpoint: string, token: string | null) {
+  try {
+    const response = await fetchRetry(buildUrl(endpoint), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      timeout: 8000,
+    });
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Failed to post data:', error);
+    console.error('Failed to fetch profile data:', error);
     return null;
-  }
 }
 
+}

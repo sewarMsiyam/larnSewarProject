@@ -22,6 +22,7 @@ export interface Course {
         from_time: string;
         to_time: string;
     }>;
+    zoomLink: string;
 
 }
 
