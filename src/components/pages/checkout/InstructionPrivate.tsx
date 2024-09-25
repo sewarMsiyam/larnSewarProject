@@ -5,17 +5,17 @@ import { useSession } from "next-auth/react";
 import { fetchOneToken } from '@/app/api/dataFetch';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import SkeletonInstructor from "@/components/ui/SkeletonInstructor";
-import { useRouter } from "next/router";
+import { Instructors  } from '@/app/api/interfaces';
 
 export default function InstructionPrivate() {
     const session = useSession();
-    const token = session?.data?.user?.authToken;
+const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
 
 
-    const [instruction, setInstruction] = useState(null);
+    const [instruction, setInstruction] = useState<Instructors |null>(null);
     const [loading, setLoading] = useState(true);
 
 

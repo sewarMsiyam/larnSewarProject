@@ -24,7 +24,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const session = useSession();
-  const token = session?.data?.user?.authToken;
+  const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
   const endpoint = 'courses';
 

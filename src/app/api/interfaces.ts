@@ -23,9 +23,6 @@ export interface Course {
         to_time: string;
     }>;
 
-    slug:string;
-
-
 }
 
 export interface Review {
@@ -45,7 +42,7 @@ export interface Instructors{
     image: string;
     description: string;
     skills: string[];
-
+    specialist: string;
 
     instructor_durations: Array<{
         id: number;
@@ -62,3 +59,4 @@ export interface Instructors{
     
 
 }
+

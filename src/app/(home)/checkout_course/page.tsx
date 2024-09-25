@@ -7,7 +7,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
-import Image from "next/image";
 import CheckoutForm from "@/components/pages/checkout/form";
 import Course from "@/components/pages/checkout/course_checkout";
 import Link from 'next/link';

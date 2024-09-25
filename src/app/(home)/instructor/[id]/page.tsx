@@ -17,7 +17,8 @@ import { Calendar } from "@/components/ui/calendar"
 import Link from 'next/link';
 
 
-export default function InstructorsDetals({ params }: Instructors) {
+
+export default function InstructorsDetals({ params }: { params: { id: string } }) {
 
     const [instructor, setInstructor] = useState<Instructors | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -26,19 +27,24 @@ export default function InstructorsDetals({ params }: Instructors) {
     const endpoint = 'instructors';
 
 
-    // دالة لتحويل اليوم إلى رقم اليوم من الأسبوع
-    const getDayOfWeek = (dayString: string) => {
-        const daysOfWeek = {
+    type DayOfWeek = 'الأحد' | 'الاثنين' | 'الثلاثاء' | 'الأربعاء' | 'الخميس' | 'الجمعة' | 'السبت';
+   const getDayOfWeek = (dayString: string): number => {
+        const daysOfWeek: { [key: string]: number } = {
             'الأحد': 0,
-            'الاثنين': 1,
+            'الإثنين': 1,
             'الثلاثاء': 2,
             'الأربعاء': 3,
             'الخميس': 4,
             'الجمعة': 5,
             'السبت': 6,
         };
-        return daysOfWeek[dayString];
+        return daysOfWeek[dayString] ?? -1; // Return -1 if the dayString is invalid
     };
+
+// Function to get the day number
+// const getDayNumber = (dayString: DayOfWeek): number => {
+//     return daysOfWeek[dayString];
+// };
 
 
     // دالة عند اختيار تاريخ جديد
@@ -51,14 +57,27 @@ export default function InstructorsDetals({ params }: Instructors) {
     //   };
 
 
-    const handleSelectDate = (date: Date) => {
-        if (selectedDates.includes(date)) {
-            setSelectedDates(selectedDates.filter((d) => d.getTime() !== date.getTime()));
-        } else if (selectedDates.length < 3) {
-            setSelectedDates([...selectedDates, date]);
-        }
-    };
+const handleSelectDate = (dates: Date[]) => {
+    // Convert dates array to a Set for faster look-up
+    const datesSet = new Set(selectedDates.map(date => date.getTime()));
 
+    const newSelectedDates = dates.reduce<Date[]>((acc, date) => {
+        const dateTime = date.getTime();
+        if (datesSet.has(dateTime)) {
+            // Remove the date if it's already selected
+            return acc.filter(d => d.getTime() !== dateTime);
+        } else if (acc.length < 3) {
+            // Add the date if it's not already selected and under limit
+            acc.push(date);
+        }
+        return acc;
+    }, []);
+
+    setSelectedDates(newSelectedDates);
+};
+
+
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -85,13 +104,16 @@ export default function InstructorsDetals({ params }: Instructors) {
     // بعد جلب بيانات الأيام المتاحة، نعينها كتاريخ فعلي
     useEffect(() => {
         if (instructor && instructor.instructor_durations.length > 0) {
-            const currentMonthDates = [];
+            const currentMonthDates: Date[] = []; 
             const today = new Date();
             const year = today.getFullYear();
             const month = today.getMonth();
 
+                    console.log(currentMonthDates);
+
+                    
             instructor.instructor_durations.forEach((duration) => {
-                const dayOfWeek = getDayOfWeek(duration.day);
+                const dayOfWeek = getDayOfWeek(duration.day) ;
 
                 for (let i = 1; i <= 31; i++) {
                     const date = new Date(year, month, i);
@@ -256,18 +278,18 @@ export default function InstructorsDetals({ params }: Instructors) {
 
                             {instructor.instructor_durations.length > 0 && (
                                 <>
-                                    {instructor.instructor_durations.map((duration) => (
-                                        <span>{duration.day}</span>
+                                    {instructor.instructor_durations.map((duration , index) => (
+                                        <span key={index}>{duration.day}</span>
                                     ))}
                                 </>
                             )}
 
-                                                        <Calendar
+                            {/* <Calendar
                                 mode="multiple"
                                 selected={selectedDates}
                                 onSelect={handleSelectDate}
                                 className="rounded-xl shadow-sm border w-full"
-                            />
+                            /> */}
                             {/* <Calendar
                                 mode="single"
                                 selected={selectedDates}

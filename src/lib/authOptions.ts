@@ -9,6 +9,8 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }),
         CredentialsProvider({
+            id: 'students-login',
+            name: 'Students Login',
             credentials: {
                 email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' },
@@ -54,6 +56,8 @@ export const authOptions: NextAuthOptions = {
             },
         }),
         CredentialsProvider({
+              id: 'instructors-login',
+            name: 'Instructors Login',
             credentials: {
                 email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' },

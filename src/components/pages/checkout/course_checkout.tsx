@@ -4,14 +4,15 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import { fetchOneToken } from '@/app/api/dataFetch';
 import SkeletonCheckoutCourse from '@/components/ui/SkeletonCheckoutCourse';
+import { Course  } from '@/app/api/interfaces';
 
 export default function CheckoutCourse() {
     const searchParams = useSearchParams();
     const session = useSession();
     const id = searchParams.get('id');
-    const token = session?.data?.user?.authToken;
+const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
-    const [course, setcourse] = useState(null);
+    const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
 
 useEffect(() => {
@@ -20,7 +21,7 @@ useEffect(() => {
         setLoading(true);
         try {
             const data = await fetchOneToken('checkout/courses', id, token);
-            setcourse(data);
+            setCourse(data);
         } catch (error) {
             console.error("Error fetching course data:", error);
         } finally {
@@ -58,12 +59,12 @@ useEffect(() => {
                 </div>
                 <div className="flex justify-between items-center w-full">
                     <p>خصم (10%)</p>
-                    <b className="text-[#FE7A36]">-{course.price * 0.1}$</b>
+                    <b className="text-[#FE7A36]">0$</b>
                 </div>
                 <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700 w-full" />
                 <div className="flex justify-between items-center w-full">
                     <p> المبلغ الكلي</p>
-                    <b className="text-[#FE7A36]">{course.price - course.price * 0.1}$</b>
+                    <b className="text-[#FE7A36] font-bold text-2xl">{course.price}$</b>
                 </div>
             </div>
         </div>
