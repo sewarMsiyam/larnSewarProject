@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { TabsContent } from "@/components/ui/tabsProfile"
 import Image from "next/image";
 import { Course } from '@/app/api/interfaces';
 import { fetchAllToken } from '@/app/api/dataFetch';
@@ -15,6 +14,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabsbutton"
+import {  TabsContent } from "@/components/ui/tabsProfile"
+
+
 
 export default function UserCourse() {
     const t = useTranslations('HomePage');
@@ -25,13 +29,17 @@ export default function UserCourse() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [copySuccess, setCopySuccess] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState('course');
 
+    const handleTabChange = (value: string) => {
+        setActiveTab(value);
+    };
 
     useEffect(() => {
         const loadCourses = async () => {
             if (token) {
                 try {
-                    const fetchedCourses = await fetchAllToken('student/student_courses', token);
+                    const fetchedCourses = await fetchAllToken('instructor/instructor_courses', token);
                     if (Array.isArray(fetchedCourses)) {
                         setCourses(fetchedCourses);
                     } else {
@@ -67,17 +75,29 @@ export default function UserCourse() {
         <>
             <TabsContent value="course" className="bg-white rounded-lg p-10 shadow-md">
                 <div className="flex justify-between items-center mb-5">
-                    <h4 className='font-bold text-lg'> الكورسات </h4>
-                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
+                    <div className="flex gap-2">
+                        <h4 className='font-bold text-lg'> كورساتي </h4>
+                        <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
+                    </div>
+                    <div>
+                         <TabsList className='mb-5'>
+                            <TabsTrigger value="create_course" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                                <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
+                                <span>اضافة كورس</span>
+                            </TabsTrigger>
+                        </TabsList>
+                    
+                    </div>
                 </div>
 
                 {courses.map(course => (
                     <div key={course.id} className="flex flex-col lg:flex-row border rounded-lg p-3 mb-4">
                         <img src="/course2.png" alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
                         <div className="p-5 w-full">
-                            <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                                
                                 <h3 className='font-bold text-lg'>{course.name}</h3>
-                                <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
+                                <h3 className='font-bold text-lg'>{course.duration} دقيقة</h3>
                             </div>
 
                             {course.course_durations.length > 0 && (
@@ -112,13 +132,13 @@ export default function UserCourse() {
                             <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                 <p className="flex-none">رابط الزوم</p>
                                 <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
-                                    <Link href={course.zoom_link} target='_blank' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">{course.zoom_link}</Link>
+                                    <Link href='zoommtg://zoom.us/join?confno=8529015944&pwd=8529015944' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden"> zoommtg://zoom.us/join?confno=8529015944&pwd=8529015944</Link>
                                 </div>
                                 <div className="flex-none">
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger>
-                                                <Image src="/profileIcon/copy.svg" alt="zoom" width='30' height='30' onClick={() => copyToClipboard(course.zoom_link)} />
+                                                <Image src="/profileIcon/copy.svg" alt="zoom" width='30' height='30' onClick={() => copyToClipboard('zoommtg://zoom.us/join?confno=8529015944&pwd=8529015944')} />
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p>اضغط لنسخ الرابط</p>
@@ -126,8 +146,12 @@ export default function UserCourse() {
                                         </Tooltip>
                                     </TooltipProvider>
                                 </div>
-
                             </div>
+                            
+
+                                <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
+
+                            
                         </div>
                     </div>
                 ))}

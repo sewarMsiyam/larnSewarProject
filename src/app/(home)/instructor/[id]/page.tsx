@@ -14,6 +14,17 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Calendar } from "@/components/ui/calendar"
+import { Label } from "@/components/ui/label"
+import {Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,} from "@/components/ui/select"
 import Link from 'next/link';
 
 
@@ -42,21 +53,13 @@ export default function InstructorsDetals({ params }: { params: { id: string } }
     };
 
 // Function to get the day number
-// const getDayNumber = (dayString: DayOfWeek): number => {
-//     return daysOfWeek[dayString];
-// };
+const getDayNumber = (dayString: DayOfWeek): number => {
+    return 1 ;
+    // return daysOfWeek[dayString] ;
+};
 
 
     // دالة عند اختيار تاريخ جديد
-    //   const handleSelectDate = (date: Date) => {
-    //     if (selectedDates.includes(date)) {
-    //       setSelectedDates(selectedDates.filter((d) => d.getTime() !== date.getTime()));
-    //     } else if (selectedDates.length < 3) {
-    //       setSelectedDates([...selectedDates, date]);
-    //     }
-    //   };
-
-
 const handleSelectDate = (dates: Date[]) => {
     // Convert dates array to a Set for faster look-up
     const datesSet = new Set(selectedDates.map(date => date.getTime()));
@@ -70,7 +73,7 @@ const handleSelectDate = (dates: Date[]) => {
             // Add the date if it's not already selected and under limit
             acc.push(date);
         }
-        return acc;
+        return acc
     }, []);
 
     setSelectedDates(newSelectedDates);
@@ -218,7 +221,7 @@ const handleSelectDate = (dates: Date[]) => {
                         </div>
                         <div>
                             <h4 className="text-xl font-bold">{instructor.name}</h4>
-                            {/* <p className="text-primary">{instructor.category.name}</p> */}
+                            <p className="text-primary">{instructor.specialist}</p>
                         </div>
                     </div>
                     <div className="hidden md:flex gap-1 items-center ">
@@ -233,6 +236,7 @@ const handleSelectDate = (dates: Date[]) => {
 
             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
                 {instructor.description}
+            </section>
                 {/* <div className="flex items-start gap-3">
                     <img src="/moahelat.svg" alt="" />
                     <div>
@@ -267,13 +271,29 @@ const handleSelectDate = (dates: Date[]) => {
                         </ul>
                     </div>
                 </div> */}
-            </section>
+            
 
 
             <section className="mb-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-10 space-y-10">
-                <div className="flex col-span-1 lg:col-span-2 gap-10">
-                    <div className="col-span-1 w-full">
+                <div className="grid col-span-1 lg:grid-cols-3 gap-5">
+                    <div className="col-span-2">
                         <h3 className="font-bold text-xl mb-3">حدد التاريخ المناسب</h3>
+
+                        <div className="mb-5">
+                            <Label htmlFor="tet"> حدد الكورس</Label>
+                            <Select dir="rtl">
+                            <SelectTrigger className="flex border-none rounded-2xl mt-1 bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                                <SelectValue placeholder="حدد الكورس" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="EN">انجليزي</SelectItem>
+                                <SelectItem value="AR">عربي</SelectItem>
+                                <SelectItem value="SU">علوم</SelectItem>
+                            </SelectContent>
+                            </Select>
+                        </div>
+
+
                         <div className=''>
 
                             {instructor.instructor_durations.length > 0 && (
@@ -284,12 +304,12 @@ const handleSelectDate = (dates: Date[]) => {
                                 </>
                             )}
 
-                            {/* <Calendar
+                             {/* <Calendar
                                 mode="multiple"
                                 selected={selectedDates}
                                 onSelect={handleSelectDate}
                                 className="rounded-xl shadow-sm border w-full"
-                            /> */}
+                            />  */}
                             {/* <Calendar
                                 mode="single"
                                 selected={selectedDates}
@@ -302,22 +322,26 @@ const handleSelectDate = (dates: Date[]) => {
                     <div className="col-span-1">
                         <h3 className="font-bold text-xl mb-3">
                             حدد الوقت المناسب
-                            <span className="text-sm text-[#707070] ps-5">(حدد موعدين على الأكثر)</span>
+                            <span className="text-sm text-[#707070] ps-5">(حدد موعدك المناسب)</span>
                         </h3>
+
                         <div className="grid grid-cols-2 gap-5 mb-5">
                             {times.map((time, index) => (
                                 <div
                                     key={index}
                                     onClick={() => handleSelectTime(time)}
-                                    className={`col-span-1 font-semibold border border-[#F2F2F3] rounded-2xl px-7 py-3 cursor-pointer ${selectedTimes.includes(time)
-                                        ? 'bg-primary text-white'
-                                        : 'hover:bg-[#F2F2F3] hover:border-primary hover:text-primary'
+                                    className={`col-span-1 font-semibold text-sm border border-[#F2F2F3] rounded-2xl p-3 cursor-pointer w-full text-center ${selectedTimes.includes(time)
+                                        ? 'bg-[#F2F2F3] border-primary text-primary'
+                                        : ''
                                         }`}
                                 >
                                     {time}
                                 </div>
                             ))}
                         </div>
+
+
+
 
                         {/* {date && (
                             <h3 className="font-bold mb-3">
@@ -326,21 +350,21 @@ const handleSelectDate = (dates: Date[]) => {
                             </h3>onSelect
                         )} */}
 
-                        {selectedDates.length > 0 && (
+                        {/* {selectedDates.length > 0 && (
                             <div className="mt-4 text-center">
                                 <p className="text-lg font-semibold">Selected Dates:</p>
                                 {selectedDates.map((date, index) => (
                                     <p key={index}>{date.toLocaleDateString()}</p>
                                 ))}
                             </div>
-                        )}
+                        )} */}
 
 
                         <div className="grid grid-cols-2 gap-5 mb-5">
                             {selectedTimes.map((time, index) => (
                                 <div
                                     key={index}
-                                    className="col-span-1 flex gap-2 font-semibold bg-[#F2F2F3] rounded-2xl px-7 py-3"
+                                    className="col-span-1 font-semibold text-sm border w-full text-center flex gap-2 bg-[#F2F2F3] rounded-2xl p-3"
                                 >
                                     <span
                                         onClick={() => handleSelectTime(time)}
@@ -352,12 +376,22 @@ const handleSelectDate = (dates: Date[]) => {
                                 </div>
                             ))}
                         </div>
+                        <div className=" w-full">
+                            <Link href={{ pathname :'/checkout_private' , query: { id: instructor.id }}} className="w-full btn-primary font-medium py-2.5 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">احجز المعلم </Link>
+                        </div>
+
                     </div>
                 </div>
             </section>
 
-                <Link href={{ pathname :'/checkout_private' , query: { id: instructor.id }}} className="btn-primary font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">احجز المعلم </Link>
 
+
+            <div className="flex ju">
+
+             
+                
+
+            </div>
 
         </>
     );

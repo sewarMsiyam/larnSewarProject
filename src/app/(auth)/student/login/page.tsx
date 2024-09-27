@@ -26,11 +26,12 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const result = await signIn('credentials', {
+    const result = await signIn('student-credentials', {
       redirect: false,
       email,
       password,
@@ -56,7 +57,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <Card className='border-0 p-0 m-0 shadow-none'>
           <CardHeader>
-            <CardTitle className="text-2xl">تسجيل الدخول معلم </CardTitle>
+            <CardTitle className="text-2xl">تسجيل الدخول طالب</CardTitle>
             <CardDescription>
               يرجى إدخال معلومات تسجيل الدخول الخاصة بك
             </CardDescription>
@@ -138,7 +139,7 @@ const Login = () => {
 
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
-        <Link href="/Iregister" className="text-primary px-1">
+        <Link href="/register" className="text-primary px-1">
           إنشاء حساب جديد 
         </Link>
       </div>

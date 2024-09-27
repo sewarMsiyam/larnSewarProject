@@ -30,7 +30,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const result = await signIn('credentials', {
+    const result = await signIn('instructor-credentials', {
       redirect: false,
       email,
       password,
@@ -56,7 +56,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <Card className='border-0 p-0 m-0 shadow-none'>
           <CardHeader>
-            <CardTitle className="text-2xl">تسجيل الدخول طالب</CardTitle>
+            <CardTitle className="text-2xl">تسجيل الدخول معلم </CardTitle>
             <CardDescription>
               يرجى إدخال معلومات تسجيل الدخول الخاصة بك
             </CardDescription>
@@ -138,7 +138,7 @@ const Login = () => {
 
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
-        <Link href="/register" className="text-primary px-1">
+        <Link href="/instructor/register" className="text-primary px-1">
           إنشاء حساب جديد 
         </Link>
       </div>

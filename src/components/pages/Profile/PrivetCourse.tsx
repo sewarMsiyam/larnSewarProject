@@ -7,12 +7,9 @@ export default function PrivetCourse() {
     const t = useTranslations('HomePage');
     return (
         <>
-
-                        <TabsContent value="privetCourse">
-                            university
-                        </TabsContent>
-            
-
+            <TabsContent value="privetCourse">
+                privet Course 
+            </TabsContent>
         </>
     );
 }

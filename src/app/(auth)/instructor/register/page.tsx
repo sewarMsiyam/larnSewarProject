@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,11 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import GoogleSignInButton from "@/components/auth/childLogin";
+import { fetchAll } from '@/app/api/dataFetch';
+import { Categories } from '@/app/api/interfaces';
+
 
 // Define the type for form data
 interface FormData {
-  firstName: string;
-  lastName: string;
+  name?: string;
+  category_id: string;
   phone: string;
   phone_code: string;
   email: string;
@@ -31,8 +34,8 @@ interface FormData {
 
 // Define the type for form errors
 interface FormErrors {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
+  category_id?: string;
   phone?: string;
   phone_code?: string;
   email?: string;
@@ -42,14 +45,15 @@ interface FormErrors {
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+    name: "",
+    category_id: "",
     phone: "",
     phone_code: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -75,15 +79,14 @@ export default function RegisterForm() {
     let isValid = true;
     const newErrors: FormErrors = {};
 
-    // Validate firstName
-    if (!formData.firstName) {
-      newErrors.firstName = "الاسم الأول مطلوب ويجب أن يكون نصًا.";
+    // Validate name
+    if (!formData.name) {
+      newErrors.name = "الاسم الأول مطلوب ويجب أن يكون نصًا.";
       isValid = false;
     }
 
-    // Validate lastName
-    if (!formData.lastName) {
-      newErrors.lastName = "اسم العائلة مطلوب ويجب أن يكون نصًا.";
+    // Validate name
+    if (!formData.category_id) {
       isValid = false;
     }
 
@@ -137,8 +140,8 @@ export default function RegisterForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
+          name: formData.name,
+          category_id: formData.category_id,
           phone: formData.phone,
           phone_code: formData.phone_code,
           email: formData.email,
@@ -172,32 +175,36 @@ export default function RegisterForm() {
             مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!
           </CardDescription>
         </CardHeader>
-        <CardContent className='p-0'>
+        <CardContent className='pt-5'>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <Label htmlFor="firstName">اسم الطالب</Label>
+                <Label htmlFor="name">الاسم </Label>
                 <Input
-                  id="firstName"
-                  value={formData.firstName}
+                  id="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.lastName ? 'border-red-500' : ''}`}
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name ? 'border-red-500' : ''}`}
                   required
                 />
-                {errors.firstName && <p className="text-red-600 text-sm">{errors.firstName}</p>}
+                {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
               </div>
+
+
+
               <div className="space-y-3">
-                <Label htmlFor="lastName">اسم العائلة </Label>
+                <Label htmlFor="category_id">category_id </Label>
                 <Input
-                  id="lastName"
-                  value={formData.lastName}
+                  id="category_id"
+                  value={formData.category_id}
                   onChange={handleChange}
-                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.lastName ? 'border-red-500' : ''}`}
+                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.category_id ? 'border-red-500' : ''}`}
                   required
                 />
-                {errors.lastName && <p className="text-red-600 text-sm">{errors.lastName}</p>}
+                {errors.category_id && <p className="text-red-600 text-sm">{errors.category_id}</p>}
               </div>
-            </div>
+
+
+
             <div className="space-y-3">
               <Label htmlFor="phone">رقم الهاتف</Label>
               <div className="flex gap-3">

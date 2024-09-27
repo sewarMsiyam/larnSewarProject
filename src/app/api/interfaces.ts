@@ -22,7 +22,7 @@ export interface Course {
         from_time: string;
         to_time: string;
     }>;
-    zoomLink: string;
+    zoom_link: string;
 
 }
 
@@ -37,27 +37,42 @@ export interface Review {
 
 
 export interface Instructors{
-    slug:string;
     id: number;
     name: string;
     image: string;
     description: string;
-    skills: string[];
     specialist: string;
-
+    skills: string[];
     instructor_durations: Array<{
         id: number;
         day: string;
         from_time: string;
         to_time: string;
     }>;
-    courses : Array<{ 
+    courses: Array<{
         id: number;
         name: string;
         description: string;
+        instructor_name: string;
+        instructor_image: string;
+        lessons_number: string;
+        duration: string;
+        price: string;
         image: string;
-     }>;
-    
+        zoom_link: string;
+    }>;
 
 }
+export interface InstructorDuration{
+        id: number;
+        day: string;
+        from_time: string;
+        to_time: string;
+}
 
+
+
+export interface Categories{
+    id: number;
+    name: string;
+}

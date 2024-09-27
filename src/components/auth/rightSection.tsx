@@ -14,7 +14,7 @@ const RightSection = () => {
                     لا تفوت فرصة تطوير مهاراتك وتحقيق طموحاتك! انضم الآن إلى منصتنا التعليمية وابدأ رحلة التعلم نحو مستقبل أفضل!
                 </p>
                    <Link
-                        href="/login"
+                        href="/student/login"
                         className='text-white border-2 border-white rounded-2xl font-medium py-2 px-5 flex mb-4'>
                          الدخول ك طالب
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
@@ -29,7 +29,7 @@ const RightSection = () => {
                         </svg>
                     </Link>
                     <Link
-                        href="/ILogin"
+                        href="/instructor/login"
                         className='text-white border-2 border-white rounded-2xl font-medium py-2 px-5 flex'>
                      الدخول ك معلم
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">

@@ -285,7 +285,6 @@ export async function updateProfile(endpoint: string, token?: string, data?: any
       body: JSON.stringify(data),
       timeout: 8000,
     });
-  console.log('الداتا المرسلة للتعديل:', JSON.stringify(data));
 
     const result = await response.json();
     console.log('Server response:', result);
@@ -329,4 +328,32 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
     return null;
 }
 
+}
+
+
+export async function CreateCourseFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      method: 'POST',
+      headers: {
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: data,
+      timeout: 8000,
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
+    }
+    if (result.status === 200 && result.item) {
+      return result;
+    } else {
+      throw new Error(result.message || 'Failed to update profile');
+    }
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    throw error; 
+  }
 }
