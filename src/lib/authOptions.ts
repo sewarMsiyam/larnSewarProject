@@ -92,10 +92,12 @@ export const authOptions: NextAuthOptions = {
     createCredentialsProvider('instructor'),
   ],
   pages: {
-    signIn: ({ userType }: SignInContext): string => {
-      return userType === 'instructor' ? '/instructor/login' : '/student/login';
-    },
+    signIn: '/student/login'
+    // signIn: ({ userType }: SignInContext) => {
+    //   return userType === 'instructor' ? '/instructor/login' : '';
+    // },
   },
+
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 1 day
@@ -119,6 +121,22 @@ export const authOptions: NextAuthOptions = {
         userType: token.userType,
       };
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // If it's the sign-in page, we can't determine the user type yet
+      if (url.startsWith('/student/login')) {
+        return url;
+      }
+      // For other pages, if it's a relative URL, we prepend the base URL
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+      // If it's already an absolute URL within the same site, we allow it
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      // Default: redirect to the base URL
+      return baseUrl;
     },
   },
 };

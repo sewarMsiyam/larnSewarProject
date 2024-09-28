@@ -24,7 +24,6 @@ import { Categories } from '@/app/api/interfaces';
 // Define the type for form data
 interface FormData {
   name?: string;
-  category_id: string;
   phone: string;
   phone_code: string;
   email: string;
@@ -35,7 +34,6 @@ interface FormData {
 // Define the type for form errors
 interface FormErrors {
   name?: string;
-  category_id?: string;
   phone?: string;
   phone_code?: string;
   email?: string;
@@ -46,7 +44,6 @@ interface FormErrors {
 export default function RegisterForm() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
-    category_id: "",
     phone: "",
     phone_code: "",
     email: "",
@@ -82,11 +79,6 @@ export default function RegisterForm() {
     // Validate name
     if (!formData.name) {
       newErrors.name = "الاسم الأول مطلوب ويجب أن يكون نصًا.";
-      isValid = false;
-    }
-
-    // Validate name
-    if (!formData.category_id) {
       isValid = false;
     }
 
@@ -141,7 +133,6 @@ export default function RegisterForm() {
         },
         body: JSON.stringify({
           name: formData.name,
-          category_id: formData.category_id,
           phone: formData.phone,
           phone_code: formData.phone_code,
           email: formData.email,
@@ -157,7 +148,7 @@ export default function RegisterForm() {
       } else {
         toast.success("تم إنشاء الحساب بنجاح!");
         setTimeout(() => {
-          router.push('/login');
+          router.push('/instructor/login');
         }, 1000);
       }
     } catch (error) {
@@ -189,19 +180,6 @@ export default function RegisterForm() {
                 {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
               </div>
 
-
-
-              <div className="space-y-3">
-                <Label htmlFor="category_id">category_id </Label>
-                <Input
-                  id="category_id"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                  className={`border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.category_id ? 'border-red-500' : ''}`}
-                  required
-                />
-                {errors.category_id && <p className="text-red-600 text-sm">{errors.category_id}</p>}
-              </div>
 
 
 
@@ -299,7 +277,7 @@ export default function RegisterForm() {
           <GoogleSignInButton />
           <div className="mt-4 text-center text-sm text-gray-600">
             لديك حساب بالفعل؟{" "}
-            <Link href="/ILogin" className="text-primary hover:underline"> تسجيل الدخول </Link>
+            <Link href="/instructor/login" className="text-primary hover:underline"> تسجيل الدخول </Link>
           </div>
         </CardContent>
       </Card>

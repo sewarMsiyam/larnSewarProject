@@ -26,11 +26,11 @@ export default function ProfileIndex() {
 
     return (
         <>
-            <section className="lg:container">
+            <section className="lg:container  mb-20">
                 <div className="flex flex-col justify-center items-center space-y-10 -mt-10">                
                     <ImgUser />
 
-                    <Tabs defaultValue="course" dir="rtl" className='w-full'>
+                    <Tabs defaultValue="course" dir="rtl" className='w-full mb-10'>
                         <TabsList className='mb-5'>
                             <TabsTrigger value="course">
                                 <Image src="/profileIcon/course.svg" alt='الكورسات' width="30" height="30" />

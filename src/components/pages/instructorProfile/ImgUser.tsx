@@ -1,4 +1,5 @@
 "use client";
+
 import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import { Input } from '@/components/ui/input';
@@ -7,52 +8,66 @@ import { useState, useRef } from 'react';
 import { updateProfile } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 
+interface FormData {
+    first_name: string;
+    last_name: string;
+    photo: string | null;
+}
+
+interface UpdateProfileResponse {
+    status: number;
+    item?: {
+        photo?: string;
+    };
+}
+
 export default function ImgUser() {
     const t = useTranslations('HomePage');
     const session = useSession();
     const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         first_name: '',
         last_name: '',
-        photo: null as File | null,
+        photo: null,
     });
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            photo: file ? URL.createObjectURL(file) : null,
-        }));
-
-        // Ask for confirmation to save the image
         if (file) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                photo: URL.createObjectURL(file),
+            }));
+
             const confirmed = window.confirm('هل أنت متأكد من حفظ الصورة؟');
             if (confirmed) {
-                handleSubmit();
+                handleSubmit(file);
             }
         }
     };
 
     const handleAvatarClick = () => {
-        fileInputRef.current?.click(); // Trigger the file input when avatar is clicked
+        fileInputRef.current?.click();
     };
 
-    const handleSubmit = async () => {
-        const data = { 
-            name: formData.name, 
-            photo: formData.photo 
-        };
+    const handleSubmit = async (file: File) => {
+        const data = new FormData();
+        data.append('photo', file);
 
         try {
-            const response = await updateProfile('instructor/update', token as string, data);
+            if (!token) {
+                throw new Error('No authentication token available');
+            }
+
+            const response = await updateProfile('instructor/update', token, data) as UpdateProfileResponse;
+
             if (response && response.status === 200 && response.item) {
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    name: response.item.name || prevFormData.name,
-                    photo: response.item.photo || prevFormData.photo,
+                    photo: prevFormData.photo,
                 }));
             } else {
                 console.error('Unexpected server response:', response);
@@ -74,9 +89,9 @@ export default function ImgUser() {
                     src={formData.photo || ''}
                     alt="User Image"
                     className="shadow rounded-full cursor-pointer"
-                    onClick={handleAvatarClick} // Open file picker on avatar click
+                    onClick={handleAvatarClick}
                 />
-                <AvatarFallback>{formData.name}</AvatarFallback>
+                <AvatarFallback>س</AvatarFallback>
             </Avatar>
 
             <div className="mb-4">
@@ -84,8 +99,9 @@ export default function ImgUser() {
                 <Input
                     type="file"
                     id="photo"
-                    ref={fileInputRef} // Attach the ref to the input
+                    ref={fileInputRef}
                     onChange={handleFileChange}
+                    accept="image/*"
                 />
             </div>
         </>

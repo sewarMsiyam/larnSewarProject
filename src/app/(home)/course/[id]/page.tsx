@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 
 interface DetailCourseProps {
   params: {
-    id: string;
+    id: number;
   };
 }
 
@@ -40,7 +40,7 @@ const handleClick = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchOne(endpoint, params.id);
+        const data = await fetchOne(endpoint, params.id.toString());
         if (data) {
           setCourse(data);
         } else {

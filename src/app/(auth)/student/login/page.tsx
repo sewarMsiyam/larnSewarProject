@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { signIn } from  'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -47,7 +49,7 @@ const Login = () => {
     } else {
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
       setTimeout(() => {
-        window.location.href = '/';
+        router.push('/');
       }, 1000); 
     }
   };
@@ -139,7 +141,7 @@ const Login = () => {
 
       <div className="mt-4 text-center text-sm">
         ليس لديك حساب ؟  
-        <Link href="/register" className="text-primary px-1">
+        <Link href="/student/register" className="text-primary px-1">
           إنشاء حساب جديد 
         </Link>
       </div>

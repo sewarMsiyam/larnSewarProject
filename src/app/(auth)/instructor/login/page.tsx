@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { signIn } from  'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -46,7 +48,7 @@ const Login = () => {
     } else {
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
       setTimeout(() => {
-        window.location.href = '/';
+        router.push('/instructor/profile');
       }, 1000); 
     }
   };

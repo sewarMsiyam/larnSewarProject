@@ -93,7 +93,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     return (
         <>
-            <section className="lg:container">
+            <section className="lg:container mb-20">
                 <div className="flex flex-col justify-center items-center space-y-10 -mt-10">                
                     {/* <Avatar>
                         <AvatarImage

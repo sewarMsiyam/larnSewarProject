@@ -105,7 +105,7 @@ export default function Opinions() {
                                 <div className="flex gap-3">
                                     <Avatar>
                                         {review.customer_img ? (
-                                            <AvatarImage src={`https://sewaar.net/${review.customer_img}`} />
+                                            <AvatarImage src={review.customer_img} />
                                         ) : (
                                             <AvatarFallback>{review.customer_name.charAt(0)}</AvatarFallback>
                                         )}

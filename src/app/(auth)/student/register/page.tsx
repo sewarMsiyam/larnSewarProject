@@ -292,7 +292,7 @@ export default function RegisterForm() {
           <GoogleSignInButton />
           <div className="mt-4 text-center text-sm text-gray-600">
             لديك حساب بالفعل؟{" "}
-            <Link href="/login" className="text-primary hover:underline"> تسجيل الدخول </Link>
+            <Link href="/student/login" className="text-primary hover:underline"> تسجيل الدخول </Link>
           </div>
         </CardContent>
       </Card>

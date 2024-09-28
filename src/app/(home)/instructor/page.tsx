@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import Breadcrumb from "@/components/ui/breadcrumbHome"
 import TitleSection from '@/components/title';
 import ContactUs from '@/components/home/body/ContactUs';
-import InstructorsList from '@/components/pages/Instructors';
+import InstructorsList from '@/components/pages/instructor/Instructors';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+
 export default function CreateCourse() {
     const t = useTranslations("HomePage");
     const { data: session } = useSession();
@@ -33,7 +34,9 @@ export default function CreateCourse() {
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { id, value, type, checked } = e.target;
+        const { id, value, type } = e.target;
+        const checked = (e.target as HTMLInputElement).checked;
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             [id]: type === "checkbox" ? checked : value,
