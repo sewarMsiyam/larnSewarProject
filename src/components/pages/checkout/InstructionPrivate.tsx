@@ -5,17 +5,19 @@ import { useSession } from "next-auth/react";
 import { fetchOneToken } from '@/app/api/dataFetch';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import SkeletonInstructor from "@/components/ui/SkeletonInstructor";
-import { Instructors  } from '@/app/api/interfaces';
+import { Instructors } from '@/app/api/interfaces';
 
 export default function InstructionPrivate() {
     const session = useSession();
-const token = (session?.data?.user as { authToken?: string | null })?.authToken;
+    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
+    const date = searchParams.get('date');
+    const time = searchParams.get('time');
 
 
-    const [instruction, setInstruction] = useState<Instructors |null>(null);
+    const [instruction, setInstruction] = useState<Instructors | null>(null);
     const [loading, setLoading] = useState(true);
 
 
@@ -32,21 +34,18 @@ const token = (session?.data?.user as { authToken?: string | null })?.authToken;
                 setLoading(false);
             }
         };
-
         fetchInstruction();
     }, []);
 
     if (loading) {
-        return  <SkeletonInstructor />;
+        return <SkeletonInstructor />;
     }
 
     if (!instruction) {
         return <div>instruction data not available</div>;
     }
 
-
     return (
-
         <div className="bg-white p-10 rounded-2xl shadow-md flex flex-col items-center justify-center space-y-4">
             <Avatar>
                 <AvatarImage src={instruction.image} alt="name" className="rounded-full" />
@@ -61,8 +60,8 @@ const token = (session?.data?.user as { authToken?: string | null })?.authToken;
                     <p>الوقت:</p>
                 </div>
                 <div>
-                    <p className="text-primary">11 سبتمبر 2024</p>
-                    <p className="text-primary">11 سبتمبر 2024</p>
+                    <p className="text-primary">{date}</p>
+                    <p className="text-primary">{time}</p>
                 </div>
             </div>
 

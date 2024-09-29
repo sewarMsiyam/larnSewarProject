@@ -1,109 +1,130 @@
 "use client";
-
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useState, useRef } from 'react';
-import { updateProfile } from '@/app/api/dataFetch';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg"
+import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
-
-interface FormData {
-    first_name: string;
-    last_name: string;
-    photo: string | null;
-}
-
-interface UpdateProfileResponse {
-    status: number;
-    item?: {
-        photo?: string;
-    };
-}
 
 export default function ImgUser() {
     const t = useTranslations('HomePage');
     const session = useSession();
     const token = (session?.data?.user as { authToken?: string | null })?.authToken;
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
-        photo: null,
+        email: '',
+        phone: '',
+        phone_code: '',
+        image: '',
     });
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [tempImage, setTempImage] = useState<string | null>(null);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        if (file) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                photo: URL.createObjectURL(file),
-            }));
+    const loadProfileData = useCallback(async () => {
+        if (!token) return;
 
-            const confirmed = window.confirm('هل أنت متأكد من حفظ الصورة؟');
-            if (confirmed) {
-                handleSubmit(file);
+        try {
+            const profileData = await fetchProfileData('student/student_details', token);
+            if (profileData && profileData.item) {
+                setFormData({
+                    first_name: profileData.item.first_name || '',
+                    last_name: profileData.item.last_name || '',
+                    email: profileData.item.email || '',
+                    phone: profileData.item.phone || '',
+                    phone_code: profileData.item.phone_code || '',
+                    image: profileData.item.image || '',
+                });
             }
+        } catch (error) {
+            console.error('Failed to load profile data:', error);
+            console.log('فشل في تحميل بيانات الملف الشخصي');
+        }
+    }, [token]);
+
+    useEffect(() => {
+        loadProfileData();
+    }, [loadProfileData]);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setTempImage(imageUrl);
+
+            console.log('sewar imageUrl ' + imageUrl);
+
+            setTimeout(() => {
+                const confirmed = window.confirm('هل أنت متأكد من حفظ الصورة؟');
+                if (confirmed) {
+                    console.log('sewar file' + file);
+                    uploadImage(file);
+                } else {
+                    setTempImage(null);
+                }
+            }, 100);
         }
     };
 
-    const handleAvatarClick = () => {
-        fileInputRef.current?.click();
-    };
-
-    const handleSubmit = async (file: File) => {
-        const data = new FormData();
-        data.append('photo', file);
-
+    const uploadImage = async (file: File) => {
+        const formData = new FormData();
+        formData.append('image', file);
         try {
             if (!token) {
                 throw new Error('No authentication token available');
             }
 
-            const response = await updateProfile('instructor/update', token, data) as UpdateProfileResponse;
+            console.log('Uploading image...');
 
-            if (response && response.status === 200 && response.item) {
+            const response = await updateProfile('student/update', token, formData);
+
+            console.log('Server response:', response);
+
+            if (response && response.status === 200 && response.item && response.item.image) {
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    photo: prevFormData.photo,
+                    image: response.item.image,
                 }));
+                setTempImage(null);
+                console.log('تم تحديث الصورة بنجاح');
             } else {
                 console.error('Unexpected server response:', response);
+                console.log('فشل تحديث الصورة: استجابة غير متوقعة من الخادم');
+                setTempImage(null);
             }
         } catch (error) {
-            console.error('Error updating profile:', error);
-            if (error instanceof Error) {
-                console.error(`An error occurred while updating the profile: ${error.message}`);
-            } else {
-                console.error('An unknown error occurred while updating the profile. Please try again.');
-            }
+            console.error('Error updating profile image:', error);
+            console.log('حدث خطأ أثناء تحديث الصورة');
+            setTempImage(null);
+        }
+    };
+
+    const handleAvatarClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
         }
     };
 
     return (
         <>
-            <Avatar>
+            <Avatar onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
                 <AvatarImage
-                    src={formData.photo || ''}
+                    src={tempImage || formData.image || ''}
                     alt="User Image"
                     className="shadow rounded-full cursor-pointer"
-                    onClick={handleAvatarClick}
                 />
-                <AvatarFallback>س</AvatarFallback>
+                <AvatarFallback>{formData.first_name.charAt(0)}</AvatarFallback>
             </Avatar>
 
-            <div className="mb-4">
-                <Label className="block text-sm font-medium text-gray-700">Image</Label>
-                <Input
-                    type="file"
-                    id="photo"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept="image/*"
-                />
-            </div>
+            <input
+                type="file"
+                id="photo"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+            // style={{ display: 'none' }}
+            />
         </>
     );
 }

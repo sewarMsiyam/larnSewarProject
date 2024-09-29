@@ -52,7 +52,6 @@ export default function InstructorsDetals({ params }: { params: { id: number } }
 
 
             <DetailsInstructors id={params.id} />
-        
 
         </>
     );

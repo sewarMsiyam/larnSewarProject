@@ -7,19 +7,19 @@ import { fetchOne } from '@/app/api/dataFetch';
 import { Instructors } from '@/app/api/interfaces';
 import { Skeleton } from "@/components/ui/skeleton"
 import BookPrivate from '@/components/pages/instructor/BookPrivate';
+import CourseInstrctor from '@/components/pages/instructor/CourseInstrctor';
+import Opinions from '@/components/home/body/Opinions';
 
 interface DetailsInstructorsProps {
     id: number;
 }
 
-export default function  DetailsInstructors({ id }: DetailsInstructorsProps) {
+export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
 
     const [instructor, setInstructor] = useState<Instructors | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const endpoint = 'instructors';
-
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,34 +42,34 @@ export default function  DetailsInstructors({ id }: DetailsInstructorsProps) {
         fetchData();
     }, [id]);
 
- 
+
 
     if (loading) {
-        return (           
+        return (
             <>
-             <section className="container bg-gridColor lg:h-[229.52px] rounded-xl p-10 flex items-end">
-                <div className="flex flex-col md:flex-row justify-between items-center w-full relative -mb-16">
-                    <div className="flex gap-5 items-center">
-                        <div>
-                            <Avatar>
-                                <AvatarImage
-                                    src=''
-                                    alt="Teacher Image"
-                                    className="shadow rounded-full"
-                                />
-                                <AvatarFallback></AvatarFallback>
-                            </Avatar>
-                        </div>
-                        <div>
-                           <Skeleton className="w-24 h-5 mb-2" />
-                            <Skeleton className="w-14 h-5" />
+                <section className="container bg-gridColor lg:h-[229.52px] rounded-xl p-10 flex items-end">
+                    <div className="flex flex-col md:flex-row justify-between items-center w-full relative -mb-16">
+                        <div className="flex gap-5 items-center">
+                            <div>
+                                <Avatar>
+                                    <AvatarImage
+                                        src=''
+                                        alt="Teacher Image"
+                                        className="shadow rounded-full"
+                                    />
+                                    <AvatarFallback></AvatarFallback>
+                                </Avatar>
+                            </div>
+                            <div>
+                                <Skeleton className="w-24 h-5 mb-2" />
+                                <Skeleton className="w-14 h-5" />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
-                <Skeleton className="w-full h-24 mb-2" />
-            </section> 
+                </section>
+                <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
+                    <Skeleton className="w-full h-24 mb-2" />
+                </section>
             </>
         );
     }
@@ -116,7 +116,7 @@ export default function  DetailsInstructors({ id }: DetailsInstructorsProps) {
             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
                 {instructor.description}
 
-                  {/* <div className="flex items-start gap-3">
+                {/* <div className="flex items-start gap-3">
                     <img src="/moahelat.svg" alt="" />
                     <div>
                         <h4 className="font-bold">المؤهلات:</h4>
@@ -150,15 +150,19 @@ export default function  DetailsInstructors({ id }: DetailsInstructorsProps) {
                         </ul>
                     </div>
                 </div>  */}
-            </section> 
+            </section>
 
             <section className="mb-12 lg:container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 py-10 lg:p-10 space-y-10">
-                <BookPrivate id={instructor.id}  />
+                <BookPrivate id={instructor.id} />
             </section>
 
 
-            <section className="mb-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-10 space-y-10">
-                sewar
+            <section className="mb-8 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-10 space-y-10">
+                <CourseInstrctor id={instructor.id} />
+            </section>
+
+            <section className="mb-28">
+                <Opinions />
             </section>
 
         </>

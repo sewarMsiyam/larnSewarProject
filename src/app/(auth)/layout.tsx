@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
                 <HeaderAuth session={session} />
                 <div className="flex flex-row items-center justify-center flex-grow">
-                  <div className='flex justify-center'>
+                  <div className='flex flex-col lg:flex-row justify-center'>
                     <RightSection />
 
                     <div className='bg-white w-fall lg:basis-2/4'>

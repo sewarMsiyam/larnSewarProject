@@ -72,7 +72,7 @@ export interface InstructorDuration{
 
 
 
-export interface Categories{
+export interface specializations{
     id: number;
     name: string;
 }

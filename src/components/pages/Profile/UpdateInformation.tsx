@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback  } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabsProfile";
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,7 @@ export default function UpdateInformation() {
         email: '',
         phone: '',
         phone_code: '',
-        photo: '',
+        image: '',
     });
 
     const loadProfileData = useCallback(async () => {
@@ -31,13 +31,13 @@ export default function UpdateInformation() {
             const profileData = await fetchProfileData('student/student_details', token);
             if (profileData && profileData.item) {
                 setFormData({
-                first_name: profileData.item.first_name || '',
-                last_name: profileData.item.last_name || '',
-                email: profileData.item.email || '',
-                phone: profileData.item.phone || '',
-                phone_code: profileData.item.phone_code || '',
-                photo: profileData.item.photo || '',
-            });
+                    first_name: profileData.item.first_name || '',
+                    last_name: profileData.item.last_name || '',
+                    email: profileData.item.email || '',
+                    phone: profileData.item.phone || '',
+                    phone_code: profileData.item.phone_code || '',
+                    image: profileData.item.image || '',
+                });
             }
         } catch (error) {
             console.error('Failed to load profile data:', error);
@@ -56,40 +56,40 @@ export default function UpdateInformation() {
         }));
     };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const data = { 
-        first_name: formData.first_name, 
-        last_name: formData.last_name, 
-        photo: formData.photo 
+        const data = {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            image: formData.image
+        };
+        try {
+            const response = await updateProfile('student/update', token as string, data);
+            if (response && response.status === 200 && response.item) {
+
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    first_name: response.item.first_name || prevFormData.first_name,
+                    last_name: response.item.last_name || prevFormData.last_name,
+                    image: response.item.image || prevFormData.image,
+                }));
+                toast.success('تم تحديث البيانات سجل دخول مرة اخرى', {
+                    autoClose: 1500,
+                });
+            } else {
+                console.error('Unexpected server response:', response);
+                toast.error('فشل تعديل البيانات!');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            if (error instanceof Error) {
+                console.error(`An error occurred while updating the profile: ${error.message}`);
+            } else {
+                console.error('An unknown error occurred while updating the profile. Please try again.');
+            }
+        }
     };
-    try {
-        const response = await updateProfile('student/update', token as string, data);
-        if (response && response.status === 200 && response.item) {
- 
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                first_name: response.item.first_name || prevFormData.first_name,
-                last_name: response.item.last_name || prevFormData.last_name,
-                photo: response.item.photo || prevFormData.photo,
-            }));
-            toast.success('تم تحديث البيانات سجل دخول مرة اخرى', {
-                autoClose: 1500,
-            });
-        } else {
-            console.error('Unexpected server response:', response);
-            toast.error('فشل تعديل البيانات!');
-        }
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        if (error instanceof Error) {
-            console.error(`An error occurred while updating the profile: ${error.message}`);
-        } else {
-            console.error('An unknown error occurred while updating the profile. Please try again.');
-        }
-    }
-};
 
     return (
         <TabsContent value="setting" className="bg-white rounded-xl p-5 lg:p-10">
@@ -146,7 +146,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                                 type="number"
                                 placeholder="056"
                                 value={formData.phone_code}
-                                readOnly 
+                                readOnly
                                 className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-not-allowed"
                             />
                         </div>

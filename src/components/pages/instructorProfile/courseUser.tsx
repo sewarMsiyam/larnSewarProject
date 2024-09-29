@@ -92,7 +92,7 @@ export default function UserCourse() {
 
                 {courses.map(course => (
                     <div key={course.id} className="flex flex-col lg:flex-row border rounded-lg p-3 mb-4">
-                        <img src="/course2.png" alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
+                        <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
                         <div className="p-5 w-full">
                             <div className="flex items-center">
                                 
