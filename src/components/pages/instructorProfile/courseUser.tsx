@@ -60,7 +60,7 @@ export default function UserCourse() {
     const alertDialogTriggerRef = useRef(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
-
+    const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
     const handleTabChange = (value: string) => {
         setActiveTab(value);
@@ -104,9 +104,8 @@ export default function UserCourse() {
         if (alertDialogTriggerRef.current) {
             (alertDialogTriggerRef.current as HTMLButtonElement).click();
         }
+        setIsAlertDialogOpen(true);
     };
-
-
 
 
     const deleteCourse = async (courseId: number) => {
@@ -114,24 +113,21 @@ export default function UserCourse() {
         try {
             const result = await deleteOneToken('instructor/courses', courseId, token as string);
             if (result) {
-                console.log('تم حذف الكورس بنجاح');
                 toast.success('تم حذف الكورس بنجاح');
                 setCourses(prevCourses => prevCourses.filter(course => course.id !== Number(courseId)));
+                setCourseToDelete(null);
+                setIsDeleting(false)
+                setIsAlertDialogOpen(false)
             } else {
-                console.error('فشل في حذف الكورس');
                 toast.error('فشل في حذف الكورس');
             }
         } catch (error) {
-            console.error('خطأ أثناء حذف الكورس:', error);
             toast.error('حدث خطأ أثناء محاولة حذف الكورس');
         } finally {
             setIsDeleting(false);
             setCourseToDelete(null);
         }
     };
-
-
-
 
     if (loading) return
     <TabsContent value="course" className="bg-white rounded-lg p-10 shadow-md">
@@ -197,18 +193,6 @@ export default function UserCourse() {
                                     </>
                                 )}
 
-
-                                {/* <div className="p-4 px-10 bg-[#F9F9F9] shadow-sm rounded-xl flex justify-around items-center font-bold w-fit">
-                                <div>
-                                    <p>التاريخ:</p>
-                                    <p>الوقت:</p>
-                                </div>
-                                <div>
-                                    <p className="text-primary">{course.date}</p>
-                                    <p className="text-primary">{course.time}</p>
-                                </div>
-                            </div> */}
-
                                 <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                     <p className="flex-none">رابط الزوم</p>
                                     <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
@@ -233,37 +217,6 @@ export default function UserCourse() {
 
 
                             <div className="relative">
-                                {/* <Menubar>
-                                <MenubarMenu>
-                                    <MenubarTrigger>
-                                        <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M25.1482 13.6628C25.1482 20.0869 19.9266 25.3086 13.5024 25.3086C7.07823 25.3086 1.85657 20.0869 1.85657 13.6628C1.85657 7.23859 7.07823 2.01693 13.5024 2.01693C19.9266 2.01693 25.1482 7.23859 25.1482 13.6628ZM3.48157 13.6628C3.48157 19.1878 7.9774 23.6836 13.5024 23.6836C19.0274 23.6836 23.5232 19.1878 23.5232 13.6628C23.5232 8.13776 19.0274 3.64193 13.5024 3.64193C7.9774 3.64193 3.48157 8.13776 3.48157 13.6628Z" fill="black" fillOpacity="0.4" />
-                                            <path d="M14.5857 13.6628C14.5857 14.2694 14.0982 14.7461 13.5024 14.7461C12.9066 14.7461 12.4191 14.2586 12.4191 13.6628C12.4191 13.0669 12.9066 12.5794 13.5024 12.5794C14.0982 12.5794 14.5857 13.0561 14.5857 13.6628Z" fill="black" fillOpacity="0.4" />
-                                            <path d="M14.5857 9.32975C14.5857 9.93642 14.0982 10.4131 13.5024 10.4131C12.9066 10.4131 12.4191 9.92559 12.4191 9.32975C12.4191 8.73392 12.9066 8.24642 13.5024 8.24642C14.0982 8.24642 14.5857 8.72309 14.5857 9.32975Z" fill="black" fillOpacity="0.4" />
-                                            <path d="M14.5857 17.9967C14.5857 18.6034 14.0982 19.0801 13.5024 19.0801C12.9066 19.0801 12.4191 18.5926 12.4191 17.9967C12.4191 17.4009 12.9066 16.9134 13.5024 16.9134C14.0982 16.9134 14.5857 17.3901 14.5857 17.9967Z" fill="black" fillOpacity="0.4" />
-                                        </svg>
-                                    </MenubarTrigger>
-                                    <MenubarContent>
-                                        <MenubarItem>
-                                            <Link href={`/course/update_course/${course.id}`} className="flex gap-2 w-full text-center">
-                                                تعديل
-                                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8.15693 3.41217L12.9651 8.22059L6.37061 14.8237C6.06413 15.13 5.67053 15.334 5.24366 15.4081L1.28696 16.0676C1.23999 16.0745 1.19252 16.0773 1.14506 16.0759C0.9223 16.0734 0.709419 15.9835 0.552372 15.8254C0.457339 15.7305 0.385934 15.6145 0.343888 15.4869C0.301842 15.3593 0.290349 15.2238 0.310313 15.0909L0.969747 11.134C1.04394 10.7072 1.248 10.3135 1.55408 10.007L8.15693 3.41217ZM15.1605 1.21656C14.8457 0.899138 14.4712 0.647244 14.0586 0.475309C13.646 0.303375 13.2034 0.214844 12.7564 0.214844C12.3094 0.214844 11.8668 0.303375 11.4542 0.475309C11.0416 0.647244 10.6671 0.899138 10.3523 1.21656L9.34231 2.22662L14.1505 7.03504L15.1605 6.02498C15.4779 5.7102 15.7298 5.33563 15.9018 4.92299C16.0737 4.51035 16.1622 4.0679 16.1622 3.62087C16.1622 3.17384 16.0737 2.73118 15.9018 2.31854C15.7298 1.9059 15.4779 1.53133 15.1605 1.21656Z" fill="black" fillOpacity="0.4" />
-                                                </svg>
-                                            </Link>
-                                        </MenubarItem>
-                                        <MenubarItem>
-                                            
-                                        </MenubarItem>
-                                        <MenubarSeparator />
-                                        <MenubarItem>Share</MenubarItem>
-                                        <MenubarSeparator />
-                                        <MenubarItem>Print</MenubarItem>
-                                    </MenubarContent>
-                                </MenubarMenu>
-                            </Menubar> */}
-
-
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
                                         <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -291,32 +244,30 @@ export default function UserCourse() {
                                                 </svg>
                                             </button>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>Subscription</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
                         </div>
 
 
-                        <AlertDialog>
-                            <AlertDialogTrigger ref={alertDialogTriggerRef}></AlertDialogTrigger>
+                        <AlertDialog ref={alertDialogTriggerRef}  open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
                             <AlertDialogTitle></AlertDialogTitle>
                             <AlertDialogContent>
-                                <AlertDialogHeader>
+                                <AlertDialogHeader className='flex flex-col items-center'>
                                     <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
-                                    <p className="text-lg text-dark font-bold my-5">
+                                    <p className="text-lg text-dark text-center font-bold my-5">
                                         هل أنت متأكد من حذف الكورس ({courseToDelete?.name}) ؟
                                     </p>
                                 </AlertDialogHeader>
-                                <AlertDialogFooter>
+                                <AlertDialogFooter className="w-full flex gap-2">
                                     <AlertDialogAction
                                         onClick={() => courseToDelete && deleteCourse(courseToDelete.id)}
                                         disabled={isDeleting}
-                                        className="before:ease relative overflow-hidden btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
+                                        className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
                                     >
                                         {isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف'}
                                     </AlertDialogAction>
-                                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                    <AlertDialogCancel className="w-full" onClick={() => setIsAlertDialogOpen(false)}>إلغاء</AlertDialogCancel>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
@@ -326,48 +277,6 @@ export default function UserCourse() {
                 ))}
             </TabsContent >
             <ToastContainer />
-
-
-
-
-
-
-            {/* <TabsContent value="course" className="bg-white rounded-lg p-5 shadow-md">
-                <div className="flex justify-between items-center">
-                    <h4 className='font-bold text-lg'> الكورسات </h4>
-                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>03</span></p>
-                </div>
-                <div className="flex flex-col lg:flex-row border rounded-lg p-3">
-                    <img src="/course2.png" alt="" className="w-56 h-44 rounded-lg" />
-                    <div className="px-5 w-full">
-                        <div className="flex justify-between items-center  ">
-                            <h3 className='font-bold text-lg'>كورس تعليمي لغة إنجليزية </h3>
-                            <h3 className='font-bold text-lg text-[#FE7A36]'> 20$</h3>
-                        </div>
-                         <div className="p-4 px-10 bg-[#F9F9F9] shadow-sm rounded-xl flex justify-around items-center font-bold w-fit">
-                            <div>
-                                <p>التاريخ:</p>
-                                <p>الوقت:</p>
-                            </div>
-                            <div>
-                                <p className="text-primary">11 سبتمبر 2024</p>
-                                <p className="text-primary">2:00 م - 4:00 م , 2:00 م - 4:00 م</p>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p>رابط الزوم</p>
-                            <a href="#" className="text-[#226AC8] border px-5 py-2 rounded-3xl border-[#0000001A]">zoommtg://zoom.us/join?confno=8529015944&pwd 8529015944&pwd</a>
-                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14.2881 10.4972V14.2472C14.2881 17.3722 13.0381 18.6222 9.91309 18.6222H6.16309C3.03809 18.6222 1.78809 17.3722 1.78809 14.2472V10.4972C1.78809 7.37222 3.03809 6.12222 6.16309 6.12222H9.91309C13.0381 6.12222 14.2881 7.37222 14.2881 10.4972Z" stroke="#226AC8" strokeWidth="2" strokeLinecap="round" />
-                                <path d="M18.4548 5.16387V7.91387C18.4548 10.2055 17.5381 11.1222 15.2464 11.1222H14.2881V10.4972C14.2881 7.3722 13.0381 6.1222 9.91309 6.1222H9.28809V5.16387C9.28809 2.8722 10.2048 1.95554 12.4964 1.95554H15.2464C17.5381 1.95554 18.4548 2.8722 18.4548 5.16387Z" stroke="#226AC8" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-
-                        </div>
-
-                    </div>
-                </div>
-            </TabsContent> */}
-
         </>
     );
 }
