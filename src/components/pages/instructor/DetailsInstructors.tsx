@@ -118,7 +118,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                 
                 
 
-                {instructor.qualification > 0 ?(
+                {instructor.qualification.length > 0 ?(
                     <>
                      <div className="flex items-start gap-3">
                     <img src="/moahelat.svg" alt="" />
@@ -137,7 +137,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                 
 
 
-{instructor.experience > 0 ?(
+                {instructor.experience.length > 0 ?(
                     <>
                     <div className="flex items-start gap-3">
                     <img src="/kebra.png" alt="" />
@@ -155,7 +155,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                 )}
 
 
-{instructor.achievement > 0 ?(
+{instructor.achievement.length > 0 ?(
                     <>
                    <div className="flex items-start gap-3">
                     <img src="/engaz.png" alt="" />

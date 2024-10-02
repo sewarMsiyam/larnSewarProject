@@ -99,7 +99,7 @@ export default function UserCourse() {
     };
 
 
-    const handleDeleteClick = (course) => {
+    const handleDeleteClick = (course: Course) => {
         setCourseToDelete(course);
         if (alertDialogTriggerRef.current) {
             (alertDialogTriggerRef.current as HTMLButtonElement).click();
@@ -109,14 +109,14 @@ export default function UserCourse() {
 
 
 
-    const deleteCourse = async (courseId: string) => {
+    const deleteCourse = async (courseId: number) => {
         setIsDeleting(true);
         try {
-            const result = await deleteOneToken('instructor/courses', courseId, token);
+            const result = await deleteOneToken('instructor/courses', courseId, token as string);
             if (result) {
                 console.log('تم حذف الكورس بنجاح');
                 toast.success('تم حذف الكورس بنجاح');
-                setCourses(prevCourses => prevCourses.filter(course => course.id !== courseId));
+                setCourses(prevCourses => prevCourses.filter(course => course.id !== Number(courseId)));
             } else {
                 console.error('فشل في حذف الكورس');
                 toast.error('فشل في حذف الكورس');

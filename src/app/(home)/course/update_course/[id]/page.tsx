@@ -14,7 +14,6 @@ export default async function Courses() {
     return (
         <>
             <Breadcrumb breadcrumbs={breadcrumbs} />
-            <CreateCourse />
         </>
     );
 };

@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg"
-import { updateProfileImage, fetchProfileData } from '@/app/api/dataFetch';
+import { fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 
 export default function ImgUser() {

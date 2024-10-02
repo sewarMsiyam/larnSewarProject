@@ -6,7 +6,7 @@ import Image from "next/image";
 import UpdateInformation from "@/components/pages/instructorProfile/UpdateInformation";
 import CourseUser from "@/components/pages/instructorProfile/courseUser";
 import ImgUser from "@/components/pages/instructorProfile/ImgUser";
-import CreateCourse from "@/components/pages/instructorProfile/CreateCourse";
+import CreateCourse from "@/components/pages/crudCourse/CreateCourse";
 import { useState, useEffect, useCallback } from 'react';
 
 import { Input } from '@/components/ui/input';

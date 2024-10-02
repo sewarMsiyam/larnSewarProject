@@ -40,10 +40,12 @@ export interface Instructors{
     id: number;
     name: string;
     image: string;
+    description: string;
     qualification: string;
     experience: string;
     achievement: string;
     specialization: string;
+    specialist: string;
     years_of_experience: string;
     hourly_rate_price: string;
     skills: string[];

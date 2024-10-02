@@ -293,7 +293,7 @@ export async function updateProfile(endpoint: string, token?: string, data?: any
       throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
     }
 
-    if (result.status === 200 && result.item) {
+    if (result.status === true && result.item) {
       console.log('Profile updated successfully. New data:', result.item);
       return result;
     } else {
@@ -330,12 +330,13 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
 }
 
 
+
 export async function CreateCourseFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
-  console.log(data);
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
       headers: {
+        'Accept': 'application/json',
         'Accept-Language': 'ar',
         'Authorization': `Bearer ${token}`,
       },
@@ -343,17 +344,29 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
       timeout: 8000,
     });
 
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
+    const responseText = await response.text();
+    console.log('Full server response:', responseText);
+
+    let result;
+     console.log(`function  = ${result}`);
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error('Failed to parse server response:', e);
+      throw new Error('Invalid server response');
     }
-    if (result.status === 200 && result.item) {
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to create course');
+    }
+
+    if (result.status === true) {
       return result;
     } else {
-      throw new Error(result.message || 'Failed to update profile');
+      throw new Error(result.message || 'Failed to create course');
     }
   } catch (error) {
-    console.error('Failed to update profile:', error);
+    console.error('Failed to create course:', error);
     throw error;
   }
 }
@@ -366,14 +379,9 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
 
 
 
-
-
-export async function deleteOneToken(endpoint: string, id: string, token: string, mainCategory?: string) {
-  console.log(buildUrl(endpoint, mainCategory, id));
-  console.log('Delete:', id);
-
+export async function deleteOneToken(endpoint: string, id: number, token: string, mainCategory?: string) {
   try {
-    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id.toString()), {
       method: 'DELETE',
       headers: {
         'Accept-Language': 'ar',

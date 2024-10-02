@@ -64,7 +64,7 @@ export default function UpdateInformation() {
     }, [loadProfileData]);
 
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -181,44 +181,36 @@ export default function UpdateInformation() {
                         <Label htmlFor="hourly_rate_price">سعر الساعة الخصوصي  </Label>
                         <Input
                             id="hourly_rate_price"
-                            type="text"
                             className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.hourly_rate_price}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <div className="col-span-2">
                         <Label htmlFor="qualification">المؤهلات</Label>
                         <Textarea
                             id="qualification"
-                            type="text"
                             className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.qualification}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <div className="col-span-2">
                         <Label htmlFor="experience">الخبرة</Label>
                         <Textarea
                             id="experience"
-                            type="text"
                             className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.experience}
                             onChange={handleChange}
-                            required
                         />
                     </div>
                     <div className="col-span-2">
                         <Label htmlFor="achievement">الإنجازات </Label>
                         <Textarea
                             id="achievement"
-                            type="text"
                             className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.achievement}
                             onChange={handleChange}
-                            required
                         />
                     </div>
 
