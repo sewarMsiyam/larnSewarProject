@@ -6,8 +6,8 @@ const buildUrl = (endpoint: string, mainCategory?: string, id?: string) => {
       ? `${BASE_URL}/${mainCategory}/${endpoint}/${id}`
       : `${BASE_URL}/${mainCategory}/${endpoint}`
     : id
-    ? `${BASE_URL}/${endpoint}/${id}`
-    : `${BASE_URL}/${endpoint}`;
+      ? `${BASE_URL}/${endpoint}/${id}`
+      : `${BASE_URL}/${endpoint}`;
 };
 
 type FetchOptionsBase = {
@@ -174,7 +174,7 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
       timeout: 8000,
     });
     const result = await response.json();
-       if (result.item) {
+    if (result.item) {
       if (Array.isArray(result.item)) {
         return result.item as T[];
       } else if (result.item[endpoint]) {
@@ -210,7 +210,7 @@ export async function fetchOneToken(endpoint: string, id: string, token: string,
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
       headers: {
         'Accept-Language': 'ar',
-        'Authorization': `Bearer ${token}`, 
+        'Authorization': `Bearer ${token}`,
       },
       timeout: 8000,
     });
@@ -248,7 +248,7 @@ export async function postData(endpoint: string, data: any, mainCategory?: strin
 }
 
 
-export async function fetchAllToken(endpoint: string,token: string, mainCategory?: string) {
+export async function fetchAllToken(endpoint: string, token: string, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       headers: {
@@ -258,9 +258,9 @@ export async function fetchAllToken(endpoint: string,token: string, mainCategory
       timeout: 8000,
     });
     const result = await response.json();
-       if (result.item) {
+    if (result.item) {
       if (Array.isArray(result.item)) {
-        return result.item ;
+        return result.item;
       } else if (result.item[endpoint]) {
         return result.item[endpoint];
       }
@@ -273,7 +273,7 @@ export async function fetchAllToken(endpoint: string,token: string, mainCategory
 
 
 export async function updateProfile(endpoint: string, token?: string, data?: any, mainCategory?: string) {
-
+  console.log(data);
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
@@ -326,12 +326,12 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
   } catch (error) {
     console.error('Failed to fetch profile data:', error);
     return null;
-}
-
+  }
 }
 
 
 export async function CreateCourseFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
+  console.log(data);
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
@@ -354,6 +354,47 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
     }
   } catch (error) {
     console.error('Failed to update profile:', error);
-    throw error; 
+    throw error;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+export async function deleteOneToken(endpoint: string, id: string, token: string, mainCategory?: string) {
+  console.log(buildUrl(endpoint, mainCategory, id));
+  console.log('Delete:', id);
+
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
+      method: 'DELETE',
+      headers: {
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      timeout: 8000,
+    });
+
+    if (!response.ok) {
+      console.error('Failed to delete:', response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const result = await response.json();
+    console.log('Delete result:', result);
+    return result.item ?? null;
+  } catch (error) {
+    console.error('Error during delete operation:', error);
+    throw error;
+  }
+}
+
+
+
+

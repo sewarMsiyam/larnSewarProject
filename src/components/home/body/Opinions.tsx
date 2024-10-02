@@ -47,7 +47,7 @@ export default function Opinions() {
         fetchData();
     }, []);
 
-    if (loading && error) {
+    if (loading) {
         return (
             <div className="container mt-20">
                 <TitleSection text="آراء طلابنا" />
@@ -83,45 +83,55 @@ export default function Opinions() {
         );
     }
 
-    return (
+    if (error) {
+        return <div className="container mt-20">Error: {error}</div>;
+    }
+
+    return (<>
+                {reviews.length > 0 ? (
         <div className="container mt-20">
-            <TitleSection text="آراء طلابنا" />
-            <Carousel
-                opts={{ direction: "rtl" }}
-                orientation="horizontal"
-                dir="rtl">
-                <CarouselContent>
-                    {reviews.map((review, index) => (
-                        <CarouselItem key={index} className="md:basis-1/2">
-                            <div className="bg-[#F5F5F5] p-8 rounded-xl" dir='rtl'>
-                                <div className="flex gap-2 mb-3">
-                                    {[...Array(review.rating)].map((_, i) => (
-                                        <Star key={i} />
-                                    ))}
-                                </div>
-                                <p className="text-[#333333] text-justify mb-3">
-                                    {review.comment}
-                                </p>
-                                <div className="flex gap-3">
-                                    <Avatar>
-                                        {review.customer_img ? (
-                                            <AvatarImage src={review.customer_img} />
-                                        ) : (
-                                            <AvatarFallback>{review.customer_name.charAt(0)}</AvatarFallback>
-                                        )}
-                                    </Avatar>
-                                    <div>
-                                        <h5 className="text-[#333333] opacity-90">{review.customer_name}</h5>
-                                        <p className="text-xs text-[#333333]">{review.customer_position}</p>
+
+                <TitleSection text="آراء طلابنا" />
+                <Carousel
+                    opts={{ direction: "rtl" }}
+                    orientation="horizontal"
+                    dir="rtl">
+                    <CarouselContent>
+                        {reviews.map((review, index) => (
+                            <CarouselItem key={index} className="md:basis-1/2">
+                                <div className="bg-[#F5F5F5] p-8 rounded-xl" dir='rtl'>
+                                    <div className="flex gap-2 mb-3">
+                                        {[...Array(review.rating)].map((_, i) => (
+                                            <Star key={i} />
+                                        ))}
+                                    </div>
+                                    <p className="text-[#333333] text-justify mb-3">
+                                        {review.comment}
+                                    </p>
+                                    <div className="flex gap-3">
+                                        <Avatar>
+                                            {review.customer_img ? (
+                                                <AvatarImage src={review.customer_img} />
+                                            ) : (
+                                                <AvatarFallback>{review.customer_name.charAt(0)}</AvatarFallback>
+                                            )}
+                                        </Avatar>
+                                        <div>
+                                            <h5 className="text-[#333333] opacity-90">{review.customer_name}</h5>
+                                            <p className="text-xs text-[#333333]">{review.customer_position}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-            </Carousel>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
+           
         </div>
-    );
+         ) : (
+                <div></div>
+            )}
+    </>);
 }

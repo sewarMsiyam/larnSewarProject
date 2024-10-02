@@ -9,7 +9,7 @@ const renderInstructorCard = (instructor: Instructors) => (
       <AvatarFallback>{instructor.name[0]}</AvatarFallback>
     </Avatar>
     <h3 className="font-bold text-lg">{instructor.name}</h3>
-    <p className="font-bold text-primary"> {instructor.specialist}</p>
+    <p className="font-bold text-primary"> {instructor.specialization}</p>
     <p className="text-ellipsis w-full px-5 text-sm whitespace-nowrap overflow-hidden text-overflow-ellipsis">
       {instructor.description}
     </p>

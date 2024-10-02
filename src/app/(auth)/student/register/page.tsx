@@ -154,7 +154,7 @@ export default function RegisterForm() {
       } else {
         toast.success("تم إنشاء الحساب بنجاح!");
         setTimeout(() => {
-          router.push('/login');
+          router.push('/student/login');
         }, 1000);
       }
     } catch (error) {

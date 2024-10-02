@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback  } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabsProfile";
 import { Input } from '@/components/ui/input';
@@ -7,37 +7,52 @@ import { Label } from '@/components/ui/label';
 import { Button } from "@/components/ui/button";
 import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
+import { Textarea } from "@/components/ui/textarea";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 export default function UpdateInformation() {
     const t = useTranslations('HomePage');
     const session = useSession();
     const token = (session?.data?.user as { authToken?: string | null })?.authToken;
+    const [content, setContent] = useState(``);
 
     const [formData, setFormData] = useState({
-        first_name: '',
-        last_name: '',
+        name: '',
+        image: null as File | null,
         email: '',
         phone: '',
         phone_code: '',
-        photo: '',
+
+        qualification: '',
+        experience: '',
+        achievement: '',
+
+        years_of_experience: '',
+        hourly_rate_price: '',
+
     });
 
     const loadProfileData = useCallback(async () => {
         if (!token) return;
 
         try {
-            const profileData = await fetchProfileData('/instructor/instructor_details', token);
+            const profileData = await fetchProfileData('instructor/instructor_details', token);
             if (profileData && profileData.item) {
                 setFormData({
-                first_name: profileData.item.first_name || '',
-                last_name: profileData.item.last_name || '',
-                email: profileData.item.email || '',
-                phone: profileData.item.phone || '',
-                phone_code: profileData.item.phone_code || '',
-                photo: profileData.item.photo || '',
-            });
+                    name: profileData.item.name || '',
+                    image: profileData.item.image || '',
+                    email: profileData.item.email || '',
+                    phone: profileData.item.phone || '',
+                    phone_code: profileData.item.phone_code || '',
+                    qualification: profileData.item.qualification || '',
+                    experience: profileData.item.experience || '',
+                    achievement: profileData.item.achievement || '',
+                    years_of_experience: profileData.item.years_of_experience || '',
+                    hourly_rate_price: profileData.item.hourly_rate_price || '',
+
+                });
             }
         } catch (error) {
             console.error('Failed to load profile data:', error);
@@ -48,6 +63,7 @@ export default function UpdateInformation() {
         loadProfileData();
     }, [loadProfileData]);
 
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData((prevFormData) => ({
@@ -56,64 +72,60 @@ export default function UpdateInformation() {
         }));
     };
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const data = { 
-        first_name: formData.first_name, 
-        last_name: formData.last_name, 
-        photo: formData.photo 
+        const data = {
+            name: formData.name,
+            email: formData.email,
+            qualification_ar: formData.qualification,
+            experience_ar: formData.experience,
+            achievement_ar: formData.achievement,
+            years_of_experience: formData.years_of_experience,
+            hourly_rate_price: formData.hourly_rate_price,
+        };
+        try {
+            const response = await updateProfile('instructor/update', token as string, data);
+            if (response && response.status === 200 && response.item) {
+
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    name: response.item.first_name || prevFormData.name,
+                    qualification: response.item.qualification || prevFormData.qualification,
+                    experience: response.item.experience || prevFormData.experience,
+                    achievement: response.item.achievement || prevFormData.achievement,
+                    years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
+                    hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
+                }));
+                toast.success('تم تحديث البيانات', {
+                    autoClose: 1500,
+                });
+            } else {
+                console.error('Unexpected server response:', response);
+                toast.error('فشل تعديل البيانات!');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            if (error instanceof Error) {
+                console.error(`An error occurred while updating the profile: ${error.message}`);
+            } else {
+                console.error('An unknown error occurred while updating the profile. Please try again.');
+            }
+        }
     };
-    try {
-        const response = await updateProfile('instructor/update', token as string, data);
-        if (response && response.status === 200 && response.item) {
- 
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                first_name: response.item.first_name || prevFormData.first_name,
-                last_name: response.item.last_name || prevFormData.last_name,
-                photo: response.item.photo || prevFormData.photo,
-            }));
-            toast.success('تم تحديث البيانات سجل دخول مرة اخرى', {
-                autoClose: 1500,
-            });
-        } else {
-            console.error('Unexpected server response:', response);
-            toast.error('فشل تعديل البيانات!');
-        }
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        if (error instanceof Error) {
-            console.error(`An error occurred while updating the profile: ${error.message}`);
-        } else {
-            console.error('An unknown error occurred while updating the profile. Please try again.');
-        }
-    }
-};
 
     return (
         <TabsContent value="setting" className="bg-white rounded-xl p-5 lg:p-10">
             <h4 className='font-bold text-lg mb-4'> معلومات عامة </h4>
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div>
-                        <Label htmlFor="first_name">الاسم الاول</Label>
+                    <div className="col-span-2">
+                        <Label htmlFor="name">الاسم </Label>
                         <Input
-                            id="first_name"
+                            id="name"
                             type="text"
                             className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            value={formData.first_name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <Label htmlFor="last_name">اسم العائلة</Label>
-                        <Input
-                            id="last_name"
-                            type="text"
-                            className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            value={formData.last_name}
+                            value={formData.name}
                             onChange={handleChange}
                             required
                         />
@@ -146,13 +158,72 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                                 type="number"
                                 placeholder="056"
                                 value={formData.phone_code}
-                                readOnly 
-                                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-not-allowed"
+                                readOnly
+                                className="border-none rounded-full mt-1 block w-[70px] bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-not-allowed"
                             />
                         </div>
                     </div>
+
+                    <div>
+                        <Label htmlFor="years_of_experience">سنوات الخبرة  </Label>
+                        <Input
+                            id="years_of_experience"
+                            type="text"
+                            className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            value={formData.years_of_experience}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+
+                    <div>
+                        <Label htmlFor="hourly_rate_price">سعر الساعة الخصوصي  </Label>
+                        <Input
+                            id="hourly_rate_price"
+                            type="text"
+                            className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            value={formData.hourly_rate_price}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="col-span-2">
+                        <Label htmlFor="qualification">المؤهلات</Label>
+                        <Textarea
+                            id="qualification"
+                            type="text"
+                            className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            value={formData.qualification}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="col-span-2">
+                        <Label htmlFor="experience">الخبرة</Label>
+                        <Textarea
+                            id="experience"
+                            type="text"
+                            className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            value={formData.experience}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="col-span-2">
+                        <Label htmlFor="achievement">الإنجازات </Label>
+                        <Textarea
+                            id="achievement"
+                            type="text"
+                            className="border-none rounded-2xl mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            value={formData.achievement}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
                     <div></div>
-                    <div className="text-end">
+                    <div className="text-end mt-10">
                         <Button type="submit" className="btn-primary rounded-2xl font-medium py-2.5 px-8 md:px-3 lg:px-16 m-1 text-white before:ease relative overflow-hidden btn-primary transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                             حفظ التغيرات
                         </Button>

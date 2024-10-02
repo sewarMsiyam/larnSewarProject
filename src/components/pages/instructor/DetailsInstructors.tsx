@@ -100,7 +100,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                         </div>
                         <div>
                             <h4 className="text-xl font-bold">{instructor.name}</h4>
-                            <p className="text-primary">{instructor.specialist}</p>
+                            <p className="text-primary">{instructor.specialization}</p>
                         </div>
                     </div>
                     <div className="hidden md:flex gap-1 items-center ">
@@ -114,42 +114,65 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
             </section>
 
             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
-                {instructor.description}
+               
+                
+                
 
-                {/* <div className="flex items-start gap-3">
+                {instructor.qualification > 0 ?(
+                    <>
+                     <div className="flex items-start gap-3">
                     <img src="/moahelat.svg" alt="" />
                     <div>
                         <h4 className="font-bold">المؤهلات:</h4>
-                        <ul className="mt-3">
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> درجة البكالوريوس في الأدب الإنجليزي من جامعة كامبريدج</li>
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> درجة البكالوريوس في الأدب الإنجليزي من جامعة كامبريدج</li>
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> درجة الماجستير في اللسانيات التطبيقية من جامعة أكسفورد</li>
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> شهادة TEFL (تدريس الإنجليزية كلغة أجنبية)</li>
-                        </ul>
+                        <div className="mt-3">
+                             {instructor.qualification}
+                        </div>
                     </div>
                 </div>
+                    </>
+                ):(
+                     <>
+                    </>
+                )}
+                
 
-                <div className="flex items-start gap-3">
+
+{instructor.experience > 0 ?(
+                    <>
+                    <div className="flex items-start gap-3">
                     <img src="/kebra.png" alt="" />
                     <div>
                         <h4 className="font-bold">الخبرة:</h4>
-                        <p className="mt-3">
-                            أكثر من 8 سنوات من الخبرة في تدريس اللغة الإنجليزية، حيث عملت مع طلاب من مختلف الأعمار والمستويات اللغوية، من المدارس الابتدائية إلى البالغين. تتخصص في تدريس اللغة الإنجليزية كلغة ثانية، وقواعد اللغة، ومهارات الكتابة، وتحليل الأدب. خلفية قوية في مساعدة الطلاب على تحسين فهم القراءة، وكتابة المقالات، ومهارات التواصل.
-                        </p>
+                        <div className="mt-3">
+{instructor.experience}                        
+</div>
                     </div>
                 </div>
+                    </>
+                ):(
+                     <>
+                    </>
+                )}
 
-                <div className="flex items-start gap-3">
+
+{instructor.achievement > 0 ?(
+                    <>
+                   <div className="flex items-start gap-3">
                     <img src="/engaz.png" alt="" />
                     <div>
                         <h4 className="font-bold">الانجازات:</h4>
-                        <ul className="mt-3">
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> تأليف عدة أدلة لقواعد اللغة الإنجليزية للمتعلمين</li>
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> قيادة ورش عمل حول الكتابة الإبداعية وتطوير المقالات</li>
-                            <li><span className="w-2 h-2 bg-[#FF6F61] inline-block mx-1"></span> مساعدة أكثر من 95% من الطلاب في تحقيق درجات عالية في اختبارات اللغة الإنجليزية الدولية (IELTS، TOEFL)</li>
-                        </ul>
+                        <div className="mt-3">
+                            {instructor.achievement}
+                        </div>
                     </div>
-                </div>  */}
+                </div> 
+                    </>
+                ):(
+                     <>
+                    </>
+                )}
+
+                
             </section>
 
             <section className="mb-12 lg:container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 py-10 lg:p-10 space-y-10">

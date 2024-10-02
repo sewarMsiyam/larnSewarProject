@@ -40,8 +40,12 @@ export interface Instructors{
     id: number;
     name: string;
     image: string;
-    description: string;
-    specialist: string;
+    qualification: string;
+    experience: string;
+    achievement: string;
+    specialization: string;
+    years_of_experience: string;
+    hourly_rate_price: string;
     skills: string[];
     instructor_durations: Array<{
         id: number;
@@ -61,7 +65,6 @@ export interface Instructors{
         image: string;
         zoom_link: string;
     }>;
-
 }
 export interface InstructorDuration{
         id: number;
@@ -69,9 +72,6 @@ export interface InstructorDuration{
         from_time: string;
         to_time: string;
 }
-
-
-
 export interface specializations{
     id: number;
     name: string;

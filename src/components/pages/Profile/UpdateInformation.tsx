@@ -21,7 +21,7 @@ export default function UpdateInformation() {
         email: '',
         phone: '',
         phone_code: '',
-        image: '',
+        image: null as File | null,
     });
 
     const loadProfileData = useCallback(async () => {
@@ -151,7 +151,18 @@ export default function UpdateInformation() {
                             />
                         </div>
                     </div>
-                    <div></div>
+                    <div>
+                        <div>
+                            <Label htmlFor="image">image </Label>
+                            <Input
+                                id="image"
+                                type="file"
+                                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-not-allowed"
+                            // value={formData.image}
+                            />
+                        </div>
+
+                    </div>
                     <div className="text-end">
                         <Button type="submit" className="btn-primary rounded-2xl font-medium py-2.5 px-8 md:px-3 lg:px-16 m-1 text-white before:ease relative overflow-hidden btn-primary transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                             حفظ التغيرات

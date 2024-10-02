@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 
 
 export default async function Profile() {
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-    const breadcrumbs = [
-        { label: 'الرئيسية', href: '/' },
-        { label: 'الملف الشخصي', href: '/Profile', isActive: true }
-    ]
-    
+  const breadcrumbs = [
+    { label: 'الرئيسية', href: '/' },
+    { label: 'الملف الشخصي', href: '/instructor/profile', isActive: true }
+  ]
+
   return (
     <>
       {session ? (
@@ -29,9 +29,9 @@ export default async function Profile() {
           <Breadcrumb breadcrumbs={breadcrumbs} />
           <section>
             <ProfileIndex />
-          </section>            
+          </section>
         </>
-      ):(
+      ) : (
         <Unauthenticated />
       )}
     </>

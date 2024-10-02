@@ -1,4 +1,4 @@
-"use client"; // هذا المكون يجب أن يكون عميلًا
+"use client";
 
 import { useEffect } from 'react';
 import AOS from 'aos';

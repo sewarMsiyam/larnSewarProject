@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg"
-import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
+import { updateProfileImage, fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 
 export default function ImgUser() {
@@ -14,10 +14,7 @@ export default function ImgUser() {
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
-        email: '',
-        phone: '',
-        phone_code: '',
-        image: '',
+        image: null as File | null,
     });
 
     const [tempImage, setTempImage] = useState<string | null>(null);
@@ -31,9 +28,6 @@ export default function ImgUser() {
                 setFormData({
                     first_name: profileData.item.first_name || '',
                     last_name: profileData.item.last_name || '',
-                    email: profileData.item.email || '',
-                    phone: profileData.item.phone || '',
-                    phone_code: profileData.item.phone_code || '',
                     image: profileData.item.image || '',
                 });
             }
@@ -43,62 +37,62 @@ export default function ImgUser() {
         }
     }, [token]);
 
-    useEffect(() => {
-        loadProfileData();
-    }, [loadProfileData]);
+    // useEffect(() => {
+    //     loadProfileData();
+    // }, [loadProfileData]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setTempImage(imageUrl);
 
-            console.log('sewar imageUrl ' + imageUrl);
+    // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0] || null;
 
-            setTimeout(() => {
-                const confirmed = window.confirm('هل أنت متأكد من حفظ الصورة؟');
-                if (confirmed) {
-                    console.log('sewar file' + file);
-                    uploadImage(file);
-                } else {
-                    setTempImage(null);
-                }
-            }, 100);
-        }
-    };
+    //     setFormData((prevFormData) => ({
+    //         ...prevFormData,
+    //         image: file,
+    //     }));
+    //     if (file) {
+    //         const imageUrl = URL.createObjectURL(file);
+    //         setTempImage(imageUrl);
 
-    const uploadImage = async (file: File) => {
-        const formData = new FormData();
-        formData.append('image', file);
-        try {
-            if (!token) {
-                throw new Error('No authentication token available');
-            }
+    //         console.log('sewar imageUrl ' + imageUrl);
 
-            console.log('Uploading image...');
+    //         const confirmed = window.confirm('هل أنت متأكد من حفظ الصورة؟');
+    //         if (confirmed) {
+    //             const formData = new FormData();
+    //             formData.append('image', imageUrl);
+    //             console.log(formData)
+    //             try {
+    //                 if (!token) {
+    //                     throw new Error('No authentication token available');
+    //                 }
 
-            const response = await updateProfile('student/update', token, formData);
+    //                 console.log('Uploading image...');
 
-            console.log('Server response:', response);
+    //                 const response = await updateProfileImage('student/update', token, formData);
 
-            if (response && response.status === 200 && response.item && response.item.image) {
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    image: response.item.image,
-                }));
-                setTempImage(null);
-                console.log('تم تحديث الصورة بنجاح');
-            } else {
-                console.error('Unexpected server response:', response);
-                console.log('فشل تحديث الصورة: استجابة غير متوقعة من الخادم');
-                setTempImage(null);
-            }
-        } catch (error) {
-            console.error('Error updating profile image:', error);
-            console.log('حدث خطأ أثناء تحديث الصورة');
-            setTempImage(null);
-        }
-    };
+    //                 console.log('updateProfile بعد:', response);
+
+    //                 if (response && response.status === 200 && response.item && response.item.image) {
+    //                     setFormData(prevFormData => ({
+    //                         ...prevFormData,
+    //                         image: response.item.image,
+    //                     }));
+    //                     setTempImage(null);
+    //                     console.log('تم تحديث الصورة بنجاح');
+    //                 } else {
+    //                     console.error('Unexpected server response:', response);
+    //                     console.log('فشل تحديث الصورة: استجابة غير متوقعة من الخادم');
+    //                     setTempImage(null);
+    //                 }
+    //             } catch (error) {
+    //                 console.error('Error updating profile image:', error);
+    //                 console.log('حدث خطأ أثناء تحديث الصورة');
+    //                 setTempImage(null);
+    //             }
+    //         } else {
+    //             setTempImage(null);
+    //         }
+    //     }
+    // };
 
     const handleAvatarClick = () => {
         if (fileInputRef.current) {
@@ -106,25 +100,31 @@ export default function ImgUser() {
         }
     };
 
+
+    const getImageSrc = (): string => {
+        if (tempImage) return tempImage;
+        if (formData.image) return URL.createObjectURL(formData.image);
+        return ''; // Default empty string or you could return a placeholder image URL
+    };
     return (
         <>
             <Avatar onClick={handleAvatarClick} style={{ cursor: 'pointer' }}>
                 <AvatarImage
-                    src={tempImage || formData.image || ''}
+                    src={getImageSrc()}
                     alt="User Image"
                     className="shadow rounded-full cursor-pointer"
                 />
-                <AvatarFallback>{formData.first_name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{formData.first_name.charAt(0)}{formData.last_name.charAt(0)}</AvatarFallback>
             </Avatar>
 
-            <input
+            {/* <input
                 type="file"
                 id="photo"
                 ref={fileInputRef}
                 onChange={handleImageChange}
                 accept="image/*"
             // style={{ display: 'none' }}
-            />
+            /> */}
         </>
     );
 }
