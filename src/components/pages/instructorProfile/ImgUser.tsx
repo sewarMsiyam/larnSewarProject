@@ -12,11 +12,14 @@ export default function ImgUser() {
     const t = useTranslations('HomePage');
     const session = useSession();
     const token = (session?.data?.user as { authToken?: string | null })?.authToken;
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = useState({
         name: '',
-        image: '',
+        image: null as File | null,
     });
+    
+    const [tempImage, setTempImage] = useState<string | null>(null);
 
     const loadProfileData = useCallback(async () => {
         if (!token) return;
@@ -25,12 +28,13 @@ export default function ImgUser() {
             const profileData = await fetchProfileData('instructor/instructor_details', token);
             if (profileData && profileData.item) {
                 setFormData({
-                    name: profileData.item.name || '',
+                       name: profileData.item.name || '',
                     image: profileData.item.image || '',
                 });
             }
         } catch (error) {
             console.error('Failed to load profile data:', error);
+            console.log('فشل في تحميل بيانات الملف الشخصي');
         }
     }, [token]);
 
@@ -72,11 +76,15 @@ export default function ImgUser() {
     //     }
 
     // };
-
+    const getImageSrc = (): string => {
+        if (tempImage) return tempImage;
+        if (formData.image) return URL.createObjectURL(formData.image);
+        return ''; // Default empty string or you could return a placeholder image URL
+    };
     return (
         <>
             <Avatar>
-                <AvatarImage src={formData.image}
+                <AvatarImage src={getImageSrc()}
                     alt="User Image"
                     className="shadow rounded-full cursor-pointer"
                 />

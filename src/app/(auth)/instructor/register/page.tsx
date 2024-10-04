@@ -108,7 +108,7 @@ export default function RegisterForm() {
       if (!response.ok) throw new Error(data.message || "حدث خطأ ما");
 
       toast.success("تم إنشاء الحساب بنجاح!");
-      setTimeout(() => router.push('/instructor/login'), 1000);
+      router.push('/instructor/login')
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
     } finally {

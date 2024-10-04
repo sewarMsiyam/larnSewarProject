@@ -153,9 +153,7 @@ export default function RegisterForm() {
         toast.error(errorMessage);
       } else {
         toast.success("تم إنشاء الحساب بنجاح!");
-        setTimeout(() => {
-          router.push('/student/login');
-        }, 1000);
+        router.push('/student/login');
       }
     } catch (error) {
       toast.error("فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");

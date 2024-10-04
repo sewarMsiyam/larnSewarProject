@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
 
@@ -153,7 +152,9 @@ export default function UserCourse() {
                     </Link>
                 </div>
             </div>
-          
+            <div className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
+                loading ...
+            </div>
         </TabsContent >
     );
     if (error) return <p>{error}</p>;
@@ -163,8 +164,8 @@ export default function UserCourse() {
             <TabsContent value="course" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
                 <div className="flex justify-between items-center mb-5">
                     <div className="flex flex-col lg:flex-row gap-2">
-                        <h4 className='font-bold text-lg'> كورساتي </h4>
-                        <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
+                        <h4 className='font-bold text-lg'> دروسي </h4>
+                        <p className='text-gray-300'>عدد الدروس  <span className='text-gray-950'>{courses.length}</span></p>
                     </div>
                     <div>
                         <Link href="/course/create_course-new" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
@@ -177,62 +178,9 @@ export default function UserCourse() {
                 {courses.map(course => (
                     <>
                         <div key={course.id} className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
-                            <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
-                            <div className="p-5 w-full">
-                                <div className="flex items-center">
+                          
 
-                                    <h3 className='font-bold text-lg'>{course.name}</h3>
-                                    <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs ms-5">
-                                        {course.duration} دقيقة
-                                    </div>
-                                </div>
-
-                                {course.course_durations.length > 0 && (
-                                    <>
-                                        <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
-                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                                            {course.course_durations.map((duration) => (
-                                                <div key={duration.id} className="col-span-1">
-                                                    <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
-                                                        <span>{duration.day}</span>
-                                                        <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
-                                                        <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
-                                    <p className="flex-none">رابط الزوم</p>
-
-                                    {course.zoom_link ? (
-                                        <>
-                                            <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
-                                                <Link href={course.zoom_link} className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">{course.zoom_link}</Link>
-                                            </div>
-                                            <div className="flex-none">
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <Image src="/profileIcon/copy.svg" alt="zoom" width='30' height='30' onClick={() => copyToClipboard(course.zoom_link)} />
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>اضغط لنسخ الرابط</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
-                                            <p className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">رابط غير متاح بعد</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
-                            </div>
+                          <h1>sewar</h1>
 
 
 
@@ -249,7 +197,7 @@ export default function UserCourse() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                         <DropdownMenuItem>
-                                            <Link href={`/course/update_course/${course.id}`} className="flex justify-center gap-2 w-full text-center">
+                                            <Link href={{ pathname: '/course/update_course', query: { id: course.id } }} className="flex justify-center gap-2 w-full text-center">
                                                 تعديل
                                                 <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M8.15693 3.41217L12.9651 8.22059L6.37061 14.8237C6.06413 15.13 5.67053 15.334 5.24366 15.4081L1.28696 16.0676C1.23999 16.0745 1.19252 16.0773 1.14506 16.0759C0.9223 16.0734 0.709419 15.9835 0.552372 15.8254C0.457339 15.7305 0.385934 15.6145 0.343888 15.4869C0.301842 15.3593 0.290349 15.2238 0.310313 15.0909L0.969747 11.134C1.04394 10.7072 1.248 10.3135 1.55408 10.007L8.15693 3.41217ZM15.1605 1.21656C14.8457 0.899138 14.4712 0.647244 14.0586 0.475309C13.646 0.303375 13.2034 0.214844 12.7564 0.214844C12.3094 0.214844 11.8668 0.303375 11.4542 0.475309C11.0416 0.647244 10.6671 0.899138 10.3523 1.21656L9.34231 2.22662L14.1505 7.03504L15.1605 6.02498C15.4779 5.7102 15.7298 5.33563 15.9018 4.92299C16.0737 4.51035 16.1622 4.0679 16.1622 3.62087C16.1622 3.17384 16.0737 2.73118 15.9018 2.31854C15.7298 1.9059 15.4779 1.53133 15.1605 1.21656Z" fill="black" fillOpacity="0.4" />
@@ -271,8 +219,8 @@ export default function UserCourse() {
 
 
                         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-                            {/* <AlertDialogTrigger asChild></AlertDialogTrigger>*/}
-                            <AlertDialogTitle></AlertDialogTitle> 
+                            {/* <AlertDialogTrigger asChild></AlertDialogTrigger>
+                            <AlertDialogTitle></AlertDialogTitle> */}
                             <AlertDialogContent>
                                 <AlertDialogHeader className='flex flex-col items-center'>
                                     <Image src="/login.png" alt="" width={150} height={150} className="text-center" />

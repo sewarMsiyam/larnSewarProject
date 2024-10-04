@@ -371,6 +371,65 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
   }
 }
 
+export async function fetchOneTokenUpdateCourse(endpoint: string, id: number, token: string, mainCategory?: string) {
+   try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory, id.toString()), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      timeout: 8000,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+    //  return result.item ? result.item : null;
+  } catch (error) {
+    console.error('Failed to fetch data:', error);
+    return null;
+  }
+}
+
+
+export async function updateProfileS(endpoint: string, token?: string, data?: any, mainCategory?: string) {
+  console.log(data);
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+      timeout: 8000,
+    });
+
+    const result = await response.json();
+    console.log('Server response:', result);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
+    }
+
+    if (result.status === true && result.item) {
+      console.log('Profile updated successfully. New data:', result.item);
+      return result;
+    } else {
+      throw new Error(result.message || 'Failed to update profile');
+    }
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    throw error; // Re-throw the error so the caller can handle it
+  }
+}
+
+
 
 
 

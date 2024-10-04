@@ -38,18 +38,17 @@ const Login = () => {
       password,
     });
 
-    setLoading(false);
-
+  
     if (result?.error) {
+      setLoading(false);
       setErrorMessage(result.error === 'These credentials do not match our records.'
         ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
         : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
       setSuccessMessage('');
     } else {
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
-      setTimeout(() => {
+        setLoading(false);
         router.push('/instructor/profile');
-      }, 1000); 
     }
   };
 
