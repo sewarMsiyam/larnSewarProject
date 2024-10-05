@@ -16,7 +16,7 @@ export default async function Courses() {
         <>
               {session ? (
                     <>
-                    <Breadcrumb breadcrumbs={breadcrumbs} />
+                        <Breadcrumb breadcrumbs={breadcrumbs} />
                         <CreateCourse />
                 
                     </>

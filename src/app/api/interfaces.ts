@@ -78,3 +78,13 @@ export interface specializations{
     id: number;
     name: string;
 }
+
+export interface Lessons {
+    id: number;
+    name: string;
+    course_name: string;
+    recorded_video_link: string;
+    slug: string;
+    zoom_link: string;
+    status: string;
+}

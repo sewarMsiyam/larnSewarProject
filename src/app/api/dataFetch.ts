@@ -249,6 +249,7 @@ export async function postData(endpoint: string, data: any, mainCategory?: strin
 
 
 export async function fetchAllToken(endpoint: string, token: string, mainCategory?: string) {
+  console.log(buildUrl(endpoint, mainCategory));
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       headers: {
@@ -258,12 +259,18 @@ export async function fetchAllToken(endpoint: string, token: string, mainCategor
       timeout: 8000,
     });
     const result = await response.json();
-    if (result.item) {
-      if (Array.isArray(result.item)) {
-        return result.item;
-      } else if (result.item[endpoint]) {
-        return result.item[endpoint];
+    if (result.status === 200) {
+      let data = [];
+
+      if (result.item) {
+        if (Array.isArray(result.item)) {
+          data = result.item;
+        } else if (result.item[endpoint]) {
+          data = result.item[endpoint];
+        }
       }
+
+      return data;
     }
   } catch (error) {
     console.error('Error fetching data:', error);

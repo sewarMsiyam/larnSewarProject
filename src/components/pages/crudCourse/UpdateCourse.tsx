@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from 'next/navigation';
-
 import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
