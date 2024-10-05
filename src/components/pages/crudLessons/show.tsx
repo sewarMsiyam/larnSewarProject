@@ -119,7 +119,15 @@ export default function ShowLessons({ id }: LessonsProps) {
 
     return (
         <>
-            <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
+            <div className="container bg-white rounded-3xl py-8 lg:p-14 my-10 shadow-md">
+                <div className="flex justify-end items-center mb-2">
+                     <Link href='/instructor/profile' className="text-xs text-[#FF6F61] flex items-center space-x-5 cursor-pointer">
+                        <svg width="5" height="9" className="mx-1" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.40039 11.4015L6.40039 6.38725L1.40039 1.37305" stroke="#FF6F61" strokeWidth="2.13068" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        الرجوع لقائمة الكورسات
+                    </Link>
+                </div>
                 <div className="flex justify-between items-center mb-5">
                     <div className="flex flex-col lg:flex-row gap-2">
                         {lessons.length > 0 && (
@@ -127,12 +135,13 @@ export default function ShowLessons({ id }: LessonsProps) {
                         )}
                         <p className='text-gray-300'>عدد الدروس  <span className='text-gray-950'>{lessons.length}</span></p>
                     </div>
-                    <div>
+                    <div className="flex gap-2 items-center">
                          <Link href={`/course/${id}/lessons/add_lessons`} className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                             <Image src="/profileIcon/IconAdd.svg" alt="خصوصي" width={30} height={30} />
                             <span>اضافة درس</span>
                         </Link>
                     </div>
+                  
                 </div>
                 
 

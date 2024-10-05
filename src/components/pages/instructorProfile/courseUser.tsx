@@ -170,7 +170,7 @@ export default function UserCourse() {
                             <div className="p-5 w-full">
                                 <div className="flex items-center">
 
-                                    <h3 className='font-bold text-lg'>{course.id} {course.name}</h3>
+                                    <h3 className='font-bold text-lg'>{course.name}</h3>
                                     <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs ms-5">
                                         {course.duration} دقيقة
                                     </div>

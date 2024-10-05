@@ -102,7 +102,7 @@ export default function CourseInstrctor({ id }: DetailsInstructorsProps) {
                 <Link href="" className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1"> عرض كافة الكورسات</Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 ">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {instructor.courses.map((course) => (
                     <CourseCard
                         key={course.id}
