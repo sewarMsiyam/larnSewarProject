@@ -35,14 +35,42 @@ export default function UpdateLessons({ id }: LessonsProps) {
 
     console.log("token =", token);
 
+    useEffect(() => {
+        const fetchCourseData = async () => {
+            try {
+                console.log('id = ' + id + 'token = ' + token)
+                setLoading(true);
+                // const result = await fetchOneTokenUpdateCourse(`instructor/courses/${id}/lessons`, id, token as string);
+                // if (result.status) {
+                //     console.log(result.item)
+                //     setFormData(prevFormData => ({
+                //         ...prevFormData,
+                //         name_ar: result.item.name_ar,
+                //         course_id: result.item.course_id,
+                //         recorded_video_link: result.item.recorded_video_link,
+                //         ...result.item,
+                //     }));
+                // } else {
+                //     toast.error("Failed to fetch course data");
+                // }
+            } catch (error) {
+                console.error("Error fetching course data:", error);
+                toast.error("An error occurred while fetching course data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id && token) {
+            fetchCourseData();
+        }
+    }, [id, token]);
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
     };
-
-
-
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
@@ -100,7 +128,7 @@ export default function UpdateLessons({ id }: LessonsProps) {
         <>
             <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
                 <div className="flex justify-between items-center mb-8">
-                    <h3 className="font-bold text-lg">إضافة درس</h3>
+                    <h3 className="font-bold text-lg">تعديل الدرس</h3>
                     <Link href={`/course/${id}/lessons`} className="text-xs text-[#FF6F61] flex items-center space-x-5 cursor-pointer">
                         <svg width="5" height="9" className="mx-1" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.40039 11.4015L6.40039 6.38725L1.40039 1.37305" stroke="#FF6F61" strokeWidth="2.13068" strokeLinecap="round" strokeLinejoin="round" />
@@ -153,12 +181,10 @@ export default function UpdateLessons({ id }: LessonsProps) {
                     </div>
                      <div className="text-end">
                         <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
-                            {isLoading ? "جاري الإنشاء..." : "نشر الدرس للكورس"}
+                            {isLoading ? "جاري الإنشاء..." : "تعديل الدرس "}
                         </Button>
                     </div>
-                </form>
-
-
+                </form> 
             </div>
         </>
     );
