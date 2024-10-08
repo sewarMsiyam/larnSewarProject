@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsProfile"
@@ -6,16 +7,8 @@ import Image from "next/image";
 import UpdateInformation from "@/components/pages/instructorProfile/UpdateInformation";
 import CourseUser from "@/components/pages/instructorProfile/courseUser";
 import ImgUser from "@/components/pages/instructorProfile/ImgUser";
-import CreateCourse from "@/components/pages/crudCourse/CreateCourse";
-import { useState, useEffect, useCallback } from 'react';
-
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from "@/components/ui/button";
-import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
-import { useSession } from "next-auth/react";
-
-
+import PrivetCourse from "@/components/pages/instructorProfile/privetCourse";
+import HouerLib from "@/components/pages/instructorProfile/houerLib";
 
 export default function ProfileInstructor() {
     const t = useTranslations('HomePage');
@@ -24,8 +17,6 @@ export default function ProfileInstructor() {
         <>
             <section className="lg:container mb-20">
                 <div className="flex flex-col justify-center items-center space-y-10 -mt-10">
-
-
                     <ImgUser />
                     <Tabs defaultValue="course" dir="rtl" className='w-full'>
                         <TabsList className='mb-5'>
@@ -39,7 +30,7 @@ export default function ProfileInstructor() {
                                 <span className="mt-3 font-bold"> مواعيد الخصوصي</span>
                             </TabsTrigger>
 
-                            <TabsTrigger value="create_course ">
+                            <TabsTrigger value="houerLib">
                                 <Image src="/profileIcon/setting.svg" alt='الاعدادات' width="30" height="30" />
                                 <span className="mt-3 font-bold">الساعات المكتبية</span>
                             </TabsTrigger>
@@ -50,7 +41,8 @@ export default function ProfileInstructor() {
                         </TabsList>
 
                         <CourseUser />
-                        {/* <PrivetCourse /> */}
+                        <PrivetCourse />
+                        <HouerLib />
                         <UpdateInformation />
 
                     </Tabs>

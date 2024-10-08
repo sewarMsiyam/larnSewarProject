@@ -114,65 +114,65 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
             </section>
 
             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
-               
-                
-                
 
-                {instructor.qualification.length > 0 ?(
+
+
+
+                {instructor.qualification.length > 0 ? (
                     <>
-                     <div className="flex items-start gap-3">
-                    <img src="/moahelat.svg" alt="" />
-                    <div>
-                        <h4 className="font-bold">المؤهلات:</h4>
-                        <div className="mt-3">
-                             {instructor.qualification}
+                        <div className="flex items-start gap-3">
+                            <img src="/moahelat.svg" alt="" />
+                            <div>
+                                <h4 className="font-bold">المؤهلات:</h4>
+                                <div className="mt-3">
+                                    {instructor.qualification}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
                     </>
-                ):(
-                     <>
-                    </>
-                )}
-                
-
-
-                {instructor.experience.length > 0 ?(
+                ) : (
                     <>
-                    <div className="flex items-start gap-3">
-                    <img src="/kebra.png" alt="" />
-                    <div>
-                        <h4 className="font-bold">الخبرة:</h4>
-                        <div className="mt-3">
-{instructor.experience}                        
-</div>
-                    </div>
-                </div>
-                    </>
-                ):(
-                     <>
                     </>
                 )}
 
 
-{instructor.achievement.length > 0 ?(
+
+                {instructor.experience.length > 0 ? (
                     <>
-                   <div className="flex items-start gap-3">
-                    <img src="/engaz.png" alt="" />
-                    <div>
-                        <h4 className="font-bold">الانجازات:</h4>
-                        <div className="mt-3">
-                            {instructor.achievement}
+                        <div className="flex items-start gap-3">
+                            <img src="/kebra.png" alt="" />
+                            <div>
+                                <h4 className="font-bold">الخبرة:</h4>
+                                <div className="mt-3">
+                                    {instructor.experience}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div> 
                     </>
-                ):(
-                     <>
+                ) : (
+                    <>
                     </>
                 )}
 
-                
+
+                {instructor.achievement.length > 0 ? (
+                    <>
+                        <div className="flex items-start gap-3">
+                            <img src="/engaz.png" alt="" />
+                            <div>
+                                <h4 className="font-bold">الانجازات:</h4>
+                                <div className="mt-3">
+                                    {instructor.achievement}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                    </>
+                )}
+
+
             </section>
 
             <section className="mb-12 lg:container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 py-10 lg:p-10 space-y-10">

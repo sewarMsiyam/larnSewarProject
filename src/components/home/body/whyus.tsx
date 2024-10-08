@@ -7,7 +7,7 @@ export default function WhyUs() {
             <div className="container mt-20">
                 <TitleSection text="لماذا نحن" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start mt-20">
-                    <div className='relative'>
+                    <div data-aos="fade-down-right" className='relative'>
                         <div className='bg-primary flex gap-10 justify-center items-center w-fit h-20 rounded-3xl px-5 absolute -top-12 right-24'>
                             <h6 className="text-center text-white text-xs"><span className="text-base font-bold">2000</span><br />طالب وأكثر</h6>
                             <div>
@@ -35,7 +35,7 @@ export default function WhyUs() {
                             <img src="/whyus.png" alt="" className="w-100 lg:w-[65%] p-3" style={{ borderRadius: '8.688rem 1.75rem 2.438rem 1.688rem' }} />
                         </div>
                     </div>
-                    <div className="h-full flex flex-col justify-around items-start">
+                    <div data-aos="fade-down-left" className="h-full flex flex-col justify-around items-start">
                         <h2 className="text-2xl text-start md:text-right font-bold mb-10">تعلّم بتميز.. لماذا نحن خيارك الأفضل؟</h2>
                         <div className="flex items-start lg:w-[80%] mb-5">
                             <div className="flex justify-center items-center p-2 rounded-2xl me-4 bg-[#EEEEEE]">

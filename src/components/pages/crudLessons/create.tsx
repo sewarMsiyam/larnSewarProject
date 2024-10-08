@@ -78,14 +78,6 @@ export default function CreateLessons({ id }: LessonsProps) {
         }
     };
 
-
-
-
-
-
-
-
-
     if (status === 'loading') {
         return <div>Loading token ...</div>;
     }
