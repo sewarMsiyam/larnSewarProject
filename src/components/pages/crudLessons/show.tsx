@@ -138,7 +138,7 @@ export default function ShowLessons({ id , token }: LessonsProps) {
                   
                 </div>
                 
-
+                <div className='w-full overflow-hidden'>
                 <table className="border-separate border-spacing-y-5 w-full">
                     <thead>
                         <tr>
@@ -221,6 +221,7 @@ export default function ShowLessons({ id , token }: LessonsProps) {
                         }
                     </tbody>
                 </table>
+                </div>
             </div>
 
 

@@ -175,7 +175,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                     </div>
                                 </div>
 
-                                {course.course_durations.length > 0 && (
+                                {course.course_durations && course.course_durations.length > 0 && (
                                     <>
                                         <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

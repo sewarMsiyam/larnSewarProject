@@ -10,6 +10,14 @@ interface CustomUser extends User {
   token: string;
   userType: UserType;
 }
+const formatName = (user: any, userType: UserType): string => {
+  if (userType === 'student') {
+    return `${user.first_name || ''} ${user.last_name || ''}`.trim();
+  } else if (userType === 'instructor') {
+    return user.name || '';
+  }
+  return '';
+};
 
 const createCredentialsProvider = (userType: UserType) => 
   CredentialsProvider({
@@ -46,7 +54,8 @@ const createCredentialsProvider = (userType: UserType) =>
           return {
             id: user.id,
             email: user.email,
-            name: `${user.first_name} ${user.last_name}`,
+            // name: `${user.first_name} ${user.last_name}`,
+            name: formatName(user, userType),
             token: result.item.token,
             userType: userType,
           };
@@ -93,9 +102,6 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: '/student/login'
-    // signIn: ({ userType }: SignInContext) => {
-    //   return userType === 'instructor' ? '/instructor/login' : '';
-    // },
   },
 
   session: {

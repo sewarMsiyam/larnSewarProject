@@ -290,6 +290,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                     introduction_video: "",
                     price: "",
                     image: null,
+                    currentImage: "",
                     category: "",
                     feature_ar: [],
                     zoom_link: "",

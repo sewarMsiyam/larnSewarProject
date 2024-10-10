@@ -88,8 +88,8 @@ export default function RegisterForm() {
     }
 
     // Validate phone
-    if (!formData.phone) {
-      newErrors.phone = "رقم الهاتف مطلوب.";
+    if (!formData.phone || formData.phone.length < 9) {
+      newErrors.phone = "الرجاء ادخال رقم هاتف صحيح ";
       isValid = false;
     }
 
