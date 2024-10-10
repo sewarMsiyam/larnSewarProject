@@ -6,18 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from "@/components/ui/button";
 import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
-import { useSession } from "next-auth/react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-export default function UpdateInformation() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function UpdateInformation({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
-    const session = useSession();
-    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
     const [content, setContent] = useState(``);
-
     const [formData, setFormData] = useState({
         name: '',
         image: null as File | null,
@@ -57,7 +55,7 @@ export default function UpdateInformation() {
         } catch (error) {
             console.error('Failed to load profile data:', error);
         }
-    }, [token]);
+    }, []);
 
     useEffect(() => {
         loadProfileData();
@@ -87,7 +85,9 @@ export default function UpdateInformation() {
         try {
             const response = await updateProfile('instructor/update', token as string, data);
             if (response && response.status === 200 && response.item) {
-
+                toast.success('تم تحديث البيانات', {
+                    autoClose: 1500,
+                });
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     name: response.item.first_name || prevFormData.name,
@@ -97,9 +97,7 @@ export default function UpdateInformation() {
                     years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
                     hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
                 }));
-                toast.success('تم تحديث البيانات', {
-                    autoClose: 1500,
-                });
+                
             } else {
                 console.error('Unexpected server response:', response);
                 toast.error('فشل تعديل البيانات!');

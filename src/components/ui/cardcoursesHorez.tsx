@@ -48,14 +48,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
   }, []);
 
   return (
-    <div className="border border-[#0000001A] rounded-xl p-3 flex items-center">
-      <div className="w-2/4 relative overflow-hidden rounded-2xl">
+    <div className="border border-[#0000001A] rounded-xl p-3 flex flex-col lg:flex-row items-center">
+      <div className="w-full lg:w-2/4 relative overflow-hidden rounded-2xl">
         <Link href={`/course/${id}`}>
           <img src={imageSrc} alt="Course Image" className="w-full h-full object-fill" />
         </Link>
       </div>
 
-      <div className="w-full px-4 space-y-3">
+      <div className="w-full px-4 space-y-3 mt-3 lg:mt-0">
         <div className="flex items-center justify-between">
           <Link href={`/course/${id}`} className=" font-bold text-dark">{title}</Link>
           <p className="text-[#FE7A36]">

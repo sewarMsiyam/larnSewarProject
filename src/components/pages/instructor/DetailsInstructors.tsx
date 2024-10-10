@@ -115,10 +115,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
 
             <section className="my-12 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
 
-
-
-
-                {instructor.qualification.length > 0 ? (
+                {instructor.qualification && instructor.qualification.length > 0 ? (
                     <>
                         <div className="flex items-start gap-3">
                             <img src="/moahelat.svg" alt="" />
@@ -135,9 +132,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                     </>
                 )}
 
-
-
-                {instructor.experience.length > 0 ? (
+                {instructor.experience && instructor.experience.length > 0 ? (
                     <>
                         <div className="flex items-start gap-3">
                             <img src="/kebra.png" alt="" />
@@ -155,7 +150,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                 )}
 
 
-                {instructor.achievement.length > 0 ? (
+                {instructor.achievement && instructor.achievement.length > 0 ? (
                     <>
                         <div className="flex items-start gap-3">
                             <img src="/engaz.png" alt="" />
@@ -180,7 +175,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
             </section>
 
 
-            <section className="mb-8 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-10 space-y-10">
+            <section className="mb-8 container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 lg:p-10 space-y-10">
                 <CourseInstrctor id={instructor.id} />
             </section>
 

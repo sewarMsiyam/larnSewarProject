@@ -26,8 +26,8 @@ export default function InstructorsPage() {
       <section className='container my-10'>
         <TitleSection text="المعلمين" />
 
-        
-
+        <InstructorsList />
+{/* 
         <Tabs defaultValue="tawjihi" dir="rtl" className="text-center">
           <TabsList className='mb-5'>
             <TabsTrigger value="tawjihi">معلم توجيهي</TabsTrigger>
@@ -37,8 +37,8 @@ export default function InstructorsPage() {
 
 
 
-          <InstructorsList />
-        </Tabs>
+          
+        </Tabs> */}
 
  {/*
         <Tabs defaultValue="tawjihi" dir="rtl" className="text-center">

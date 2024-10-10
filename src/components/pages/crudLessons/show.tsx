@@ -31,11 +31,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 interface LessonsProps {
     id: string;
+    token: string;
 }
-export default function ShowLessons({ id }: LessonsProps) {
+export default function ShowLessons({ id , token }: LessonsProps) {
     const t = useTranslations('HomePage');
-    const { data: session, status } = useSession();
-    const token = (session?.user as { authToken?: string | null })?.authToken || '';
     const [lessons, setLessons] = useState<Lessons[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -47,8 +46,6 @@ export default function ShowLessons({ id }: LessonsProps) {
 
     useEffect(() => {
         const loadLessons = async () => {
-            console.log("async token =", token);
-
             if (token) {
                 try {
                     const fetchedLessons = await fetchAllToken(`instructor/courses/${id}/lessons`, token);
@@ -68,7 +65,7 @@ export default function ShowLessons({ id }: LessonsProps) {
             }
         };
         loadLessons();
-    }, [id]);
+    }, []);
 
 
     const handleDeleteClick = (lessons: Lessons) => {
@@ -107,9 +104,6 @@ export default function ShowLessons({ id }: LessonsProps) {
     };
 
 
-    if (status === 'loading') {
-    return <div>Loading token ...</div>;
-    }
 
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
@@ -150,7 +144,7 @@ export default function ShowLessons({ id }: LessonsProps) {
                         <tr>
                             <th className="text-start">اسم الدرس</th>
                             <th className="text-start">رابط الزوم </th>
-                            <th className="text-start">الملخص</th>
+                            <th className="text-start">رابط الفيديو المسجل</th>
                             <th className="">#</th>
                         </tr>
                     </thead>
@@ -158,9 +152,37 @@ export default function ShowLessons({ id }: LessonsProps) {
                         {lessons.map((lesson, index) => (
                             <>
                                 <tr key={index}  className="">
-                                    <td className="px-5 py-5 font-bold bg-gray-100 rounded-s-2xl ">{lesson.id}. {lesson.name}</td>
-                                    <td className="bg-gray-100"><a href={lesson.zoom_link} target="_blank" className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 after:content-['_↗'] hover:underline hover:decoration-sky-500/30">{lesson.zoom_link}</a></td>
-                                    <td className="bg-gray-100"><a href={lesson.recorded_video_link} target="_blank" className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 after:content-['_↗'] hover:underline hover:decoration-sky-500/30">{lesson.recorded_video_link}</a></td>
+                                    <td className="px-5 py-5 font-bold bg-gray-100 rounded-s-2xl ">{index}. {lesson.name}</td>
+                                    <td className="bg-gray-100">
+                                        {lesson.zoom_link && lesson.zoom_link.length > 0 ? (
+                                            <a 
+                                                href={lesson.zoom_link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
+                                            >
+                                                {lesson.zoom_link}
+                                                <span className="ms-1">↗</span>
+                                            </a>
+                                        ) : (
+                                            <span className="text-gray-500">لا يوجد رابط زوم , راجع الفيديو المسجل</span>
+                                        )}
+                                    </td>
+                                    <td className="bg-gray-100">
+                                        {lesson.recorded_video_link && lesson.recorded_video_link.length > 0 ? (
+                                            <a 
+                                                href={lesson.recorded_video_link} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
+                                            >
+                                                {lesson.recorded_video_link}
+                                                <span className="ms-1">↗</span>
+                                            </a>
+                                        ) : (
+                                            <span className="text-gray-500">لا يوجد فيديو مسجل بعد</span>
+                                        )}
+                                    </td>
                                   <td className="px-5 py-5 font-bold bg-gray-100 rounded-e-2xl ">
                                         <div className="relative">
                                             <DropdownMenu>

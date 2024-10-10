@@ -1,17 +1,16 @@
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from '@/components/ui/button';
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsPayment"
-import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import CheckoutCard from "@/components/pages/checkout/cardPament";
 import CheckoutBank from "@/components/pages/checkout/bankPament";
 import CheckoutVodafone from "@/components/pages/checkout/vodafonePament";
 
+type CheckoutFormProps = {
+    token: string;
+};
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ token }: CheckoutFormProps) {
     return (
         <div className="col-span-2">
             <div className="bg-white p-10 rounded-2xl shadow-md">
@@ -66,7 +65,7 @@ export default function CheckoutForm() {
                         </RadioGroup>
                     </TabsList>
                     <CheckoutCard />
-                    <CheckoutBank />
+                    <CheckoutBank token={token} />
                     <CheckoutVodafone />
                 </Tabs>
             </div>

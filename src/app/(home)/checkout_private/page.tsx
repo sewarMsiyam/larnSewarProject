@@ -23,13 +23,10 @@ export default async function CheckoutCourse() {
         <>
             {session ? (
                 <>
-                    {/* <p>Welcome, {session.user?.name}</p>
-                    <p>token, {session.user?.authToken}</p> */}
-
                     <Breadcrumb breadcrumbs={breadcrumbs} />
                     <div className="container my-10">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <CheckoutForm />
+                            <CheckoutForm token={session.user?.authToken} />
                             <InstructionPrivate />
 
                         </div>

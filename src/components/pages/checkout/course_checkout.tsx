@@ -5,13 +5,13 @@ import { useSession } from "next-auth/react";
 import { fetchOneToken } from '@/app/api/dataFetch';
 import SkeletonCheckoutCourse from '@/components/ui/SkeletonCheckoutCourse';
 import { Course  } from '@/app/api/interfaces';
+type CheckoutFormProps = {
+    token: string;
+};
 
-export default function CheckoutCourse() {
+export default function CheckoutCourse({ token }: CheckoutFormProps) {
     const searchParams = useSearchParams();
-    const session = useSession();
     const id = searchParams.get('id');
-const token = (session?.data?.user as { authToken?: string | null })?.authToken;
-
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -28,7 +28,6 @@ useEffect(() => {
             setLoading(false);
         }
     };
-
     fetchcourse();
 }, []);
 

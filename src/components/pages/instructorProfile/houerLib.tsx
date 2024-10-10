@@ -2,8 +2,10 @@
 import { TabsContent } from "@/components/ui/tabsProfile"
 import { Calendar } from "@/components/ui/calendar"
 
-
-export default function HouerLib() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function HouerLib({ token }: CheckoutFormProps) {
     return (
         <>
             <TabsContent value="houerLib" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">

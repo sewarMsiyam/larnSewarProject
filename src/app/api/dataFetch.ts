@@ -204,7 +204,7 @@ export async function fetchOne(endpoint: string, id: string, mainCategory?: stri
 }
 
 export async function fetchOneToken(endpoint: string, id: string, token: string, mainCategory?: string) {
-  console.log(buildUrl(endpoint, mainCategory, id));
+  console.log("رابط ال api "+buildUrl(endpoint, mainCategory, id));
 
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
@@ -293,27 +293,22 @@ export async function updateProfile(endpoint: string, token?: string, data?: any
       timeout: 8000,
     });
 
-    const result = await response.json();
-    console.log('Server response:', result);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
-    }
-
-    if (result.status === true && result.item) {
-      console.log('Profile updated successfully. New data:', result.item);
+     const result = await response.json();
+    if (response.ok) {
       return result;
     } else {
       throw new Error(result.message || 'Failed to update profile');
     }
   } catch (error) {
     console.error('Failed to update profile:', error);
-    throw error; // Re-throw the error so the caller can handle it
+    throw error;
   }
 }
 
 
 export async function fetchProfileData(endpoint: string, token: string | null) {
+  console.log("الدالة")
+  console.log("api = "+ buildUrl(endpoint) )
   try {
     const response = await fetchRetry(buildUrl(endpoint), {
       method: 'GET',
@@ -378,7 +373,8 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
   }
 }
 
-export async function fetchOneTokenUpdateCourse(endpoint: string, id: number, token: string, mainCategory?: string) {
+export async function fetchOneTokenUpdateCourse(endpoint: string, id: string, token: string, mainCategory?: string) {
+  console.log(buildUrl(endpoint, mainCategory, id.toString()));
    try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id.toString()), {
       method: 'GET',
@@ -389,11 +385,10 @@ export async function fetchOneTokenUpdateCourse(endpoint: string, id: number, to
       },
       timeout: 8000,
     });
-
+    console.log(response);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
     return await response.json();
     //  return result.item ? result.item : null;
   } catch (error) {

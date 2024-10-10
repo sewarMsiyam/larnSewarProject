@@ -16,11 +16,12 @@ import { useRouter } from 'next/navigation';
 
 interface LessonsProps {
     id: string; 
+    lessonId: string; 
+    token: string;
+
 }
-export default function UpdateLessons({ id }: LessonsProps) {
+export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
     const t = useTranslations('HomePage');
-    const { data: session, status } = useSession();
-    const token = (session?.user as { authToken?: string | null })?.authToken || '';
     const [lessons, setLessons] = useState<Lessons[]>([]);
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -28,31 +29,34 @@ export default function UpdateLessons({ id }: LessonsProps) {
 
     const [formData, setFormData] = useState({
         name_ar: "",
-        course_id: id,
+        course_id: "",
         recorded_video_link: "",
         zoom_link: "",
+        course_name: "",
     });
-
-    console.log("token =", token);
+     const [errors, setErrors] = useState({
+        name_ar: "",
+        link: "",
+    });
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
-                console.log('id = ' + id + 'token = ' + token)
-                setLoading(true);
-                // const result = await fetchOneTokenUpdateCourse(`instructor/courses/${id}/lessons`, id, token as string);
-                // if (result.status) {
-                //     console.log(result.item)
-                //     setFormData(prevFormData => ({
-                //         ...prevFormData,
-                //         name_ar: result.item.name_ar,
-                //         course_id: result.item.course_id,
-                //         recorded_video_link: result.item.recorded_video_link,
-                //         ...result.item,
-                //     }));
-                // } else {
-                //     toast.error("Failed to fetch course data");
-                // }
+                setLoading(true)
+                const result = await fetchOneTokenUpdateCourse(`instructor/lessons`, lessonId, token as string);
+                if (result.status) {
+                    console.log(result.item)
+                    setFormData(prevFormData => ({
+                        ...prevFormData,
+                        name_ar: result.item.name,
+                        course_name: result.item.course_name,
+                        course_id: result.item.course_id,
+                        recorded_video_link: result.item.recorded_video_link,
+                        ...result.item,
+                    }));
+                } else {
+                    toast.error("Failed to fetch course data");
+                }
             } catch (error) {
                 console.error("Error fetching course data:", error);
                 toast.error("An error occurred while fetching course data");
@@ -70,9 +74,29 @@ export default function UpdateLessons({ id }: LessonsProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+        setErrors(prev => ({ ...prev, [id]: "", link: "" }));
+
+    };
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = { name_ar: "", link: "" };
+
+        if (!formData.name_ar.trim()) {
+            newErrors.name_ar = "اسم الدرس مطلوب";
+            isValid = false;
+        }
+
+        if (!formData.zoom_link && !formData.recorded_video_link) {
+            newErrors.link = "يجب إدخال رابط الزوم أو رابط الفيديو المسجل";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
     };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!validateForm()) return;
         setIsLoading(true);
         const courseData = new FormData();
 
@@ -94,6 +118,7 @@ export default function UpdateLessons({ id }: LessonsProps) {
                     course_id: id,
                     recorded_video_link: "",
                     zoom_link: "",
+                    course_name: "",
                 });
             } else {
                 toast.error(result.message || "فشل في إنشاء الكورس.");
@@ -107,17 +132,6 @@ export default function UpdateLessons({ id }: LessonsProps) {
     };
 
 
-
-
-
-
-
-
-
-    if (status === 'loading') {
-        return <div>Loading token ...</div>;
-    }
-
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
             loading ..
@@ -125,10 +139,12 @@ export default function UpdateLessons({ id }: LessonsProps) {
     );
 
     return (
-        <>
-            <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
+        <> 
+            {/* id = {id}
+            lessonId = {lessonId} */}
+           <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
                 <div className="flex justify-between items-center mb-8">
-                    <h3 className="font-bold text-lg">تعديل الدرس</h3>
+                    <h3 className="font-bold text-lg">تعديل الدرس للكورس <span className="text-primary text-xl">({formData.course_name})</span></h3>
                     <Link href={`/course/${id}/lessons`} className="text-xs text-[#FF6F61] flex items-center space-x-5 cursor-pointer">
                         <svg width="5" height="9" className="mx-1" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1.40039 11.4015L6.40039 6.38725L1.40039 1.37305" stroke="#FF6F61" strokeWidth="2.13068" strokeLinecap="round" strokeLinejoin="round" />
@@ -153,9 +169,11 @@ export default function UpdateLessons({ id }: LessonsProps) {
                             id="name_ar"
                             value={formData.name_ar}
                             onChange={handleChange}
-                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
                             placeholder="اسم الدرس"
+                            required
                         />
+                        {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                     </div>
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الزوم</Label>
@@ -164,9 +182,9 @@ export default function UpdateLessons({ id }: LessonsProps) {
                             id="zoom_link"
                             value={formData.zoom_link}
                             onChange={handleChange}
-                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            placeholder="اسم الدرس"
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
                         />
+                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل</Label>
@@ -176,7 +194,6 @@ export default function UpdateLessons({ id }: LessonsProps) {
                             value={formData.recorded_video_link}
                             onChange={handleChange}
                             className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            placeholder="اسم الدرس"
                         />
                     </div>
                      <div className="text-end">

@@ -28,7 +28,7 @@ export default function CoursesHome() {
         async function fetchData() {
             try {
                 setLoading(true);
-                const tawjihiData = await fetchAll<Course>('courses?main_category=tawjhi');
+                const tawjihiData = await fetchAll<Course>('courses?main_category=tawjihi');
                 const universityData = await fetchAll<Course>('courses?main_category=university');
                 setTawjihiCourse(tawjihiData || []);
                 setUniversityCourse(universityData || []);

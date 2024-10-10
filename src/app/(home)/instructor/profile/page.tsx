@@ -5,7 +5,7 @@ import ProfileIndex from "@/components/pages/instructorProfile/index"
 import Unauthenticated from "@/components/Unauthenticated"
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
-import Link from 'next/link';
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "سوار -  الملف الشخصي",
@@ -16,6 +16,14 @@ export const metadata: Metadata = {
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      redirect("/student/login?callbackUrl=/instructor/profile");
+    }
+    const authToken = session.user.authToken;
+    if (typeof authToken !== 'string' || !authToken) {
+      console.error("Auth token is missing or invalid");
+      return <div>An error occurred. Please try logging in again.</div>;
+    }
 
   const breadcrumbs = [
     { label: 'الرئيسية', href: '/' },
@@ -28,7 +36,7 @@ export default async function Profile() {
         <>
           <Breadcrumb breadcrumbs={breadcrumbs} />
           <section>
-            <ProfileIndex />
+            <ProfileIndex token={authToken} />
           </section>
         </>
       ) : (

@@ -88,3 +88,12 @@ export interface Lessons {
     zoom_link: string;
     status: string;
 }
+
+
+export interface Checkout {
+    id: number;
+    name: string;
+    description: string;
+}
+
+

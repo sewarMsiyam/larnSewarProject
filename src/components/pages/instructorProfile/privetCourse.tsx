@@ -1,8 +1,11 @@
 "use client";
 import { TabsContent } from "@/components/ui/tabsProfile"
 
+type CheckoutFormProps = {
+    token: string;
+};
 
-export default function PrivetCourse() {
+export default function PrivetCourse({ token }: CheckoutFormProps) {
     return (
         <>
             <TabsContent value="privetCourse" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">

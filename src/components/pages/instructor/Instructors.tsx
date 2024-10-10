@@ -93,28 +93,23 @@ export default function InstructorsList() {
   // }, []);
 
 
-  if (error) return (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
-    <SkeletonInstructor />
-    <div className='hidden md:block'>
-      <SkeletonInstructor />
+  if (error) return (
+    <div className="text-center text-red-500 text-2xl mt-10">
+      {error}
     </div>
-    <div className='hidden lg:block'>
-      <SkeletonInstructor />
-    </div>
-  </div>
   );
 
-  if (loading) return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
-      <SkeletonInstructor />
-      <div className='hidden md:block'>
-        <SkeletonInstructor />
-      </div>
-      <div className='hidden lg:block'>
-        <SkeletonInstructor />
-      </div>
-    </div>
-  );
+  // if (loading) return (
+  //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
+  //     <SkeletonInstructor />
+  //     <div className='hidden md:block'>
+  //       <SkeletonInstructor />
+  //     </div>
+  //     <div className='hidden lg:block'>
+  //       <SkeletonInstructor />
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <>
@@ -154,8 +149,8 @@ export default function InstructorsList() {
         </div>
       </div>
 
-      <TabsContent value="tawjihi">
-        {tawjihiInstructors.length > 0 ? (
+      {/* <TabsContent value="tawjihi"> */}
+        {/* {tawjihiInstructors.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tawjihiInstructors.map(renderInstructorCard)}
           </div>
@@ -169,25 +164,19 @@ export default function InstructorsList() {
               <SkeletonInstructor />
             </div>
           </div>
-        )}
-      </TabsContent>
-      <TabsContent value="university">
+        )} */}
+      {/* </TabsContent> */}
+      {/* // <TabsContent value="university"> */}
         {universityInstructors.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {universityInstructors.map(renderInstructorCard)}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <SkeletonInstructor />
-            <div className='hidden md:block'>
-              <SkeletonInstructor />
-            </div>
-            <div className='hidden lg:block'>
-              <SkeletonInstructor />
-            </div>
-          </div>
+          <>
+            لا يوجد معلمين 
+          </>
         )}
-      </TabsContent>
+      {/* </TabsContent> */}
 
     </>
   );

@@ -9,11 +9,12 @@ import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-export default function UpdateInformation() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function UpdateInformation({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
-    const session = useSession();
-    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -21,7 +22,6 @@ export default function UpdateInformation() {
         email: '',
         phone: '',
         phone_code: '',
-        image: null as File | null,
     });
 
     const loadProfileData = useCallback(async () => {
@@ -36,7 +36,6 @@ export default function UpdateInformation() {
                     email: profileData.item.email || '',
                     phone: profileData.item.phone || '',
                     phone_code: profileData.item.phone_code || '',
-                    image: profileData.item.image || '',
                 });
             }
         } catch (error) {
@@ -62,17 +61,14 @@ export default function UpdateInformation() {
         const data = {
             first_name: formData.first_name,
             last_name: formData.last_name,
-            image: formData.image
         };
         try {
             const response = await updateProfile('student/update', token as string, data);
-            if (response && response.status === 200 && response.item) {
-
+            if (response.status === 200) {
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     first_name: response.item.first_name || prevFormData.first_name,
                     last_name: response.item.last_name || prevFormData.last_name,
-                    image: response.item.image || prevFormData.image,
                 }));
                 toast.success('تم تحديث البيانات سجل دخول مرة اخرى', {
                     autoClose: 1500,
@@ -152,20 +148,10 @@ export default function UpdateInformation() {
                         </div>
                     </div>
                     <div>
-                        <div>
-                            <Label htmlFor="image">image </Label>
-                            <Input
-                                id="image"
-                                type="file"
-                                className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-not-allowed"
-                            // value={formData.image}
-                            />
-                        </div>
-
-                    </div>
+                </div>
                     <div className="text-end">
-                        <Button type="submit" className="btn-primary rounded-2xl font-medium py-2.5 px-8 md:px-3 lg:px-16 m-1 text-white before:ease relative overflow-hidden btn-primary transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
-                            حفظ التغيرات
+                        <Button type="submit" disabled={loading} className="btn-primary rounded-2xl font-medium py-2.5 px-8 md:px-3 lg:px-16 m-1 text-white before:ease relative overflow-hidden btn-primary transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                            {loading ? "جاري حفظ التغيرات ..." : "حفظ التغيرات"}
                         </Button>
                     </div>
                 </div>

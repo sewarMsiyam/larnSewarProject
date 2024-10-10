@@ -5,13 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
-import { useSession } from "next-auth/react";
 
-
-export default function ImgUser() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function ImgUser({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
-    const session = useSession();
-    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = useState({

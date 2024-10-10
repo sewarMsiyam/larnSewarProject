@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/tooltip"
 import Link from "next/link";
 
-export default function UserCourse() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function UserCourse({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
-    const session = useSession();
-    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -71,8 +72,8 @@ export default function UserCourse() {
                     <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
                 </div>
 
-                {courses.map(course => (
-                    <div key={course.id} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
+                {courses.map((course, index) => (
+                    <div key={index} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
                         <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">
@@ -112,7 +113,18 @@ export default function UserCourse() {
                             <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                 <p className="flex-none">رابط الزوم</p>
                                 <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
-                                    <Link href={course.zoom_link} target='_blank' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">{course.zoom_link}</Link>
+                                    {/* <Link href={course.zoom_link} target='_blank' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">{course.zoom_link}</Link> */}
+                                    {course.zoom_link ? (
+                                        <Link 
+                                            href={course.zoom_link} 
+                                            target='_blank' 
+                                            className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden"
+                                        >
+                                            {course.zoom_link}
+                                        </Link>
+                                        ) : (
+                                        <span className="text-gray-400">No Zoom link available</span>
+                                        )}
                                 </div>
                                 <div className="flex-none">
                                     <TooltipProvider>

@@ -16,11 +16,11 @@ import { useRouter } from 'next/navigation';
 
 interface LessonsProps {
     id: string;
+    token: string;
 }
-export default function CreateLessons({ id }: LessonsProps) {
+export default function CreateLessons({ id , token }: LessonsProps) {
     const t = useTranslations('HomePage');
-    const { data: session, status } = useSession();
-    const token = (session?.user as { authToken?: string | null })?.authToken || '';
+
     const [lessons, setLessons] = useState<Lessons[]>([]);
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -32,19 +32,40 @@ export default function CreateLessons({ id }: LessonsProps) {
         recorded_video_link: "",
         zoom_link: "",
     });
-
-    console.log("token =", token);
+     const [errors, setErrors] = useState({
+        name_ar: "",
+        link: "",
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+        setErrors(prev => ({ ...prev, [id]: "", link: "" }));
     };
 
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = { name_ar: "", link: "" };
+
+        if (!formData.name_ar.trim()) {
+            newErrors.name_ar = "اسم الدرس مطلوب";
+            isValid = false;
+        }
+
+        if (!formData.zoom_link && !formData.recorded_video_link) {
+            newErrors.link = "يجب إدخال رابط الزوم أو رابط الفيديو المسجل";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
 
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!validateForm()) return;
         setIsLoading(true);
         const courseData = new FormData();
 
@@ -78,9 +99,6 @@ export default function CreateLessons({ id }: LessonsProps) {
         }
     };
 
-    if (status === 'loading') {
-        return <div>Loading token ...</div>;
-    }
 
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
@@ -117,9 +135,11 @@ export default function CreateLessons({ id }: LessonsProps) {
                             id="name_ar"
                             value={formData.name_ar}
                             onChange={handleChange}
-                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
                             placeholder="اسم الدرس"
+                            required
                         />
+                        {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                     </div>
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الزوم</Label>
@@ -128,9 +148,9 @@ export default function CreateLessons({ id }: LessonsProps) {
                             id="zoom_link"
                             value={formData.zoom_link}
                             onChange={handleChange}
-                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            placeholder="اسم الدرس"
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
                         />
+                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل</Label>
@@ -139,9 +159,9 @@ export default function CreateLessons({ id }: LessonsProps) {
                             id="recorded_video_link"
                             value={formData.recorded_video_link}
                             onChange={handleChange}
-                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            placeholder="اسم الدرس"
+                           className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
                         />
+                        
                     </div>
                      <div className="text-end">
                         <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">

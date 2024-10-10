@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsProfile"
 import Image from "next/image";
 import UpdateInformation from "@/components/pages/instructorProfile/UpdateInformation";
@@ -10,14 +9,17 @@ import ImgUser from "@/components/pages/instructorProfile/ImgUser";
 import PrivetCourse from "@/components/pages/instructorProfile/privetCourse";
 import HouerLib from "@/components/pages/instructorProfile/houerLib";
 
-export default function ProfileInstructor() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function ProfileInstructor({token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
 
     return (
         <>
             <section className="lg:container mb-20">
                 <div className="flex flex-col justify-center items-center space-y-10 -mt-10">
-                    <ImgUser />
+                    <ImgUser token={token}  />
                     <Tabs defaultValue="course" dir="rtl" className='w-full'>
                         <TabsList className='mb-5'>
                             <TabsTrigger value="course">
@@ -40,10 +42,10 @@ export default function ProfileInstructor() {
                             </TabsTrigger>
                         </TabsList>
 
-                        <CourseUser />
-                        <PrivetCourse />
-                        <HouerLib />
-                        <UpdateInformation />
+                        <CourseUser token={token} />
+                        <PrivetCourse token={token} />
+                        <HouerLib token={token} />
+                        <UpdateInformation token={token}  />
 
                     </Tabs>
 

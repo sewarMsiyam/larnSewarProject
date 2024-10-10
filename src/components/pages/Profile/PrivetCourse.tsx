@@ -15,11 +15,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link";
-
-export default function PrivetInstructors() {
+type CheckoutFormProps = {
+    token: string;
+};
+export default function PrivetInstructors({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
-    const session = useSession();
-    const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
     const [instructors, setInstructors] = useState<Instructors[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -71,8 +71,8 @@ export default function PrivetInstructors() {
                     <p className='text-gray-300'>عدد حجز الخصوصي  <span className='text-gray-950'>{instructors.length}</span></p>
                 </div>
 
-                {instructors.map(instructor => (
-                    <div key={instructor.id} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
+                {instructors.map((instructor, index) => (
+                    <div key={index} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
                         <img src={instructor.image} alt="" className="w-full h-56 lg:w-1/5 lg:h-auto rounded-full" />
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">

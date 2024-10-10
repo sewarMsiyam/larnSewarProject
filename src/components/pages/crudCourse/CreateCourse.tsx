@@ -21,10 +21,12 @@ import {
 import { useRouter } from 'next/navigation';
 import { CreateCourseFun } from "@/app/api/dataFetch";
 
-export default function CreateCourse() {
+type CheckoutFormProps = {
+    token: string;
+};
+
+export default function CreateCourse({ token }: CheckoutFormProps) {
     const t = useTranslations("HomePage");
-    const { data: session } = useSession();
-    const token = (session?.user as { authToken?: string | null })?.authToken;
     const router = useRouter();
 
     // State

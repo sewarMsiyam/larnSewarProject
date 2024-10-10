@@ -22,6 +22,8 @@ import { CreateCourseFun, fetchOneTokenUpdateCourse } from "@/app/api/dataFetch"
 
 interface DetailsInstructorsProps {
     id: number;
+    token: string;
+
 }
 
 interface CourseFeature {
@@ -48,10 +50,8 @@ interface FormData {
 }
 
 
-export default function UpdateCourse({ id }: DetailsInstructorsProps) {
+export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const t = useTranslations("HomePage");
-    const { data: session } = useSession();
-    const token = (session?.user as { authToken?: string | null })?.authToken;
     const [step, setStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
@@ -78,7 +78,7 @@ export default function UpdateCourse({ id }: DetailsInstructorsProps) {
             try {
                 console.log('id = ' + id + 'token = ' + token)
                 setLoading(true);
-                const result = await fetchOneTokenUpdateCourse(`instructor/courses`, id , token as string);
+                const result = await fetchOneTokenUpdateCourse(`instructor/courses`, id.toString() , token as string);
                 if (result.status) {
                     console.log(result.item)
                     setFormData(prevFormData => ({
@@ -464,7 +464,7 @@ if (loading) {
                                     )}
                                 </div>
                             </div>
-                             <div className="mb-4">
+                             {/* <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الفيديو التعريفي للكورس</Label>
                                 <Input
                                     id="introduction_video"
@@ -472,7 +472,7 @@ if (loading) {
                                     onChange={handleChange}
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                 />
-                            </div>
+                            </div> */}
                              <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الزوم </Label>
                                 <Input
