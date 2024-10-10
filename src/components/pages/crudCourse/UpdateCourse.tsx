@@ -23,20 +23,16 @@ import { CreateCourseFun, fetchOneTokenUpdateCourse } from "@/app/api/dataFetch"
 interface DetailsInstructorsProps {
     id: number;
     token: string;
-
 }
-
 interface CourseFeature {
     id: number;
     feature: string;
 }
-
 interface CourseDuration {
     day: string;
     from_time: string;
     to_time: string;
 }
-
 interface FormData {
     name: string;
     description: string;
@@ -58,6 +54,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
+    const [errors, setErrors] = useState<{[key: string]: string}>({});
 
     const [formData, setFormData] = useState({
         name_ar: "",
@@ -67,8 +64,9 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         introduction_video: "",
         price: "",
         category: "",
-        feature_ar: [] as { id: number; feature: string }[],
+        feature_ar: [] as CourseFeature[],
         image: null as File | null,
+        currentImage: "",
         zoom_link: "",
         course_days: [{ day: "", from_time: "", to_time: "" }],
     });
@@ -87,18 +85,20 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                          description_ar: result.item.description,
                          course_result_desc_ar: result.item.description,
                          duration: result.item.duration,
-                        //  introduction_video: result.item.introduction_video,
+                         introduction_video: result.item.introduction_video,
                          price: result.item.price,
                          category: result.item.category,
                          feature_ar: result.item.course_features,
                          zoom_link: result.item.zoom_link,
                          course_days: result.item.course_durations,
-
+                         currentImage: result.item.image || "", 
                         ...result.item,
                     }));
                     if (result.item.image) {
                         setSelectedImage(result.item.image);
                     }
+                    console.log("Category loaded:", result.item.category); // Log the loaded category
+
                 } else {
                     toast.error("Failed to fetch course data");
                 }
@@ -113,48 +113,52 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         if (id && token) {
             fetchCourseData();
         }
-    }, [id , token]);
+    }, []);
 
-    // Refs
+  // Refs
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleImageClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
-
     // Handlers
-    const nextStep = () => setStep(step + 1);
+      const nextStep = () => {
+        if (validateStep(step)) {
+            setStep(step + 1);
+        }
+    };
     const prevStep = () => setStep(step - 1);
+        console.log("formData=" +formData.currentImage)
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && inputValue.trim() !== '') {
             e.preventDefault();
+            const newFeature: CourseFeature = {
+                id: Date.now(), // Use a temporary id
+                feature: inputValue.trim()
+            };
             setFormData(prev => ({
                 ...prev,
-                // feature_ar: [...(prev.feature_ar || []), inputValue.trim()]
-                 feature_ar: [
-                ...(prev.feature_ar || []),
-                {
-                    id: prev.feature_ar.length + 1,
-                    feature: inputValue.trim(),
-                },
-            ],
+                feature_ar: [...(prev.feature_ar || []), newFeature]
             }));
             setInputValue('');
+            setErrors(prev => ({ ...prev, feature_ar: '' }));
         }
     };
 
-    const removeTag = (indexToRemove: number) => {
+    const removeTag = (idToRemove: number) => {
         setFormData(prev => ({
             ...prev,
-            feature_ar: (prev.feature_ar || []).filter((_, index) => index !== indexToRemove)
+            feature_ar: prev.feature_ar.filter(feature => feature.id !== idToRemove)
         }));
     };
+        console.log("formData=" +formData.currentImage)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+        setErrors(prev => ({ ...prev, [id]: '' }));
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,6 +176,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         const updatedDays = [...formData.course_days];
         updatedDays[index] = { ...updatedDays[index], [field]: value };
         setFormData(prev => ({ ...prev, course_days: updatedDays }));
+        setErrors(prev => ({ ...prev, [`course_days_${index}`]: '' }));
     };
 
     const addCourseDay = () => {
@@ -180,9 +185,72 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             course_days: [...prev.course_days, { day: "", from_time: "", to_time: "" }]
         }));
     };
+        console.log("formData=" +formData.currentImage)
+
+     const validateStep = (currentStep: number) => {
+        const newErrors: {[key: string]: string} = {};
+
+        switch (currentStep) {
+            case 1:
+                if (!formData.name_ar) newErrors.name_ar = "الرجاء إدخال اسم الكورس";
+                if (!formData.price) newErrors.price = "الرجاء إدخال سعر الكورس";
+                if (!formData.duration) newErrors.duration = "الرجاء إدخال مدة الحصة";
+                if (!formData.description_ar) newErrors.description_ar = "الرجاء إدخال محتوى الكورس";
+                if (formData.feature_ar.length === 0) newErrors.feature_ar = "الرجاء إدخال ميزة واحدة على الأقل للكورس";
+                break;
+            case 2:
+                if (!formData.course_result_desc_ar) newErrors.course_result_desc_ar = "الرجاء إدخال نتائج الكورس";
+                formData.course_days.forEach((day, index) => {
+                    if (!day.day) {
+                        newErrors[`course_days_${index}_day`] = "الرجاء اختيار اليوم الدرس";
+                    }
+                    if (!day.from_time) {
+                        newErrors[`course_days_${index}_from_time`] = "الرجاء إدخال وقت البداية الحصة";
+                    }
+                    if (!day.to_time) {
+                        newErrors[`course_days_${index}_to_time`] = "الرجاء إدخال وقت النهاية نهاية الحصة";
+                    }
+                });
+                break;
+            case 3:
+                if (!formData.category) {
+                    newErrors.category = "الرجاء اختيار فئة المستهدفة للكورس";
+                }
+                if (!formData.image) {
+                    newErrors.image = "الرجاء تحميل صورة للكورس";
+                }
+                if (!formData.introduction_video) {
+                    newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
+                }
+            break;
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+        console.log("formData=" +formData.currentImage)
+
+    const validateEndStep = () => {
+        const newErrors: {[key: string]: string} = {};
+
+        if (!formData.category) {
+            newErrors.category = "الرجاء اختيار فئة المستهدفة في الكورس";
+        }
+        if (!formData.currentImage && !formData.image) {
+            newErrors.image = "الرجاء تحميل صورة الكورس";
+        }
+        if (!formData.introduction_video) {
+            newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+        console.log("formData=" +formData.currentImage)
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!validateEndStep()) return; 
         setIsLoading(true);
         const courseData = new FormData();
 
@@ -192,12 +260,8 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             }
         });
 
-        // formData.feature_ar.forEach((feature, index) => {
-        //     courseData.append(`feature_ar[${index}]`, feature);
-        // });
         formData.feature_ar.forEach((feature, index) => {
-            courseData.append(`feature_ar[${index}][id]`, feature.id.toString());
-            courseData.append(`feature_ar[${index}][feature]`, feature.feature);
+            courseData.append(`feature_ar[${index}]`, feature);
         });
 
         formData.course_days.forEach((day, index) => {
@@ -206,22 +270,38 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             courseData.append(`course_days[${index + 1}][to_time]`, day.to_time);
         });
 
-        if (formData.image instanceof File) {
+          if (formData.image) {
             courseData.append('image', formData.image);
+        } else if (formData.currentImage) {
+            courseData.append('currentImage', formData.currentImage);
         }
 
+        console.log("formData=" +formData.currentImage)
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
             if (result.status) {
-                toast.success(result.message || "تم تحديث الكورس بنجاح");
+                toast.success(result.message || "تم إنشاء الكورس بنجاح");
                 router.push('/instructor/profile');
+                setFormData({
+                    name_ar: "",
+                    description_ar: "",
+                    course_result_desc_ar: "",
+                    duration: "",
+                    introduction_video: "",
+                    price: "",
+                    image: null,
+                    category: "",
+                    feature_ar: [],
+                    zoom_link: "",
+                    course_days: [{ day: "", from_time: "", to_time: "" }],
+                });
                 setStep(1);
             } else {
-                toast.error(result.message || "فشل في تحديث الكورس.");
+                toast.error(result.message || "فشل في إنشاء الكورس.");
             }
         } catch (error: any) {
-            console.error("Error updating course:", error);
-            toast.error(error.message || "فشل في تحديث الكورس.");
+            console.error("Error creating course:", error);
+            toast.error(error.message || "فشل في إنشاء الكورس.");
         } finally {
             setIsLoading(false);
         }
@@ -288,11 +368,11 @@ if (loading) {
             <ToastContainer />
             <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
                 <div className="flex justify-between items-center mb-8">
-                    <h3 className="font-bold text-lg">نعديل كورس</h3>
+                    <h3 className="font-bold text-lg">تعديل كورس</h3>
                     {step > 1 && (
                         <div
                             onClick={prevStep}
-                            className="text-xs text-[#FF6F61] flex items-center space-x-5 cursor-pointer"
+                            className="text-[#FF6F61] flex items-center space-x-5 cursor-pointer"
                         >
                             <svg width="5" height="9" className="mx-1" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.40039 11.4015L6.40039 6.38725L1.40039 1.37305" stroke="#FF6F61" strokeWidth="2.13068" strokeLinecap="round" strokeLinejoin="round" />
@@ -314,7 +394,9 @@ if (loading) {
                                     onChange={handleChange}
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                     placeholder="اسم الكورس"
+                                    required
                                 />
+                                {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -326,7 +408,10 @@ if (loading) {
                                         value={formData.price}
                                         onChange={handleChange}
                                         placeholder="10 $ "
-                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        required
+                                         />
+                                    {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <Label className="block text-sm font-medium text-gray-700">مدة الحصة</Label>
@@ -336,7 +421,8 @@ if (loading) {
                                         value={formData.duration}
                                         onChange={handleChange}
                                         placeholder="60 دقيقة "
-                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" required />
+                                        {errors.duration && <p className="text-red-500 text-xs mt-1">{errors.duration} (ولو مدة تقريبية)</p>}
                                 </div>
                             </div>
 
@@ -347,23 +433,24 @@ if (loading) {
                                     value={formData.description_ar}
                                     onChange={handleChange}
                                     rows={4}
-                                    className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                    className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" required />
+                                    {errors.description_ar && <p className="text-red-500 text-xs mt-1">{errors.description_ar}</p>}
                             </div>
 
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">مميزات الكورس</Label>
-                                <div className="flex flex-row flex-nowrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
-                                    {formData.feature_ar.length > 0 ? (
-                                        formData.feature_ar.map((feature, index) => (
+                                <div className="flex flex-row flex-wrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                                    {formData.feature_ar && formData.feature_ar.length > 0 ? (
+                                        formData.feature_ar.map((feature) => (
                                             <div
-                                                key={index}
-                                                className="bg-white text-sm flex items-center whitespace-nowrap p-1 mr-2 rounded-full"
+                                                key={feature.id}
+                                                className="bg-white text-sm flex items-center whitespace-nowrap p-1 m-1 rounded-full"
                                             >
                                                 {feature.feature}
                                                 <button
                                                     type="button"
                                                     className="ps-2 pe-1 align-middle"
-                                                    onClick={() => removeTag(index)}
+                                                    onClick={() => removeTag(feature.id)}
                                                 >
                                                     &times;
                                                 </button>
@@ -379,10 +466,11 @@ if (loading) {
                                         placeholder="أضف ميزة واضغط Enter"
                                     />
                                 </div>
+                                {errors.feature_ar && <p className="text-red-500 text-xs mt-1">{errors.feature_ar} (بعد الكتابة اضغط انتر , حتى يتم حفظها)</p>}
                             </div>
                         </>
                     )}
-                    {step === 2 && (
+                     {step === 2 && (
                         <>
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">نتائج الكورس</Label>
@@ -392,50 +480,63 @@ if (loading) {
                                     onChange={handleChange}
                                     rows={4}
                                     className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                    {errors.course_result_desc_ar && <p className="text-red-500 text-xs mt-1">{errors.course_result_desc_ar}</p>}
                             </div>
 
                             <div className="mb-6">
                                 <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
                                 <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
                                 
-                                {Array.isArray(formData.course_days) && formData.course_days.map((day, index) => (
-                                    <div key={index} className="flex gap-2 mt-2">
-                                        <Input
-                                            type="day"
-                                            value={day.day}
-                                            onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="اليوم "
-                                        />
-                                        <Input
-                                            type="time"
-                                            value={day.from_time}
-                                            onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="وقت بداية الكورس "
-                                        />
-                                        <Input
-                                            type="time"
-                                            value={day.to_time}
-                                            onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="وقت نهاية الكورس "
-                                        />
+                                 {formData.course_days.map((day, index) => (
+                                    <div key={index} className="flex flex-wrap gap-2 mt-2">
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="text"
+                                                value={day.day}
+                                                onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
+                                                placeholder="اليوم"
+                                            />
+                                            {errors[`course_days_${index}_day`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="time"
+                                                value={day.from_time}
+                                                onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_from_time`] ? 'border-red-500' : ''}`}
+                                                placeholder="وقت بداية الكورس"
+                                            />
+                                            {errors[`course_days_${index}_from_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_from_time`]}</p>}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="time"
+                                                value={day.to_time}
+                                                onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_to_time`] ? 'border-red-500' : ''}`}
+                                                placeholder="وقت نهاية الكورس"
+                                            />
+                                            {errors[`course_days_${index}_to_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_to_time`]}</p>}
+                                        </div>
                                     </div>
                                 ))}
+
                                 <div onClick={addCourseDay} className="mt-5">
                                     <span className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 me-2 relative overflow-hidden border border-primary text-primary">إضافة يوم</span>
-                                   
                                 </div>
                             </div>
                         </>
                     )}
-                    {step === 3 && (
+                 {step === 3 && (
                         <>
                         
                             <div className="mb-5">
                                 <Label htmlFor="category"> حدد الكورس لأي فئة </Label>
-                                 <Select dir="rtl" onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                                <Select dir="rtl" value={formData.category} onValueChange={(value) => {
+                                        setFormData(prev => ({ ...prev, category: value }));
+                                        setErrors(prev => ({ ...prev, category: '' }));
+                                    }}>
                                     <SelectTrigger className="border-none text-start rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                                         <SelectValue placeholder="اختر تصنيف" />
                                     </SelectTrigger>
@@ -444,6 +545,7 @@ if (loading) {
                                         <SelectItem value="university">جامعة</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
                             </div>
 
 
@@ -456,15 +558,21 @@ if (loading) {
                                     className="hidden" 
                                     ref={fileInputRef} 
                                 />
-                                <div className="bg-gray-100 flex flex-col mt-2 justify-center items-center rounded-xl p-8" onClick={handleImageClick} >
-                                    <img src="/camera.svg" alt="" width="20" />
-                                    <h2 >أرفع الصورة هنا</h2>
-                                    {selectedImage && (
-                                    <img src={selectedImage} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                 <div className="bg-gray-100 flex flex-col mt-2 justify-center items-center rounded-xl p-8 cursor-pointer" onClick={handleImageClick}>
+                                    {selectedImage ? (
+                                        <img src={selectedImage} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                    ) : formData.currentImage ? (
+                                        <img src={formData.currentImage} alt="Current" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                    ) : (
+                                        <>
+                                            <img src="/camera.svg" alt="" width="20" />
+                                            <h2>أرفع الصورة هنا</h2>
+                                        </>
                                     )}
-                                </div>
+                                 </div>
+                                {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                             </div>
-                             {/* <div className="mb-4">
+                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الفيديو التعريفي للكورس</Label>
                                 <Input
                                     id="introduction_video"
@@ -472,7 +580,8 @@ if (loading) {
                                     onChange={handleChange}
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                 />
-                            </div> */}
+                                {errors.introduction_video && <p className="text-red-500 text-xs mt-1">{errors.introduction_video}</p>}
+                            </div>
                              <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الزوم </Label>
                                 <Input

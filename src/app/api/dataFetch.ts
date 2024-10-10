@@ -54,7 +54,7 @@ const ERRORS_DETAILS: Record<
   400: {
     status: 400,
     statusText: "BAD_REQUEST",
-    message: "The request could not be understood by our server."
+    message: "تأكد من ادخال جميع الداتا المطلوبة "
   },
   401: {
     status: 401,

@@ -162,9 +162,9 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                     </div>
                 </div>
 
-                {courses.map(course => (
+                {courses.map((course , index) => (
                     <>
-                        <div key={course.id} className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
+                        <div key={index} className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
                             <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
                             <div className="p-5 w-full">
                                 <div className="flex items-center">

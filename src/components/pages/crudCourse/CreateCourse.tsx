@@ -47,6 +47,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         zoom_link: "",
         course_days: [{ day: "", from_time: "", to_time: "" }],
     });
+    const [errors, setErrors] = useState<{[key: string]: string}>({});
 
     // Refs
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +57,11 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         }
     };
     // Handlers
-    const nextStep = () => setStep(step + 1);
+      const nextStep = () => {
+        if (validateStep(step)) {
+            setStep(step + 1);
+        }
+    };
     const prevStep = () => setStep(step - 1);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,6 +72,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                 feature_ar: [...(prev.feature_ar || []), inputValue.trim()]
             }));
             setInputValue('');
+            setErrors(prev => ({ ...prev, feature_ar: '' }));
         }
     };
 
@@ -80,6 +86,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+        setErrors(prev => ({ ...prev, [id]: '' }));
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +104,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         const updatedDays = [...formData.course_days];
         updatedDays[index] = { ...updatedDays[index], [field]: value };
         setFormData(prev => ({ ...prev, course_days: updatedDays }));
+        setErrors(prev => ({ ...prev, [`course_days_${index}`]: '' }));
     };
 
     const addCourseDay = () => {
@@ -106,8 +114,68 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         }));
     };
 
+     const validateStep = (currentStep: number) => {
+        const newErrors: {[key: string]: string} = {};
+
+        switch (currentStep) {
+            case 1:
+                if (!formData.name_ar.trim()) newErrors.name_ar = "الرجاء إدخال اسم الكورس";
+                if (!formData.price.trim()) newErrors.price = "الرجاء إدخال سعر الكورس";
+                if (!formData.duration.trim()) newErrors.duration = "الرجاء إدخال مدة الحصة";
+                if (!formData.description_ar.trim()) newErrors.description_ar = "الرجاء إدخال محتوى الكورس";
+                if (formData.feature_ar.length === 0) newErrors.feature_ar = "الرجاء إدخال ميزة واحدة على الأقل للكورس";
+                break;
+            case 2:
+                if (!formData.course_result_desc_ar.trim()) newErrors.course_result_desc_ar = "الرجاء إدخال نتائج الكورس";
+                formData.course_days.forEach((day, index) => {
+                    if (!day.day) {
+                        newErrors[`course_days_${index}_day`] = "الرجاء اختيار اليوم الدرس";
+                    }
+                    if (!day.from_time) {
+                        newErrors[`course_days_${index}_from_time`] = "الرجاء إدخال وقت البداية الحصة";
+                    }
+                    if (!day.to_time) {
+                        newErrors[`course_days_${index}_to_time`] = "الرجاء إدخال وقت النهاية نهاية الحصة";
+                    }
+                });
+                break;
+            case 3:
+                if (!formData.category) {
+                    newErrors.category = "الرجاء اختيار فئة المستهدفة للكورس";
+                }
+                if (!formData.image) {
+                    newErrors.image = "الرجاء تحميل صورة للكورس";
+                }
+                if (!formData.introduction_video) {
+                    newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
+                }
+            break;
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+
+    const validateEndStep = () => {
+        const newErrors: {[key: string]: string} = {};
+
+        if (!formData.category) {
+            newErrors.category = "الرجاء اختيار فئة المستهدفة في الكورس";
+        }
+        if (!formData.image) {
+            newErrors.image = "الرجاء تحميل صورة الكورس";
+        }
+        if (!formData.introduction_video) {
+            newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
+        }
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!validateEndStep()) return; 
         setIsLoading(true);
         const courseData = new FormData();
 
@@ -132,7 +200,6 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         }
 
         try {
-
             const result = await CreateCourseFun("instructor/courses", token as string, courseData);
             if (result.status) {
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
@@ -172,7 +239,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                     {step > 1 && (
                         <div
                             onClick={prevStep}
-                            className="text-xs text-[#FF6F61] flex items-center space-x-5 cursor-pointer"
+                            className="text-[#FF6F61] flex items-center space-x-5 cursor-pointer"
                         >
                             <svg width="5" height="9" className="mx-1" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.40039 11.4015L6.40039 6.38725L1.40039 1.37305" stroke="#FF6F61" strokeWidth="2.13068" strokeLinecap="round" strokeLinejoin="round" />
@@ -194,7 +261,9 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     onChange={handleChange}
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                     placeholder="اسم الكورس"
+                                    required
                                 />
+                                {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -206,7 +275,10 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                         value={formData.price}
                                         onChange={handleChange}
                                         placeholder="10 $ "
-                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        required
+                                         />
+                                    {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                                 </div>
                                 <div className="mb-4">
                                     <Label className="block text-sm font-medium text-gray-700">مدة الحصة</Label>
@@ -216,7 +288,8 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                         value={formData.duration}
                                         onChange={handleChange}
                                         placeholder="60 دقيقة "
-                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                        className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" required />
+                                        {errors.duration && <p className="text-red-500 text-xs mt-1">{errors.duration} (ولو مدة تقريبية)</p>}
                                 </div>
                             </div>
 
@@ -227,7 +300,8 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     value={formData.description_ar}
                                     onChange={handleChange}
                                     rows={4}
-                                    className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                    className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" required />
+                                    {errors.description_ar && <p className="text-red-500 text-xs mt-1">{errors.description_ar}</p>}
                             </div>
 
                             <div className="mb-4">
@@ -259,6 +333,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                         placeholder="أضف ميزة واضغط Enter"
                                     />
                                 </div>
+                                {errors.feature_ar && <p className="text-red-500 text-xs mt-1">{errors.feature_ar} (بعد الكتابة اضغط انتر , حتى يتم حفظها)</p>}
                             </div>
                         </>
                     )}
@@ -272,40 +347,50 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     onChange={handleChange}
                                     rows={4}
                                     className="border-none rounded-xl mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                                    {errors.course_result_desc_ar && <p className="text-red-500 text-xs mt-1">{errors.course_result_desc_ar}</p>}
                             </div>
 
                             <div className="mb-6">
                                 <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
                                 <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
                                 
-                                {formData.course_days.map((day, index) => (
-                                    <div key={index} className="flex gap-2 mt-2">
-                                        <Input
-                                            type="day"
-                                            value={day.day}
-                                            onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="اليوم "
-                                        />
-                                        <Input
-                                            type="time"
-                                            value={day.from_time}
-                                            onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="وقت بداية الكورس "
-                                        />
-                                        <Input
-                                            type="time"
-                                            value={day.to_time}
-                                            onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
-                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                            placeholder="وقت نهاية الكورس "
-                                        />
+                                 {formData.course_days.map((day, index) => (
+                                    <div key={index} className="flex flex-wrap gap-2 mt-2">
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="text"
+                                                value={day.day}
+                                                onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
+                                                placeholder="اليوم"
+                                            />
+                                            {errors[`course_days_${index}_day`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="time"
+                                                value={day.from_time}
+                                                onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_from_time`] ? 'border-red-500' : ''}`}
+                                                placeholder="وقت بداية الكورس"
+                                            />
+                                            {errors[`course_days_${index}_from_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_from_time`]}</p>}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Input
+                                                type="time"
+                                                value={day.to_time}
+                                                onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
+                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_to_time`] ? 'border-red-500' : ''}`}
+                                                placeholder="وقت نهاية الكورس"
+                                            />
+                                            {errors[`course_days_${index}_to_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_to_time`]}</p>}
+                                        </div>
                                     </div>
                                 ))}
+
                                 <div onClick={addCourseDay} className="mt-5">
                                     <span className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 me-2 relative overflow-hidden border border-primary text-primary">إضافة يوم</span>
-                                   
                                 </div>
                             </div>
                         </>
@@ -315,7 +400,10 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                         
                             <div className="mb-5">
                                 <Label htmlFor="category"> حدد الكورس لأي فئة </Label>
-                                 <Select dir="rtl" onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                                <Select dir="rtl" value={formData.category} onValueChange={(value) => {
+                                        setFormData(prev => ({ ...prev, category: value }));
+                                        setErrors(prev => ({ ...prev, category: '' }));
+                                    }}>
                                     <SelectTrigger className="border-none text-start rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                                         <SelectValue placeholder="اختر تصنيف" />
                                     </SelectTrigger>
@@ -324,6 +412,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                         <SelectItem value="university">جامعة</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
                             </div>
 
 
@@ -343,6 +432,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     <img src={selectedImage} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
                                     )}
                                 </div>
+                                {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                             </div>
                              <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الفيديو التعريفي للكورس</Label>
@@ -352,6 +442,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     onChange={handleChange}
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                 />
+                                {errors.introduction_video && <p className="text-red-500 text-xs mt-1">{errors.introduction_video}</p>}
                             </div>
                              <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">رابط الزوم </Label>
@@ -402,6 +493,3 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         </>
     );
 }
-
-
-
