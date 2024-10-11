@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from 'next/navigation';
-import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from 'next/link';
@@ -261,7 +260,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         });
 
         formData.feature_ar.forEach((feature, index) => {
-            courseData.append(`feature_ar[${index}]`, feature);
+            courseData.append(`feature_ar[${index}]`, JSON.stringify(feature));
         });
 
         formData.course_days.forEach((day, index) => {
