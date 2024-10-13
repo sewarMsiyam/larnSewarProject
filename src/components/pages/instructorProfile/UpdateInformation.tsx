@@ -166,7 +166,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                         <Label htmlFor="years_of_experience">سنوات الخبرة  </Label>
                         <Input
                             id="years_of_experience"
-                            type="text"
+                            type="number"
                             className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.years_of_experience}
                             onChange={handleChange}
@@ -179,6 +179,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                         <Label htmlFor="hourly_rate_price">سعر الساعة الخصوصي  </Label>
                         <Input
                             id="hourly_rate_price"
+                            type="number"
                             className="border-none rounded-full mt-1 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                             value={formData.hourly_rate_price}
                             onChange={handleChange}

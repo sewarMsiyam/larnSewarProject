@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { fetchOne } from '@/app/api/dataFetch';
 import { Instructors } from '@/app/api/interfaces';
 import { Calendar } from "@/components/ui/calendar"
-import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
@@ -11,14 +10,19 @@ import {
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import Image from 'next/image';
 
-
 interface DetailsInstructorsProps {
     id: number;
+}
+
+interface OfficeHour {
+    id: number;
+    date: string;
+    from_time: string;
+    to_time: string;
 }
 
 export default function BookPrivate({ id }: DetailsInstructorsProps) {
@@ -27,8 +31,8 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
     const [error, setError] = useState<string | null>(null);
     const [availableDates, setAvailableDates] = useState<Date[]>([]);
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-    const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [availableTimes, setAvailableTimes] = useState<OfficeHour[]>([]);
+    const [selectedTime, setSelectedTime] = useState<OfficeHour | null>(null);
     const { data: session } = useSession();
     const endpoint = 'instructors';
 
@@ -40,7 +44,7 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                 const data = await fetchOne(endpoint, id.toString());
                 if (data) {
                     setInstructor(data);
-                    const dates = getAvailableDates(data.instructor_durations);
+                    const dates = getAvailableDates(data.instructor_office_hours);
                     setAvailableDates(dates);
                 } else {
                     setError('Instructor not found.');
@@ -55,55 +59,27 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
         fetchData();
     }, [id]);
 
-    const getAvailableDates = (durations: any[]): Date[] => {
-        const currentMonthDates: Date[] = [];
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-
-        durations.forEach((duration) => {
-            const dayOfWeek = getDayOfWeek(duration.day);
-            for (let i = 1; i <= 31; i++) {
-                const date = new Date(year, month, i);
-                if (date.getMonth() === month && date.getDay() === dayOfWeek) {
-                    currentMonthDates.push(date);
-                }
-            }
-        });
-
-        return currentMonthDates;
+    const getAvailableDates = (officeHours: OfficeHour[]): Date[] => {
+        return officeHours.map(oh => new Date(oh.date));
     };
 
-    const getDayOfWeek = (dayString: string): number => {
-        const daysOfWeek: { [key: string]: number } = {
-            'الأحد': 0, 'الإثنين': 1, 'الثلاثاء': 2, 'الأربعاء': 3,
-            'الخميس': 4, 'الجمعة': 5, 'السبت': 6,
-        };
-        return daysOfWeek[dayString] ?? -1;
-    };
-
-    const handleDateSelect = async (date: Date | undefined) => {
+    const handleDateSelect = (date: Date | undefined) => {
         if (date && instructor) {
             setSelectedDate(date);
-            const dayName = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][date.getDay()];
-            const availableDuration = instructor.instructor_durations.find(duration => duration.day === dayName);
-
-            if (availableDuration) {
-                setAvailableTimes([`${availableDuration.from_time} - ${availableDuration.to_time}`]);
-            } else {
-                setAvailableTimes([]);
-            }
+            const selectedDateString = date.toISOString().split('T')[0];
+            const availableHours = instructor.instructor_office_hours.filter(
+                oh => oh.date === selectedDateString
+            );
+            setAvailableTimes(availableHours);
+            setSelectedTime(null); // Reset selected time when date changes
         }
     };
 
-    const handleTimeSelect = (time: string) => {
+    const handleTimeSelect = (time: OfficeHour) => {
         setSelectedTime(time);
     };
 
     const isDateUnavailable = (date: Date) => {
-        if (!availableDates || availableDates.length === 0) {
-            return true;
-        }
         return !availableDates.some(availableDate =>
             availableDate.toDateString() === date.toDateString()
         );
@@ -117,6 +93,14 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
         });
     };
 
+    const formatTime = (timeString: string) => {
+        const [hours, minutes] = timeString.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours, 10));
+        date.setMinutes(parseInt(minutes, 10));
+        return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    };
+
     if (loading) return <div className="grid">Loading...</div>;
     if (error) return <p>{error}</p>;
     if (!instructor) return <p>No instructor data available.</p>;
@@ -128,18 +112,12 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                     <h3 className="font-bold text-xl mb-3">
                         حدد التاريخ المناسب
                     </h3>
-                    {instructor.instructor_durations.length > 0 && (
+                    {instructor.instructor_office_hours.length > 0 && (
                         <p className="text-sm text-[#707070] ps-5 ">
-                            الأيام المتاح فيها المعلم هي
-                            <span className="mx-2">(
-                                {instructor.instructor_durations
-                                    .map((duration) => duration.day)
-                                    .join(' - ')}
-                                )</span>
+                            الأيام المتاح فيها المعلم
                         </p>
                     )}
-
-                    {instructor.instructor_durations.length <= 0 && (
+                    {instructor.instructor_office_hours.length <= 0 && (
                         <p className="text-sm text-[#707070] ps-5 ">لا يوجد ايام فراغ لدى المعلم</p>
                     )}
                 </div>
@@ -178,13 +156,13 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                 {selectedDate && (
                     <>
                         <div className="grid grid-cols-1 gap-5 mb-5 mt-3">
-                            {availableTimes.map((time, index) => (
+                            {availableTimes.map((time) => (
                                 <div
-                                    key={index}
+                                    key={time.id}
                                     onClick={() => handleTimeSelect(time)}
                                     className={`col-span-1 font-semibold text-sm border border-[#F2F2F3] rounded-2xl p-3 cursor-pointer w-full text-center ${selectedTime === time ? 'bg-[#F2F2F3] border-primary text-primary' : ''
                                         }`}>
-                                    {time}
+                                    {formatTime(time.from_time)} - {formatTime(time.to_time)}
                                 </div>
                             ))}
                         </div>
@@ -197,7 +175,8 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                                             query: {
                                                 id: instructor.id,
                                                 date: formatDate(selectedDate),
-                                                time: selectedTime
+                                                from_time: `${formatTime(selectedTime.from_time)}`,
+                                                to_time: `${formatTime(selectedTime.to_time)}`,
                                             }
                                         }}
                                         className="w-full block text-center btn-primary font-medium py-2.5 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
@@ -229,7 +208,6 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                         )}
                     </>
                 )}
-
             </div>
         </div>
     );

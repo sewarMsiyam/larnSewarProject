@@ -32,6 +32,7 @@ interface FormData {
     payment_way_id: string;
     payment_invoice_image: string | File;
     instructor_id?: string | null;
+    date?: string;
     from_time?: string;
     to_time?: string;
 }
@@ -50,7 +51,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
     const toTime = searchParams.get('time');
     const isInstructorCheckout = pathname.includes('checkout_private');
     const [isOpen, setIsOpen] = useState(false);
-const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
 
 
 

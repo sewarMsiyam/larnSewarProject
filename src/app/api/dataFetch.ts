@@ -334,6 +334,7 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
 
 
 export async function CreateCourseFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
+  console.log(data);
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',

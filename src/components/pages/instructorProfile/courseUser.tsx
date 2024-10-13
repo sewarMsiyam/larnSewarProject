@@ -1,12 +1,10 @@
 
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
-
 import { useTranslations } from 'next-intl';
 import Image from "next/image";
 import { Course } from '@/app/api/interfaces';
 import { fetchAllToken, deleteOneToken } from '@/app/api/dataFetch';
-import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -21,8 +19,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -30,11 +26,9 @@ import {
     AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 type CheckoutFormProps = {
@@ -179,8 +173,8 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                     <>
                                         <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                                            {course.course_durations.map((duration, index) => (
-                                                <div key={index} className="col-span-1">
+                                            {course.course_durations.map((duration, i) => (
+                                                <div key={i} className="col-span-1">
                                                     <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
                                                         <span>{duration.day}</span>
                                                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>

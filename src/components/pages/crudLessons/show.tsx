@@ -49,8 +49,6 @@ export default function ShowLessons({ id , token }: LessonsProps) {
             if (token) {
                 try {
                     const fetchedLessons = await fetchAllToken(`instructor/courses/${id}/lessons`, token);
-
-                    console.log(fetchedLessons);
                     if (Array.isArray(fetchedLessons)) {
                        setLessons(fetchedLessons);  
                     } else {

@@ -162,7 +162,7 @@ const handleClick = () => {
             
               {course.description}
             
-            {course.course_durations.length > 0 && (
+            {course.course_durations && course.course_durations.length > 0 && (
               <>
                 <h2 className="font-bold mb-5 mt-10">وقت الكورس <span className="text-[#EA4335]">(الأوقات مبدئية ويتم الاتفاق عليها في بداية الكورس)</span></h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

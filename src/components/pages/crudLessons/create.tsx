@@ -148,7 +148,7 @@ export default function CreateLessons({ id , token }: LessonsProps) {
                             id="zoom_link"
                             value={formData.zoom_link}
                             onChange={handleChange}
-                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
                         />
                         {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
@@ -159,7 +159,7 @@ export default function CreateLessons({ id , token }: LessonsProps) {
                             id="recorded_video_link"
                             value={formData.recorded_video_link}
                             onChange={handleChange}
-                           className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.name_ar ? 'border-red-500' : ''}`}
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
                         />
                         
                     </div>

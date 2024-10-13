@@ -52,14 +52,14 @@ useEffect(() => {
                         {course.duration} دقيقة
                     </div>
                 </div>
-                <div className="flex justify-between items-center w-full">
+                {/* <div className="flex justify-between items-center w-full">
                     <p>المجموع الفرعي</p>
                     <b className="text-[#FE7A36]">{course.price}$</b>
                 </div>
                 <div className="flex justify-between items-center w-full">
                     <p>خصم (10%)</p>
                     <b className="text-[#FE7A36]">0$</b>
-                </div>
+                </div> */}
                 <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700 w-full" />
                 <div className="flex justify-between items-center w-full">
                     <p> المبلغ الكلي</p>

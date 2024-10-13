@@ -172,6 +172,7 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
 
             <section className="mb-12 lg:container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 py-10 lg:p-10 space-y-10">
                 <BookPrivate id={instructor.id} />
+                   سعر الساعة = {instructor.hourly_rate_price}
             </section>
 
 

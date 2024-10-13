@@ -65,18 +65,18 @@ export default function InstructionPrivate() {
                 </div>
             </div>
 
-            <div className="flex justify-between items-center w-full">
+            {/* <div className="flex justify-between items-center w-full">
                 <p>المجموع الفرعي</p>
                 <b className="text-[#FE7A36]">50$</b>
             </div>
             <div className="flex justify-between items-center w-full">
                 <p>خصم (10%)</p>
                 <b className="text-[#FE7A36]">-10$</b>
-            </div>
+            </div> */}
             <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700 w-full" />
             <div className="flex justify-between items-center w-full">
                 <p> المبلغ الكلي</p>
-                <b className="text-[#FE7A36]">40$</b>
+                <b className="text-[#FE7A36]"> {instruction.hourly_rate_price}$</b>
             </div>
         </div>
     );

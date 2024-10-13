@@ -16,6 +16,7 @@ export interface Course {
         id: number;
         feature: string;
     }>;
+    // course_appointments
     course_durations: Array<{
         id: number;
         day: string;
@@ -49,7 +50,7 @@ export interface Instructors{
     years_of_experience: string;
     hourly_rate_price: string;
     skills: string[];
-    instructor_durations: Array<{
+    instructor_office_hours: Array<{
         id: number;
         day: string;
         from_time: string;
@@ -97,3 +98,12 @@ export interface Checkout {
 }
 
 
+
+export interface OfficeHours {
+    id: number;
+    student_name:string;
+    date: string;
+    from_time: string;
+    to_time: string;
+    zoom_link:string;
+}
