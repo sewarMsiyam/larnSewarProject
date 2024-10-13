@@ -16,7 +16,10 @@ export default function InstructionPrivate() {
     const date = searchParams.get('date');
     const from_time = searchParams.get('from_time');
     const to_time = searchParams.get('to_time');
-    const selectedDate = new Date(date);
+
+    const selectedDate = date ? new Date(date) : new Date();
+
+    
     const selectedDateString = selectedDate.toLocaleDateString('en-CA').split('T')[0];
 
 
@@ -63,7 +66,7 @@ export default function InstructionPrivate() {
                     <p>الوقت:</p>
                 </div>
                 <div>
-                    <p className="text-primary">{date}</p>
+                    <p className="text-primary">{selectedDateString}</p>
                     <p className="text-primary">{from_time}-{to_time}</p>
                 </div>
             </div>

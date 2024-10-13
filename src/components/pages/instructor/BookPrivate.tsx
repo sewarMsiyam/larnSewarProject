@@ -20,11 +20,16 @@ interface DetailsInstructorsProps {
 
 interface OfficeHour {
     id: number;
-    date: string;
+    day: string;
     from_time: string;
     to_time: string;
 }
 
+interface Instructor {
+    id: number;
+    name: string;
+    instructor_office_hours: OfficeHour[];
+}
 export default function BookPrivate({ id }: DetailsInstructorsProps) {
     const [instructor, setInstructor] = useState<Instructors | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -62,20 +67,20 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
     }, [id]);
 
     const getAvailableDates = (officeHours: OfficeHour[]): Date[] => {
-        return officeHours.map(oh => new Date(oh.date));
+        return officeHours.map(oh => new Date(oh.day));
     };
-
     const handleDateSelect = (date: Date | undefined) => {
         if (date && instructor) {
             setSelectedDate(date);
             const selectedDateString = date.toLocaleDateString('en-CA').split('T')[0];
             const availableHours = instructor.instructor_office_hours.filter(
-                oh => oh.date === selectedDateString
+                oh => oh.day === selectedDateString // Changed 'date' to 'day'
             );
             setAvailableTimes(availableHours);
             setSelectedTime(null);
         }
     };
+    
 
     const handleTimeSelect = (time: OfficeHour) => {
         setSelectedTime(time);

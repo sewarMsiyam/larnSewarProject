@@ -6,7 +6,7 @@ import { fetchProfileData } from '@/app/api/dataFetch';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsPayment"
 import { Textarea } from "@/components/ui/textarea";
-import { useSearchParams ,  usePathname  } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 import DropZone from '@/components/ui/DropZone';
 import { CreateCourseFun } from '@/app/api/dataFetch';
 import { toast, ToastContainer } from "react-toastify";
@@ -37,6 +37,22 @@ interface FormData {
     to_time?: string;
 }
 
+
+// 24 ساعة
+const convertTo24Hour = (time: string | null): string => {
+    if (!time) return '';
+
+    const [timeStr, period] = time.split(' ');
+    let [hours, minutes] = timeStr.split(':').map(Number);
+
+    if (period.toLowerCase() === 'pm' && hours !== 12) {
+        hours += 12;
+    } else if (period.toLowerCase() === 'am' && hours === 12) {
+        hours = 0;
+    }
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+};
 export default function CheckoutVodafone({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
     const [loading, setLoading] = useState<boolean>(true);
@@ -47,22 +63,32 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
     const pathname = usePathname();
 
     const id = searchParams.get('id');
-    const fromTime = searchParams.get('date');
-    const toTime = searchParams.get('time');
+
+    const dateParam = searchParams.get('date');
+    const selectedDate = dateParam ? new Date(dateParam) : new Date();
+    const date = selectedDate.toLocaleDateString('en-CA').split('T')[0];
+
+    const from_time = convertTo24Hour(searchParams.get('from_time'));
+    const to_time = convertTo24Hour(searchParams.get('to_time'));
+
     const isInstructorCheckout = pathname.includes('checkout_private');
     const [isOpen, setIsOpen] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+
+
 
     const [formData, setFormData] = useState<FormData>({
         payment_way_id: '2',
         payment_invoice_image: "",
 
-        
+
         course_id: isInstructorCheckout ? undefined : id,
         instructor_id: isInstructorCheckout ? id : undefined,
 
-        from_time: fromTime || undefined,
-        to_time: toTime || undefined,
+        date: date || undefined,
+        from_time: from_time || undefined,
+        to_time: to_time || undefined,
     });
 
     const handleFileUpload = (file: File | null) => {
@@ -81,17 +107,16 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
         }
     };
 
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
                 setError(null);
-
-                if (token) {    
-                    const data = await fetchProfileData('checkout/payment_method/2' , token);
+                if (token) {
+                    const data = await fetchProfileData('checkout/payment_method/2', token);
                     if (data && data.item) {
-                        setDescription(data.item.description) 
+                        setDescription(data.item.description)
                     }
                 }
             } catch (error) {
@@ -104,6 +129,7 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
         fetchData();
     }, []);
 
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -112,6 +138,7 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
 
             if (isInstructorCheckout) {
                 formDataToSend.append('instructor_id', formData.instructor_id || '');
+                formDataToSend.append('date', formData.date || '');
                 formDataToSend.append('from_time', formData.from_time || '');
                 formDataToSend.append('to_time', formData.to_time || '');
             } else {
@@ -123,12 +150,14 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
                 formDataToSend.append('payment_invoice_image', formData.payment_invoice_image);
             }
 
+
+            console.log(formDataToSend)
             const endpoint = isInstructorCheckout ? 'checkout/checkout_instructor' : 'checkout/checkout_course';
 
             const result = await CreateCourseFun(endpoint, token, formDataToSend);
             if (result.status) {
                 // setIsOpen(true);
-                 setPaymentSuccess(true);
+                setPaymentSuccess(true);
                 if (isInstructorCheckout) {
                     toast.success("تم الدفع حجز معلم , ستواصل معك العلم بأقرب وقت ");
                 } else {
@@ -138,12 +167,19 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
                 setFormData({
                     course_id: isInstructorCheckout ? undefined : id,
                     instructor_id: isInstructorCheckout ? id : undefined,
-                    payment_way_id: '1',
+                    payment_way_id: '2',
                     payment_invoice_image: "",
-                    from_time: fromTime || undefined,
-                    to_time: toTime || undefined,
+                    date: date || undefined,
+                    from_time: from_time || undefined,
+                    to_time: to_time || undefined,
                 });
                 setFiles([]);
+            } else {
+                if (result.message === "للأسف، هذا الموعد محجوز من قبل، اختر موعد آخر") {
+                    toast.error(result.message);
+                } else {
+                    toast.error(result.message || "حدث خطأ أثناء إتمام العملية");
+                }
             }
         } catch (error: any) {
             console.error('Error submitting form:', error);
@@ -152,23 +188,22 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
             setLoading(false);
         }
     };
-   const handleCancel = () => {
+    const handleCancel = () => {
         setIsOpen(false);
     };
-
     return (
         <>
-        <TabsContent value="vodafone">
+            <TabsContent value="vodafone">
                 {paymentSuccess ? (
                     <div className="mt-8 p-8 bg-green-100 border border-green-400 text-green-700 rounded-lg">
                         {isInstructorCheckout ? (
                             <p className="text-lg text-dark text-center font-bold my-5">
-                                شكرا على الدفع 🌹, تم حجز درس خصوصي عند المعلم  , <br/>
+                                شكرا على الدفع 🌹, تم حجز درس خصوصي عند المعلم  , <br />
                                 سيتم التواصل معك من قبل المعلم على الواتساب و يرجى الالتزام بمواعيد الدرس الخصوصي التي اخترتها 😊😊😊😊
                             </p>
                         ) : (
                             <p className="text-lg text-dark text-center font-bold my-5">
-                                شكرا على الدفع 🌹, جاري العمل على تفعيل الكورس الخاص بك , <br/>
+                                شكرا على الدفع 🌹, جاري العمل على تفعيل الكورس الخاص بك , <br />
                                 سيتم التواصل معك من قبل فريقنا على الواتساب و يرجى الالتزام بمواعيد الكورس المحددة من قبل المعلم 😊😊
                             </p>
                         )}
@@ -206,10 +241,10 @@ export default function CheckoutVodafone({ token }: CheckoutFormProps) {
                         </Button>
                     </form>
                 )}
-            <ToastContainer />
-        </TabsContent>
+                <ToastContainer />
+            </TabsContent>
 
-          <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
                 <AlertDialogTitle></AlertDialogTitle>
                 <AlertDialogContent>
                     <AlertDialogHeader className='flex flex-col items-center'>

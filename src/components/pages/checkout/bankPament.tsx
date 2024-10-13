@@ -37,6 +37,22 @@ interface FormData {
     to_time?: string;
 }
 
+
+// 24 ساعة
+const convertTo24Hour = (time: string | null): string => {
+    if (!time) return '';
+    
+    const [timeStr, period] = time.split(' ');
+    let [hours, minutes] = timeStr.split(':').map(Number);
+    
+    if (period.toLowerCase() === 'pm' && hours !== 12) {
+        hours += 12;
+    } else if (period.toLowerCase() === 'am' && hours === 12) {
+        hours = 0;
+    }
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+};
 export default function CheckoutBank({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
     const [loading, setLoading] = useState<boolean>(true);
@@ -47,9 +63,14 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
     const pathname = usePathname();
 
     const id = searchParams.get('id');
-    const date = searchParams.get('date');
-    const fromTime = searchParams.get('from_time');
-    const toTime = searchParams.get('to_time');
+
+    const dateParam = searchParams.get('date');
+    const selectedDate = dateParam ? new Date(dateParam) : new Date();
+    const date = selectedDate.toLocaleDateString('en-CA').split('T')[0];
+
+    const from_time = convertTo24Hour(searchParams.get('from_time'));
+    const to_time = convertTo24Hour(searchParams.get('to_time'));
+
     const isInstructorCheckout = pathname.includes('checkout_private');
     const [isOpen, setIsOpen] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -66,8 +87,8 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
         instructor_id: isInstructorCheckout ? id : undefined,
 
         date: date || undefined,
-        from_time: fromTime || undefined,
-        to_time: toTime || undefined,
+        from_time: from_time || undefined,
+        to_time: to_time || undefined,
     });
 
     const handleFileUpload = (file: File | null) => {
@@ -117,7 +138,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
 
             if (isInstructorCheckout) {
                 formDataToSend.append('instructor_id', formData.instructor_id || '');
-                formDataToSend.append('date', formData.from_time || '');
+                formDataToSend.append('date', formData.date || '');
                 formDataToSend.append('from_time', formData.from_time || '');
                 formDataToSend.append('to_time', formData.to_time || '');
             } else {
@@ -129,6 +150,8 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
                 formDataToSend.append('payment_invoice_image', formData.payment_invoice_image);
             }
 
+
+            console.log(formDataToSend)
             const endpoint = isInstructorCheckout ? 'checkout/checkout_instructor' : 'checkout/checkout_course';
 
             const result = await CreateCourseFun(endpoint, token, formDataToSend);
@@ -146,11 +169,17 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
                     instructor_id: isInstructorCheckout ? id : undefined,
                     payment_way_id: '1',
                     payment_invoice_image: "",
-                    from_time: date || undefined,
-                    from_time: fromTime || undefined,
-                    to_time: toTime || undefined,
+                    date: date || undefined,
+                    from_time: from_time || undefined,
+                    to_time: to_time || undefined,
                 });
                 setFiles([]);
+            } else {
+                if (result.message === "للأسف، هذا الموعد محجوز من قبل، اختر موعد آخر") {
+                    toast.error(result.message);
+                } else {
+                    toast.error(result.message || "حدث خطأ أثناء إتمام العملية");
+                }
             }
         } catch (error: any) {
             console.error('Error submitting form:', error);
@@ -243,3 +272,4 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
         </>
     );
 }
+

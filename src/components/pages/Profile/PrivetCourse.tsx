@@ -31,7 +31,8 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
         const loadInstructors = async () => {
             if (token) {
                 try {
-                    const fetchedInstructors = await fetchAllToken('student/student_instructors', token);
+                    const fetchedInstructors = await fetchAllToken('student/private_lessons', token);
+                    console.log(fetchedInstructors)
                     if (Array.isArray(fetchedInstructors)) {
                         setInstructors(fetchedInstructors);
                     } else {
@@ -71,12 +72,13 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                     <p className='text-gray-300'>عدد حجز الخصوصي  <span className='text-gray-950'>{instructors.length}</span></p>
                 </div>
 
-                {instructors.map((instructor, index) => (
+                {instructors.map((x, index) => (
                     <div key={index} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
-                        <img src={instructor.image} alt="" className="w-full h-56 lg:w-1/5 lg:h-auto rounded-full" />
+                        {/* <img src={instructor.image} alt="" className="w-full h-56 lg:w-1/5 lg:h-auto rounded-full" /> */}
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">
-                                <h3 className='font-bold text-lg'>{instructor.name}</h3>
+                                {/* <h3 className='font-bold text-lg'>{x.instructor.name}</h3> */}
+                                {/* {x.private_lesson_appointments.date} */}
                                 {/* <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3> */}
                             </div>
 
