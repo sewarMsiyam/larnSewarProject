@@ -66,7 +66,7 @@ export default function CheckoutForm({ token }: CheckoutFormProps) {
                     </TabsList>
                     <CheckoutCard />
                     <CheckoutBank token={token} />
-                    <CheckoutVodafone />
+                    <CheckoutVodafone token={token} />
                 </Tabs>
             </div>
         </div>

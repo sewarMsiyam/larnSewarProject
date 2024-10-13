@@ -307,8 +307,6 @@ export async function updateProfile(endpoint: string, token?: string, data?: any
 
 
 export async function fetchProfileData(endpoint: string, token: string | null) {
-  console.log("الدالة")
-  console.log("api = "+ buildUrl(endpoint) )
   try {
     const response = await fetchRetry(buildUrl(endpoint), {
       method: 'GET',

@@ -47,8 +47,9 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
     const pathname = usePathname();
 
     const id = searchParams.get('id');
-    const fromTime = searchParams.get('date');
-    const toTime = searchParams.get('time');
+    const date = searchParams.get('date');
+    const fromTime = searchParams.get('from_time');
+    const toTime = searchParams.get('to_time');
     const isInstructorCheckout = pathname.includes('checkout_private');
     const [isOpen, setIsOpen] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -64,6 +65,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
         course_id: isInstructorCheckout ? undefined : id,
         instructor_id: isInstructorCheckout ? id : undefined,
 
+        date: date || undefined,
         from_time: fromTime || undefined,
         to_time: toTime || undefined,
     });
@@ -115,6 +117,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
 
             if (isInstructorCheckout) {
                 formDataToSend.append('instructor_id', formData.instructor_id || '');
+                formDataToSend.append('date', formData.from_time || '');
                 formDataToSend.append('from_time', formData.from_time || '');
                 formDataToSend.append('to_time', formData.to_time || '');
             } else {
@@ -143,6 +146,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
                     instructor_id: isInstructorCheckout ? id : undefined,
                     payment_way_id: '1',
                     payment_invoice_image: "",
+                    from_time: date || undefined,
                     from_time: fromTime || undefined,
                     to_time: toTime || undefined,
                 });
@@ -193,7 +197,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
                                 />
                             </div>
                         </div>
-                        <Button type="submit" className="mt-8 w-full bg-btn-authColor rounded-2xl py-6 text-white gap-1">
+                        <Button type="submit" disabled={loading} className="mt-8 w-full bg-btn-authColor rounded-2xl py-6 text-white gap-1">
                             {loading ? 'جاري الدفع...' : 'ادفع'}
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 25 25" fill="none">
                                 <g clipPath="url(#clip0_516_4347)">

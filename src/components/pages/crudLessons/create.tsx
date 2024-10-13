@@ -108,7 +108,6 @@ export default function CreateLessons({ id , token }: LessonsProps) {
 
     return (
         <>
-        <ToastContainer />
             <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
                 <div className="flex justify-between items-center mb-8">
                     <h3 className="font-bold text-lg">إضافة درس</h3>

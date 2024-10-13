@@ -15,9 +15,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+
 type CheckoutFormProps = {
     token: string;
 };
@@ -30,28 +29,26 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
         zoom_link: "",
     });
     const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
+        const loadStudentsSubscribe = async () => {
+            if (token) {
+                try {
+                    const fetchedStudents = await fetchAllToken(`instructor/students`, token);
+                    if (Array.isArray(fetchedStudents)) {
+                        setStudentsSubscribe(fetchedStudents);
+                    } else {
+                        setError('البيانات المستلمة غير صحيحة');
+                    }
+                } catch (err) {
+                    setError('حدث خطأ أثناء تحميل البيانات');
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
         loadStudentsSubscribe();
     }, [token]);
-
-    const loadStudentsSubscribe = async () => {
-        if (token) {
-            try {
-                const fetchedStudents = await fetchAllToken(`instructor/students`, token);
-                if (Array.isArray(fetchedStudents)) {
-                    setStudentsSubscribe(fetchedStudents);
-                } else {
-                    setError('البيانات المستلمة غير صحيحة');
-                }
-            } catch (err) {
-                setError('حدث خطأ أثناء تحميل البيانات');
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -67,16 +64,17 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
         const courseData = new FormData();
         courseData.append('zoom_link', formData.zoom_link);
 
+        console.log(formData.zoom_link);
+        console.log(selectedAppointmentId);
         try {
             const result = await CreateCourseFun(`instructor/students/store_zoom_link/${selectedAppointmentId}`, token, courseData);
             if (result.status) {
                 toast.success(result.message || "تم إضافة رابط الزوم بنجاح");
-                setStudentsSubscribe(prev => prev.map(student =>
+                // Update the local state to reflect the change
+                setStudentsSubscribe(prev => prev.map(student => 
                     student.id === selectedAppointmentId ? { ...student, zoom_link: formData.zoom_link } : student
                 ));
                 setFormData({ zoom_link: "" });
-                setIsDialogOpen(false);
-                await loadStudentsSubscribe();
             } else {
                 toast.error(result.message || "فشل في إضافة رابط الزوم");
             }
@@ -88,7 +86,6 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
 
     return (
         <TabsContent value="privetCourse" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
-            <ToastContainer />
             <div className="flex justify-between items-center mb-5">
                 <div className="flex flex-col lg:flex-row gap-2">
                     <h4 className='font-bold text-lg'> مواعيد الخصوصي </h4>
@@ -125,22 +122,18 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
                                         {student.zoom_link}
                                     </a>
                                 ) : (
-                                    <>
-                                    <AlertDialog dir="rtl" open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                        <AlertDialogTrigger
+                                    <AlertDialog>
+                                        <AlertDialogTrigger 
                                             className="bg-primary text-white py-3 px-5 rounded-2xl"
-                                            onClick={() => {
-                                                setSelectedAppointmentId(student.id);
-                                                setIsDialogOpen(true);
-                                            }}
+                                            onClick={() => setSelectedAppointmentId(student.id)}
                                         >
                                             اضافة رابط
                                         </AlertDialogTrigger>
-                                        <AlertDialogContent>
+                                        <AlertDialogContent  dir="rtl">
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>اضف رابط زوم للطالب {student.student_name}</AlertDialogTitle>
+                                                <AlertDialogTitle className="text-start mb-5">اضف رابط زوم للطالب {student.student_name}</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    <form onSubmit={handleSubmit}>
+                                                    <form onSubmit={handleSubmit} className="text-start">
                                                         <div className="mb-4">
                                                             <Label className="block text-sm font-medium text-gray-700">رابط الزوم</Label>
                                                             <Input
@@ -148,21 +141,23 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
                                                                 id="zoom_link"
                                                                 value={formData.zoom_link}
                                                                 onChange={handleChange}
-                                                                className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                                className="border-none mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" 
                                                             />
                                                         </div>
-                                                        <div>
-                                                            <div onClick={() => setIsDialogOpen(false)}>إلغاء</div>
-                                                            <Button  type="submit" disabled={loading}>
-                                                                 {loading ? "جاري إضافة الرابط..." : "إضافة الرابط"}
-                                                            </Button>
-                                                        </div>
+                                                        <AlertDialogFooter className="gap-2 mt-4">
+                                                             <AlertDialogAction className="text-white w-full rounded-full " onClick={(e) => {
+                                                                e.preventDefault();
+                                                                handleSubmit(e as any);
+                                                            }}>
+                                                                إضافة الرابط
+                                                            </AlertDialogAction>
+                                                            <AlertDialogCancel className="w-full rounded-full ">إلغاء</AlertDialogCancel>
+                                                        </AlertDialogFooter>
                                                     </form>
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                         </AlertDialogContent>
                                     </AlertDialog>
-                                    </>
                                 )}
                             </td>
                         </tr>

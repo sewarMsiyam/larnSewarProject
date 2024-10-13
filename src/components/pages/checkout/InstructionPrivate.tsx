@@ -14,7 +14,10 @@ export default function InstructionPrivate() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');
     const date = searchParams.get('date');
-    const time = searchParams.get('time');
+    const from_time = searchParams.get('from_time');
+    const to_time = searchParams.get('to_time');
+    const selectedDate = new Date(date);
+    const selectedDateString = selectedDate.toLocaleDateString('en-CA').split('T')[0];
 
 
     const [instruction, setInstruction] = useState<Instructors | null>(null);
@@ -61,7 +64,7 @@ export default function InstructionPrivate() {
                 </div>
                 <div>
                     <p className="text-primary">{date}</p>
-                    <p className="text-primary">{time}</p>
+                    <p className="text-primary">{from_time}-{to_time}</p>
                 </div>
             </div>
 

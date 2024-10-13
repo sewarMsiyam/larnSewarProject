@@ -42,10 +42,12 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                 setLoading(true);
                 setError(null);
                 const data = await fetchOne(endpoint, id.toString());
+                console.log(data.instructor_office_hours)
                 if (data) {
                     setInstructor(data);
                     const dates = getAvailableDates(data.instructor_office_hours);
                     setAvailableDates(dates);
+                    console.log(dates)
                 } else {
                     setError('Instructor not found.');
                 }
@@ -66,12 +68,12 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
     const handleDateSelect = (date: Date | undefined) => {
         if (date && instructor) {
             setSelectedDate(date);
-            const selectedDateString = date.toISOString().split('T')[0];
+            const selectedDateString = date.toLocaleDateString('en-CA').split('T')[0];
             const availableHours = instructor.instructor_office_hours.filter(
                 oh => oh.date === selectedDateString
             );
             setAvailableTimes(availableHours);
-            setSelectedTime(null); // Reset selected time when date changes
+            setSelectedTime(null);
         }
     };
 
