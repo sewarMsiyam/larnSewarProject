@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabsProfile"
 import Image from "next/image";
-import { Instructors } from '@/app/api/interfaces';
 import { fetchAllToken } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from 'react-toastify';
@@ -18,6 +17,21 @@ import Link from "next/link";
 type CheckoutFormProps = {
     token: string;
 };
+
+interface Instructor {
+    image: string;
+    name: string;
+}
+interface Instructors {
+    instructor: Instructor;
+    private_lesson_appointments: Array<{
+        id: number;
+        date: string;
+        from_time: string;
+        to_time: string;
+    }>;
+}
+
 export default function PrivetInstructors({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
 
@@ -73,54 +87,41 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                 </div>
 
                 {instructors.map((x, index) => (
-                    <div key={index} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
-                        {/* <img src={instructor.image} alt="" className="w-full h-56 lg:w-1/5 lg:h-auto rounded-full" /> */}
+                    <div key={index} className="flex flex-col lg:flex-row items-start border rounded-lg p-5 mb-4">
+                        <img src={`https://sewaar.net${x.instructor.image}`} alt="" className="size-40 rounded-full" />
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">
-                                {/* <h3 className='font-bold text-lg'>{x.instructor.name}</h3> */}
-                                {/* {x.private_lesson_appointments.date} */}
-                                {/* <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3> */}
+                                <h3 className='font-bold text-lg'>{x.instructor.name}</h3>
+                                <h3 className='font-bold text-lg text-[#FE7A36]'>20 $</h3>
                             </div>
 
-                            {/* {instructor.instructor_durations.length > 0 && (
+                            {x.private_lesson_appointments.length > 0 && (
                                 <>
                                     <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
                                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                                        {instructor.instructor_durations.map((duration) => (
+                                        {x.private_lesson_appointments.map((duration) => (
                                             <div key={duration.id} className="col-span-1">
-                                                <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
-                                                    <span>{duration.day}</span>
-                                                    <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
+                                                <div className="flex flex-col items-center gap-3 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
+                                                    <span>{duration.date}</span>
+                                                    <div className="w-full h-px bg-[rgba(0,_0,_0,_0.20)]"></div>
                                                     <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </>
-                            )} */}
+                            )}
 
-
-                            {/* <div className="p-4 px-10 bg-[#F9F9F9] shadow-sm rounded-xl flex justify-around items-center font-bold w-fit">
-                                <div>
-                                    <p>التاريخ:</p>
-                                    <p>الوقت:</p>
-                                </div>
-                                <div>
-                                    <p className="text-primary">{course.date}</p>
-                                    <p className="text-primary">{course.time}</p>
-                                </div>
-                            </div> */}
-{/* 
                             <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                 <p className="flex-none">رابط الزوم</p>
                                 <div className='lg:grow overflow-hidden	 border px-5 py-2 rounded-3xl border-[#0000001A]'>
-                                    <Link href={course.zoom_link} target='_blank' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">{course.zoom_link}</Link>
+                                    <Link href="" target='_blank' className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">سس</Link>
                                 </div>
                                 <div className="flex-none">
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger>
-                                                <Image src="/profileIcon/copy.svg" alt="zoom" width='30' height='30' onClick={() => copyToClipboard(course.zoom_link)} />
+                                                <Image src="/profileIcon/copy.svg" alt="zoom" width='30' height='30' onClick={() => copyToClipboard("سس")} />
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p>اضغط لنسخ الرابط</p>
@@ -129,7 +130,7 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                                     </TooltipProvider>
                                 </div>
 
-                            </div> */}
+                            </div> 
                         </div>
                     </div>
                 ))}

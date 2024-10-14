@@ -155,7 +155,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
             const endpoint = isInstructorCheckout ? 'checkout/checkout_instructor' : 'checkout/checkout_course';
 
             const result = await CreateCourseFun(endpoint, token, formDataToSend);
-            if (result.status) {
+            if (result.status == "true") {
                 // setIsOpen(true);
                  setPaymentSuccess(true);
                 if (isInstructorCheckout) {

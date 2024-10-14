@@ -52,7 +52,7 @@ export interface Instructors{
     skills: string[];
     instructor_office_hours: Array<{
         id: number;
-        day: string;
+        date: string;
         from_time: string;
         to_time: string;
     }>;
