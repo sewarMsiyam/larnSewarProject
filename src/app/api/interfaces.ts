@@ -24,6 +24,8 @@ export interface Course {
         to_time: string;
     }>;
     zoom_link: string;
+    introduction_video: string;
+    course_result_desc: string;
 
 }
 
