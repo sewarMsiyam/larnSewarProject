@@ -162,14 +162,14 @@ const handleClick = () => {
             
               {course.description}
             
-            {course.course_durations && course.course_durations.length > 0 && (
+            {course.course_appointments && course.course_appointments.length > 0 && (
               <>
                 <h2 className="font-bold mb-5 mt-10">وقت الكورس <span className="text-[#EA4335]">(الأوقات مبدئية ويتم الاتفاق عليها في بداية الكورس)</span></h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  {course.course_durations.map((duration) => (
+                  {course.course_appointments.map((duration) => (
                     <div key={duration.id} className="col-span-1">
                       <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3.5 rounded-xl px-8">
-                        <span>{duration.day}</span>
+                        <span>{duration.date}</span>
                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                         <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
                       </div>

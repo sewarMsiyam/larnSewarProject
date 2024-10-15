@@ -17,9 +17,9 @@ export interface Course {
         feature: string;
     }>;
     // course_appointments
-    course_durations: Array<{
+    course_appointments: Array<{
         id: number;
-        day: string;
+        date: string;
         from_time: string;
         to_time: string;
     }>;

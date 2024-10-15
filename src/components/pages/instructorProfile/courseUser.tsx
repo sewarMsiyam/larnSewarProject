@@ -126,7 +126,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
             <div className="flex justify-between items-center mb-5">
                 <div className="flex gap-2">
                     <h4 className='font-bold text-lg'> كورساتي </h4>
-                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'></span></p>
+                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
                 </div>
                 <div>
                     <Link href="/course/create_course-new" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
@@ -169,14 +169,14 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                     </div>
                                 </div>
 
-                                {course.course_durations && course.course_durations.length > 0 && (
+                                {course.course_appointments && course.course_appointments.length > 0 && (
                                     <>
                                         <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                                            {course.course_durations.map((duration, i) => (
+                                            {course.course_appointments.map((duration, i) => (
                                                 <div key={i} className="col-span-1">
                                                     <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
-                                                        <span>{duration.day}</span>
+                                                        <span>{duration.date}</span>
                                                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                                                         <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
                                                     </div>

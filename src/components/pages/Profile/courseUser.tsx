@@ -81,14 +81,14 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                 <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
                             </div>
 
-                            {course.course_durations && course.course_durations.length > 0 && (
+                            {course.course_appointments && course.course_appointments.length > 0 && (
                                 <>
                                     <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
                                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                                        {course.course_durations.map((duration) => (
+                                        {course.course_appointments.map((duration) => (
                                             <div key={duration.id} className="col-span-1">
                                                 <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
-                                                    <span>{duration.day}</span>
+                                                    <span>{duration.date}</span>
                                                     <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                                                     <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
                                                 </div>

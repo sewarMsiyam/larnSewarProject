@@ -99,17 +99,17 @@ export default function InstructorsList() {
     </div>
   );
 
-  // if (loading) return (
-  //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
-  //     <SkeletonInstructor />
-  //     <div className='hidden md:block'>
-  //       <SkeletonInstructor />
-  //     </div>
-  //     <div className='hidden lg:block'>
-  //       <SkeletonInstructor />
-  //     </div>
-  //   </div>
-  // );
+  if (loading) return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
+      <SkeletonInstructor />
+      <div className='hidden md:block'>
+        <SkeletonInstructor />
+      </div>
+      <div className='hidden lg:block'>
+        <SkeletonInstructor />
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -173,7 +173,15 @@ export default function InstructorsList() {
           </div>
         ) : (
           <>
-            لا يوجد معلمين 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
+              <SkeletonInstructor />
+              <div className='hidden md:block'>
+                <SkeletonInstructor />
+              </div>
+              <div className='hidden lg:block'>
+                <SkeletonInstructor />
+              </div>
+            </div>
           </>
         )}
       {/* </TabsContent> */}

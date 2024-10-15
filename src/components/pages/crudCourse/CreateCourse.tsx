@@ -45,7 +45,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         feature_ar: [] as string[],
         image: null as File | null,
         zoom_link: "",
-        course_days: [{ day: "", from_time: "", to_time: "" }],
+        course_days: [{ date: "", from_time: "", to_time: "" }],
     });
     const [errors, setErrors] = useState<{[key: string]: string}>({});
 
@@ -110,7 +110,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
     const addCourseDay = () => {
         setFormData(prev => ({
             ...prev,
-            course_days: [...prev.course_days, { day: "", from_time: "", to_time: "" }]
+            course_days: [...prev.course_days, { date: "", from_time: "", to_time: "" }]
         }));
     };
 
@@ -128,8 +128,8 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
             case 2:
                 if (!formData.course_result_desc_ar.trim()) newErrors.course_result_desc_ar = "الرجاء إدخال نتائج الكورس";
                 formData.course_days.forEach((day, index) => {
-                    if (!day.day) {
-                        newErrors[`course_days_${index}_day`] = "الرجاء اختيار اليوم الدرس";
+                    if (!day.date) {
+                        newErrors[`course_days_${index}_date`] = "الرجاء اختيار اليوم الدرس";
                     }
                     if (!day.from_time) {
                         newErrors[`course_days_${index}_from_time`] = "الرجاء إدخال وقت البداية الحصة";
@@ -190,7 +190,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         });
 
         formData.course_days.forEach((day, index) => {
-            courseData.append(`course_days[${index + 1}][day]`, day.day);
+            courseData.append(`course_days[${index + 1}][date]`, day.date);
             courseData.append(`course_days[${index + 1}][from_time]`, day.from_time);
             courseData.append(`course_days[${index + 1}][to_time]`, day.to_time);
         });
@@ -215,7 +215,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                     category: "",
                     feature_ar: [],
                     zoom_link: "",
-                    course_days: [{ day: "", from_time: "", to_time: "" }],
+                    course_days: [{ date: "", from_time: "", to_time: "" }],
                 });
                 setStep(1);
             } else {
@@ -358,9 +358,9 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     <div key={index} className="flex flex-wrap gap-2 mt-2">
                                         <div className="flex-1 min-w-[150px]">
                                             <Input
-                                                type="text"
-                                                value={day.day}
-                                                onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
+                                                 type="date"
+                                                value={day.date}
+                                                onChange={(e) => handleCourseDayChange(index, 'date', e.target.value)}
                                                 className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
                                                 placeholder="اليوم"
                                             />

@@ -353,7 +353,6 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
     try {
       result = JSON.parse(responseText);
     } catch (e) {
-      console.error('Failed to parse server response:', e);
       throw new Error('Invalid server response');
     }
 
