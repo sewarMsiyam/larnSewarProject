@@ -125,9 +125,14 @@ const handleClick = () => {
               <div className='bg-white shadow-lg rounded-2xl'>
                 <div className='relative'>
                   <img src={course.image} alt='' className='h-[288px] w-full rounded-t-2xl' />
-                  <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
-                    <Video />
-                  </span>
+
+                 {introduction_video && (
+          <a href={introduction_video}>
+            <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <Video />
+            </span>
+          </a>
+        )}
                 </div>
                 <div className="p-5 space-y-5">
                   <div className='flex items-center justify-between'>
@@ -160,7 +165,15 @@ const handleClick = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3">
           <div className="col-span-2 lg:p-9 xl:p-5 text-justify leading-8">
             
+            <div className="mb-5">
+              <h3 className="font-bold mb-3 text-lg">محتوى الكورس</h3>
               {course.description}
+            </div>
+            <div className="mb-5">
+              <h3 className="font-bold mb-3 text-lg">مخرجات الكورس</h3>
+              {course.course_result_desc}
+            </div>
+            
             
             {course.course_appointments && course.course_appointments.length > 0 && (
               <>
