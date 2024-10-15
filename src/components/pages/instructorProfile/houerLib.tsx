@@ -312,18 +312,18 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                         <p className="text-lg text-dark text-center font-bold my-5">
                             هل أنت متأكد من الساعة المكتبة هذه ؟
                             <div className="flex justify-around items-center gap-3 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8 mt-4">
-                                <div className='flex flex-col items-center gap-3 '>
+                                {/* <div className='flex flex-col items-center gap-3 '>
                                     <span>({courseToDelete?.date})</span>
                                     <div className="w-full h-px bg-[rgba(0,_0,_0,_0.20)]"></div>
                                     <span className="text-primary">من: ({courseToDelete?.from_time}) - إلى:  ({courseToDelete?.to_time}) </span>
-                                </div>
+                                </div> */}
 
                             </div>
                         </p>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="w-full flex gap-2">
                         <AlertDialogAction
-                            onClick={() => courseToDelete && deleteCourse(courseToDelete.id)}
+                            // onClick={() => courseToDelete && deleteCourse(courseToDelete.id)}
                             disabled={isDeleting}
                             className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
                         >
