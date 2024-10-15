@@ -126,8 +126,8 @@ const handleClick = () => {
                 <div className='relative'>
                   <img src={course.image} alt='' className='h-[288px] w-full rounded-t-2xl' />
 
-                 {introduction_video && (
-          <a href={introduction_video}>
+                 {course.introduction_video && (
+          <a href={icourse.ntroduction_video}>
             <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <Video />
             </span>
