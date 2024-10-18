@@ -37,6 +37,8 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
 
         try {
             const profileData = await fetchProfileData('instructor/instructor_details', token);
+            console.log("profileData")
+            console.log(profileData)
             if (profileData && profileData.item) {
                 setFormData({
                     name: profileData.item.name || '',
@@ -73,43 +75,43 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const data = {
-            name: formData.name,
-            email: formData.email,
-            qualification_ar: formData.qualification,
-            experience_ar: formData.experience,
-            achievement_ar: formData.achievement,
-            years_of_experience: formData.years_of_experience,
-            hourly_rate_price: formData.hourly_rate_price,
-        };
-        try {
-            const response = await updateProfile('instructor/update', token as string, data);
-            if (response && response.status === 200 && response.item) {
-                toast.success('تم تحديث البيانات', {
-                    autoClose: 1500,
-                });
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    name: response.item.first_name || prevFormData.name,
-                    qualification: response.item.qualification || prevFormData.qualification,
-                    experience: response.item.experience || prevFormData.experience,
-                    achievement: response.item.achievement || prevFormData.achievement,
-                    years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
-                    hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
-                }));
+        // const data = {
+        //     name: formData.name,
+        //     email: formData.email,
+        //     qualification_ar: formData.qualification,
+        //     experience_ar: formData.experience,
+        //     achievement_ar: formData.achievement,
+        //     years_of_experience: formData.years_of_experience,
+        //     hourly_rate_price: formData.hourly_rate_price,
+        // };
+        // try {
+        //     const response = await updateProfile('instructor/update', token as string, data);
+        //     if (response && response.status === 200 && response.item) {
+        //         toast.success('تم تحديث البيانات', {
+        //             autoClose: 1500,
+        //         });
+        //         setFormData(prevFormData => ({
+        //             ...prevFormData,
+        //             name: response.item.first_name || prevFormData.name,
+        //             qualification: response.item.qualification || prevFormData.qualification,
+        //             experience: response.item.experience || prevFormData.experience,
+        //             achievement: response.item.achievement || prevFormData.achievement,
+        //             years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
+        //             hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
+        //         }));
                 
-            } else {
-                console.error('Unexpected server response:', response);
-                toast.error('فشل تعديل البيانات!');
-            }
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            if (error instanceof Error) {
-                console.error(`An error occurred while updating the profile: ${error.message}`);
-            } else {
-                console.error('An unknown error occurred while updating the profile. Please try again.');
-            }
-        }
+        //     } else {
+        //         console.error('Unexpected server response:', response);
+        //         toast.error('فشل تعديل البيانات!');
+        //     }
+        // } catch (error) {
+        //     console.error('Error updating profile:', error);
+        //     if (error instanceof Error) {
+        //         console.error(`An error occurred while updating the profile: ${error.message}`);
+        //     } else {
+        //         console.error('An unknown error occurred while updating the profile. Please try again.');
+        //     }
+        // }
     };
 
     return (
@@ -129,7 +131,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                         />
                     </div>
 
-                    <div>
+                    <div className="col-span-2 lg:col-span-1">
                         <Label htmlFor="email">البريد الالكتروني</Label>
                         <Input
                             id="email"
@@ -140,7 +142,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                         />
                     </div>
 
-                    <div>
+                    <div className="col-span-2 lg:col-span-1">
                         <Label htmlFor="phone">رقم الهاتف</Label>
                         <div className="flex gap-x-3">
                             <Input
@@ -162,7 +164,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                         </div>
                     </div>
 
-                    <div>
+                    <div className="col-span-2 lg:col-span-1">
                         <Label htmlFor="years_of_experience">سنوات الخبرة  </Label>
                         <Input
                             id="years_of_experience"
@@ -175,7 +177,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                     </div>
 
 
-                    <div>
+                    <div className="col-span-2 lg:col-span-1">
                         <Label htmlFor="hourly_rate_price">سعر الساعة الخصوصي  </Label>
                         <Input
                             id="hourly_rate_price"

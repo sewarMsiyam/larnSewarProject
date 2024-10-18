@@ -204,7 +204,7 @@ export async function fetchOne(endpoint: string, id: string, mainCategory?: stri
 }
 
 export async function fetchOneToken(endpoint: string, id: string, token: string, mainCategory?: string) {
-  console.log("رابط ال api "+buildUrl(endpoint, mainCategory, id));
+  console.log("رابط ال api " + buildUrl(endpoint, mainCategory, id));
 
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
@@ -292,8 +292,11 @@ export async function updateProfile(endpoint: string, token?: string, data?: any
       body: JSON.stringify(data),
       timeout: 8000,
     });
+    console.log(response);
 
-     const result = await response.json();
+    const result = await response.json();
+    console.log(result);
+
     if (response.ok) {
       return result;
     } else {
@@ -319,6 +322,12 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+
+      if (errorData.message) {
+        throw new Error(errorData.message);
+      }
+
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -332,7 +341,7 @@ export async function fetchProfileData(endpoint: string, token: string | null) {
 
 
 export async function CreateCourseFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
-  console.log(data);
+  console.log(buildUrl(endpoint, mainCategory));
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       method: 'POST',
@@ -346,10 +355,12 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
     });
 
     const responseText = await response.text();
+    console.log(responseText);
+
     console.log('Full server response:', responseText);
 
     let result;
-     console.log(`function  = ${result}`);
+    console.log(`function  = ${result}`);
     try {
       result = JSON.parse(responseText);
     } catch (e) {
@@ -373,7 +384,7 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
 
 export async function fetchOneTokenUpdateCourse(endpoint: string, id: string, token: string, mainCategory?: string) {
   console.log(buildUrl(endpoint, mainCategory, id.toString()));
-   try {
+  try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id.toString()), {
       method: 'GET',
       headers: {
@@ -435,6 +446,28 @@ export async function updateProfileS(endpoint: string, token?: string, data?: an
 
 
 
+export async function CreatHeuerFun(endpoint: string, token?: string, data?: FormData, mainCategory?: string) {
+  console.log(buildUrl(endpoint, mainCategory));
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: data,
+      timeout: 8000,
+    });
+    if (!response.ok) {
+      throw new Error(await response.text()|| 'Failed to create course');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to create course:', error);
+    throw error;
+  }
+}
 
 
 

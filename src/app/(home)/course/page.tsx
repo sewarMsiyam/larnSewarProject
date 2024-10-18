@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
-import CoursesHome from "@/components/home/body/coursesHome";
+import CoursesHome from "@/components/pages/CoursesPage/coursesHome";
 import Breadcrumb from "@/components/ui/breadcrumbHome"
 
 export default async function Courses() {

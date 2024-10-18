@@ -16,7 +16,7 @@ export default function ProfileIndex({ token }: CheckoutFormProps) {
     return (
         <>
             <section className="lg:container  mb-20">
-                <div className="flex flex-col justify-center items-center space-y-10 -mt-10">
+                <div className="flex flex-col justify-center items-center space-y-10 -mt-20">
                     <ImgUser token={token}  />
 
                     <Tabs defaultValue="course" dir="rtl" className='w-full mb-10'>

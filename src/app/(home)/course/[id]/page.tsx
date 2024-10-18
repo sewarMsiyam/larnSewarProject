@@ -9,8 +9,6 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Opinions from "@/components/home/body/Opinions"
 import Video from "@/components/svgIcon/video"
-import { useSession } from "next-auth/react";
-
 
 interface DetailCourseProps {
   params: {
@@ -23,17 +21,9 @@ export default function DetailCourse({ params }: DetailCourseProps) {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const session = useSession();
-  const token = (session?.data?.user as { authToken?: string | null })?.authToken;
 
   const endpoint = 'courses';
 
-const handleClick = () => {
-  if(token){
-      console.log('Button clicked ' + token);
-  }
-  
-};
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,11 +34,11 @@ const handleClick = () => {
         if (data) {
           setCourse(data);
         } else {
-          setError('Course not found.');
+          setError('تفاصيل الكورس غير موجودة');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('An error occurred while fetching data.');
+        setError('لا يوجد داتا !!.');
       } finally {
         setLoading(false);
       }
@@ -56,9 +46,9 @@ const handleClick = () => {
     fetchData();
   }, []);
 
- 
 
-  
+
+
   if (loading) {
     return (
       <div className="grid">
@@ -100,7 +90,7 @@ const handleClick = () => {
                   </li>
                   <li>
                     <div className="flex items-center">
-                      <Link href="/" className="ms-3 font-bold text-primary">تفاصيل الكورس</Link>
+                      <Link href={`/course/${params.id.toString()}`} className="ms-3 font-bold text-primary">تفاصيل الكورس</Link>
                     </div>
                   </li>
                 </ol>
@@ -126,13 +116,13 @@ const handleClick = () => {
                 <div className='relative'>
                   <img src={course.image} alt='' className='h-[288px] w-full rounded-t-2xl' />
 
-                 {course.introduction_video && (
-          <a href={course.introduction_video}>
-            <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <Video />
-            </span>
-          </a>
-        )}
+                  {course.introduction_video && (
+                    <a href={course.introduction_video}>
+                      <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <Video />
+                      </span>
+                    </a>
+                  )}
                 </div>
                 <div className="p-5 space-y-5">
                   <div className='flex items-center justify-between'>
@@ -153,7 +143,7 @@ const handleClick = () => {
                       </>)}
                   </div>
                   <div className="flex w-full">
-                    <Button onClick={handleClick} className="btn-primary text-white text-center rounded-2xl font-medium py-2.5 w-[100%]">اشترك في الكورس</Button>
+                    <Link href={{ pathname :'/checkout_course' , query: { id: course.id }}} className="btn-primary text-white text-center rounded-2xl font-medium py-2.5 w-[100%]">اشترك في الكورس</Link>
                   </div>
                 </div>
               </div>
@@ -164,17 +154,22 @@ const handleClick = () => {
       <section className='container my-5'>
         <div className="grid grid-cols-1 lg:grid-cols-3">
           <div className="col-span-2 lg:p-9 xl:p-5 text-justify leading-8">
-            
-            <div className="mb-5">
-              <h3 className="font-bold mb-3 text-lg">محتوى الكورس</h3>
-              {course.description}
-            </div>
-            <div className="mb-5">
-              <h3 className="font-bold mb-3 text-lg">مخرجات الكورس</h3>
-              {course.course_result_desc}
-            </div>
-            
-            
+
+            {course.description && course.description.length > 0 && (
+              <div className="mb-5">
+                <h3 className="font-bold mb-3">محتوى الكورس</h3>
+                {course.description}
+              </div>
+            )}
+
+            {course.course_result_desc && course.course_result_desc.length > 0 && (
+              <div className="mb-5">
+                <h3 className="font-bold mb-3">مخرجات الكورس</h3>
+                {course.course_result_desc}
+              </div>
+            )}
+
+
             {course.course_appointments && course.course_appointments.length > 0 && (
               <>
                 <h2 className="font-bold mb-5 mt-10">وقت الكورس <span className="text-[#EA4335]">(الأوقات مبدئية ويتم الاتفاق عليها في بداية الكورس)</span></h2>

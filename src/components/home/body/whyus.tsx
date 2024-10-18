@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 export default function WhyUs() {
     return (
         <>
-            <div className="container mt-20">
+            <div className="container mt-20 overflow-hidden">
                 <TitleSection text="لماذا نحن" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start mt-20">
                     <div data-aos="fade-down-right" className='relative'>

@@ -91,7 +91,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           {duration}
         </div> */}
         <div className='text-end'>
-          <Link href={{ pathname: '/checkout_course', query: { id: id } }} className="btn-primary text-xs font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-3 rounded-2xl transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">اشترك في الكورس</Link>
+          <Link href={`/course/${id}`}  className="btn-primary text-xs font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-3 rounded-2xl transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">اشترك في الكورس</Link>
         </div>
 
       </div>

@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Label } from "@/components/ui/label"
-import { fetchProfileData } from '@/app/api/dataFetch';
+import { fetchProfileData , CreateCourseFun, updateProfileS } from '@/app/api/dataFetch';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsPayment"
 import { Textarea } from "@/components/ui/textarea";
 import { useSearchParams ,  usePathname  } from 'next/navigation';
 import DropZone from '@/components/ui/DropZone';
-import { CreateCourseFun } from '@/app/api/dataFetch';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -154,10 +153,11 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
             console.log(formDataToSend)
             const endpoint = isInstructorCheckout ? 'checkout/checkout_instructor' : 'checkout/checkout_course';
 
-            const result = await CreateCourseFun(endpoint, token, formDataToSend);
-            if (result.status) {
+            const result = await updateProfileS(endpoint, token, formDataToSend);
+
+             if (result.status) {
                 // setIsOpen(true);
-                 setPaymentSuccess(true);
+                  setPaymentSuccess(true);
                 if (isInstructorCheckout) {
                     toast.success("تم الدفع حجز معلم , ستواصل معك العلم بأقرب وقت ");
                 } else {

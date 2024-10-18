@@ -20,7 +20,14 @@ import { toast } from "react-toastify";
 type CheckoutFormProps = {
     token: string;
 };
-
+const formatTimeTo12Hour = (time: string): string => {
+    // {formatTimeTo12Hour(duration.from_time)}
+    const [hours, minutes] = time.split(':');
+    const hoursNum = parseInt(hours, 10);
+    const ampm = hoursNum >= 12 ? 'م' : 'ص';
+    const hour12 = hoursNum % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+};
 export default function PrivetCourse({ token }: CheckoutFormProps) {
     const [studentsSubscribe, setStudentsSubscribe] = useState<OfficeHours[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -109,14 +116,14 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
                             <td className="px-5 py-5 font-bold bg-[#FAFAFA] rounded-s-2xl ">{index + 1}</td>
                             <td className="bg-[#FAFAFA]">{student.student_name}</td>
                             <td className="bg-[#FAFAFA]">{student.date}</td>
-                            <td className="bg-[#FAFAFA]">{student.from_time} - {student.to_time}</td>
+                            <td className="bg-[#FAFAFA]">{formatTimeTo12Hour(student.from_time)} - {formatTimeTo12Hour(student.to_time)}</td>
                             <td className="bg-[#FAFAFA]">
                                 {student.zoom_link ? (
                                     <a
                                         href={student.zoom_link}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
+                                        className="w-[100px] lg:w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
                                     >
                                         <span className="ms-1">↗</span>
                                         {student.zoom_link}

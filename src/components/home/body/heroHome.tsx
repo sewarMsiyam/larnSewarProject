@@ -15,7 +15,7 @@ export default function HeroHome() {
             تحقق التنظيم الكامل لجداولك الدراسية وحصصك الخاصة بفضل أدواتنا المتكاملة. استمتع بتجربة تعليمية تفاعلية وسلسة بين الطلاب والمعلمين في بيئة رقمية متقدمة.
           </p>
             <div className="flex flex-row items-center">
-            <Link href="/student/login" className="bg-white text-primary border border-transparent font-bold text-center py-2.5 w-40 m-1 rounded-2xl hover:bg-transparent hover:text-white hover:border hover:border-white transition-all duration-200">ابدأ الأن</Link>
+            <Link href="/course" className="bg-white text-primary border border-transparent font-bold text-center py-2.5 w-40 m-1 rounded-2xl hover:bg-transparent hover:text-white hover:border hover:border-white transition-all duration-200">ابدأ الأن</Link>
             <Link href="/instructor" className="border border-white text-white font-bold text-center py-2.5 w-40 m-1 rounded-2xl hover:bg-white hover:text-primary transition-all duration-200">احجز معلم</Link>
           </div>
 

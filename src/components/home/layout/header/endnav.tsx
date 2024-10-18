@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
@@ -14,6 +16,7 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
         }
         return '/profile';
     };
+
     return (
         <>
             {session?.user ? (
