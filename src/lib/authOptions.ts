@@ -9,6 +9,8 @@ type UserType = 'student' | 'instructor';
 interface CustomUser extends User {
   token: string;
   userType: UserType;
+  image: string;
+
 }
 const formatName = (user: any, userType: UserType): string => {
   if (userType === 'student') {
@@ -54,8 +56,8 @@ const createCredentialsProvider = (userType: UserType) =>
           return {
             id: user.id,
             email: user.email,
-            // name: `${user.first_name} ${user.last_name}`,
             name: formatName(user, userType),
+            image: user.image || null,
             token: result.item.token,
             userType: userType,
           };
@@ -75,6 +77,7 @@ declare module 'next-auth' {
       id: string;
       email: string;
       name: string;
+      image: string | null;
       authToken: string;
       userType: UserType;
     };
@@ -86,6 +89,7 @@ declare module 'next-auth/jwt' {
     id: string;
     email: string;
     name: string;
+    image: string | null;
     authToken: string;
     userType: UserType;
   }
@@ -113,6 +117,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const customUser = user as CustomUser;
         token.id = customUser.id;
+        token.image = customUser.image || null;
         token.authToken = customUser.token;
         token.userType = customUser.userType;
       }
@@ -123,6 +128,7 @@ export const authOptions: NextAuthOptions = {
         id: token.id,
         email: token.email,
         name: token.name,
+        image: token.image,
         authToken: token.authToken,
         userType: token.userType,
       };

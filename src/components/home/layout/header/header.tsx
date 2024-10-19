@@ -23,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({ session }) => {
           <div className="hidden md:flex justify-between items-center w-full ">
             <div></div>
             <Navbar />
-            <EndNav session={session} />
+            <EndNav />
           </div>
         </div>
       </div>

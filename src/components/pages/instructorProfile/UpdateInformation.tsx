@@ -9,12 +9,16 @@ import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
 import { Textarea } from "@/components/ui/textarea";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '@/contexts/UserContext';
+import { useSession } from 'next-auth/react';
 
 type CheckoutFormProps = {
     token: string;
 };
 export default function UpdateInformation({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
+    const { data: session, update: updateSession } = useSession();
+    const { updateUser } = useUser();
     const [content, setContent] = useState(``);
     const [formData, setFormData] = useState({
         name: '',
@@ -75,43 +79,51 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // const data = {
-        //     name: formData.name,
-        //     email: formData.email,
-        //     qualification_ar: formData.qualification,
-        //     experience_ar: formData.experience,
-        //     achievement_ar: formData.achievement,
-        //     years_of_experience: formData.years_of_experience,
-        //     hourly_rate_price: formData.hourly_rate_price,
-        // };
-        // try {
-        //     const response = await updateProfile('instructor/update', token as string, data);
-        //     if (response && response.status === 200 && response.item) {
-        //         toast.success('تم تحديث البيانات', {
-        //             autoClose: 1500,
-        //         });
-        //         setFormData(prevFormData => ({
-        //             ...prevFormData,
-        //             name: response.item.first_name || prevFormData.name,
-        //             qualification: response.item.qualification || prevFormData.qualification,
-        //             experience: response.item.experience || prevFormData.experience,
-        //             achievement: response.item.achievement || prevFormData.achievement,
-        //             years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
-        //             hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
-        //         }));
-                
-        //     } else {
-        //         console.error('Unexpected server response:', response);
-        //         toast.error('فشل تعديل البيانات!');
-        //     }
-        // } catch (error) {
-        //     console.error('Error updating profile:', error);
-        //     if (error instanceof Error) {
-        //         console.error(`An error occurred while updating the profile: ${error.message}`);
-        //     } else {
-        //         console.error('An unknown error occurred while updating the profile. Please try again.');
-        //     }
-        // }
+        const data = {
+            name: formData.name,
+            email: formData.email,
+            qualification_ar: formData.qualification,
+            experience_ar: formData.experience,
+            achievement_ar: formData.achievement,
+            years_of_experience: formData.years_of_experience,
+            hourly_rate_price: formData.hourly_rate_price,
+        };
+        try {
+            const response = await updateProfile('instructor/update', token as string, data);
+            if (response && response.status === 200 && response.item) {
+                toast.success('تم تحديث البيانات', {
+                    autoClose: 1500,
+                });
+
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    name: response.item.first_name || prevFormData.name,
+                    qualification: response.item.qualification || prevFormData.qualification,
+                    experience: response.item.experience || prevFormData.experience,
+                    achievement: response.item.achievement || prevFormData.achievement,
+                    years_of_experience: response.item.years_of_experience || prevFormData.years_of_experience,
+                    hourly_rate_price: response.item.hourly_rate_price || prevFormData.hourly_rate_price,
+                }));
+                updateUser({
+                    name: response.item.name || response.item.first_name || formData.name,
+                    email: response.item.email || formData.email,
+                    image: response.item.image || formData.image,
+                    userType: 'instructor',
+                });
+            } else {
+                console.error('Unexpected server response:', response);
+                toast.error('فشل تعديل البيانات!');
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            if (error instanceof Error) {
+                console.error(`An error occurred while updating the profile: ${error.message}`);
+            } else {
+                console.error('An unknown error occurred while updating the profile. Please try again.');
+            }
+        }
+
+
     };
 
     return (

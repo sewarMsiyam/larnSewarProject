@@ -1,45 +1,69 @@
-"use client";
-import { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { Session } from 'next-auth';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from '@/contexts/UserContext';
 
-interface HeaderProps {
-    session: Session | null;
-}
-const EndNav: React.FC<HeaderProps> = ({ session }) => {
+const EndNav: React.FC = () => {
+    const { user, logout } = useUser();
 
     const getProfileLink = () => {
-        if (session?.user?.userType === 'instructor') {
+        if (user?.userType === 'instructor') {
             return '/instructor/profile';
         }
         return '/profile';
     };
 
+    const getDisplayName = () => {
+        if (user?.userType === 'student') {
+            if (user.first_name && user.last_name) {
+                return `${user.first_name} ${user.last_name}`;
+            } else if (user.first_name) {
+                return user.first_name;
+            } else if (user.last_name) {
+                return user.last_name;
+            } else {
+                return user.name || 'الطالب';
+            }
+        }
+        return user?.name || 'المستخدم';
+    };
+
+    const getAvatarFallback = () => {
+        if (user?.userType === 'student') {
+            if (user.first_name) {
+                return user.first_name.charAt(0).toUpperCase();
+            } else if (user.name) {
+                return user.name.charAt(0).toUpperCase();
+            }
+        }
+        return user?.name?.charAt(0).toUpperCase() || '?';
+    };
+
+    const handleLogout = async () => {
+        await logout();
+    };
+
     return (
         <>
-            {session?.user ? (
+            {user ? (
                 <div className="flex flex-col md:flex-row items-center gap-5">
-
                     <Link href={getProfileLink()} className="flex items-center gap-2">
-                        <p>{session.user?.name}</p>
+                        <p>{getDisplayName()}</p>
                         <Avatar>
-                            <AvatarImage src='' alt={session.user?.email || 'User Avatar'} />
+                            <AvatarImage src={user.image || ''} alt={getDisplayName()} />
                             <AvatarFallback>
-                                {session.user?.name?.charAt(0)}
+                                {getAvatarFallback()}
                             </AvatarFallback>
                         </Avatar>
                     </Link>
-
-                    <button onClick={() => signOut()} className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1">تسجيل خروج</button>
+                    <button onClick={handleLogout} className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1">تسجيل خروج</button>
                 </div>
             ) : (
                 <div className="flex flex-col md:flex-row items-center">
                     <Link href="/student/login" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                         <span className="relative z-10">تسجيل دخول</span>
                     </Link>
-                    <Link href="/student/register" className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 relative overflow-hidden border border-primary text-primary transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto before:h-0 before:w-0 before:rounded-sm before:bg-color-gradient before:duration-300 before:ease-out hover:text-white hover:shadow-color-gradient hover:before:h-40 hover:before:w-40 hover:before:opacity-80">
+                    <Link href="/student/register" className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 relative overflow-hidden border border-primary text-primary transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto before:h-0 before:w-0 before:rounded-sm before:bg-color-gradient before:duration-300 before:ease-out hover:text-white hover:shadow-color-gradient hover:before:h-40 before:w-40 before:opacity-80">
                         <span className="relative z-10">إنشاء حساب</span>
                     </Link>
                 </div>
@@ -47,4 +71,5 @@ const EndNav: React.FC<HeaderProps> = ({ session }) => {
         </>
     );
 }
+
 export default EndNav;

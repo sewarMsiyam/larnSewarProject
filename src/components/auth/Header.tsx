@@ -22,7 +22,7 @@ const HeaderAuth: React.FC<HeaderAuthProps> = ({ session }) => {
           <div className="hidden md:flex justify-between items-center w-full text-white">
             <div></div>
             <Navbar />
-            <EndNav session={session} />
+            <EndNav/>
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { useUser } from '@/contexts/UserContext';
 
 type CheckoutFormProps = {
     token: string;
@@ -23,8 +24,10 @@ type CheckoutFormProps = {
 
 export default function ImgUser({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
+    const { updateUser } = useUser();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         image: null as File | null,
@@ -79,10 +82,15 @@ export default function ImgUser({ token }: CheckoutFormProps) {
 
         try {
             const result = await CreatHeuerFun("instructor/update", token, courseData);
-            console.log("result =" + result)
             if (result.status) {
                 toast.success(result.message || "تم تغيير الصورة");
+                setIsOpen(false);
                 loadProfileData();
+                updateUser({
+                     name: result.item.name || result.item.name || formData.name,
+                     image: result.item.image || formData.image,
+                    userType: 'student',
+                });
             } else {
                 toast.error(result.message || "فشل تغيير الصورة.");
             }
@@ -107,8 +115,8 @@ export default function ImgUser({ token }: CheckoutFormProps) {
         <>
 
             <ToastContainer position="top-right" autoClose={5000} />
-            <Dialog>
-                <DialogTrigger>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger onClick={() => setIsOpen(true)}>
                     <span className='bg-white text-primary size-7 flex items-center justify-center rounded-full absolute z-10 '>
                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8.15693 3.41217L12.9651 8.22059L6.37061 14.8237C6.06413 15.13 5.67053 15.334 5.24366 15.4081L1.28696 16.0676C1.23999 16.0745 1.19252 16.0773 1.14506 16.0759C0.9223 16.0734 0.709419 15.9835 0.552372 15.8254C0.457339 15.7305 0.385934 15.6145 0.343888 15.4869C0.301842 15.3593 0.290349 15.2238 0.310313 15.0909L0.969747 11.134C1.04394 10.7072 1.248 10.3135 1.55408 10.007L8.15693 3.41217ZM15.1605 1.21656C14.8457 0.899138 14.4712 0.647244 14.0586 0.475309C13.646 0.303375 13.2034 0.214844 12.7564 0.214844C12.3094 0.214844 11.8668 0.303375 11.4542 0.475309C11.0416 0.647244 10.6671 0.899138 10.3523 1.21656L9.34231 2.22662L14.1505 7.03504L15.1605 6.02498C15.4779 5.7102 15.7298 5.33563 15.9018 4.92299C16.0737 4.51035 16.1622 4.0679 16.1622 3.62087C16.1622 3.17384 16.0737 2.73118 15.9018 2.31854C15.7298 1.9059 15.4779 1.53133 15.1605 1.21656Z" fill="currentColor" fillOpacity="0.4" />

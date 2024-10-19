@@ -45,8 +45,19 @@ export default function HouerLib({ token }: CheckoutFormProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenD, setIsOpenD] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [dateToUpdate, setDateToUpdate] = useState<Date | null>(null);
+
+
+    const formatDateSelect = (date: string | Date): string => {
+        const d = date instanceof Date ? date : new Date(date);
+        if (isNaN(d.getTime())) {
+            console.error('Invalid date:', date);
+            return '';
+        }
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
     const bookedDates = useMemo(() => {
-        return new Set(officeHours.map(hour => hour.date));
+        return new Set(officeHours.map(hour => formatDateSelect(hour.date)));
     }, [officeHours]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,12 +157,12 @@ export default function HouerLib({ token }: CheckoutFormProps) {
         try {
             if (OfficeHoursToUpdate) {
                 const result = await CreatHeuerFun(`instructor/instructor_office_hours/update/${OfficeHoursToUpdate.id}`, token, data);
-                    toast.success(result.message || "تم تحديث الموعد بنجاح");
-                    loadOfficeHours();
+                toast.success(result.message || "تم تحديث الموعد بنجاح");
+                loadOfficeHours();
             } else {
                 const result = await CreatHeuerFun("instructor/instructor_office_hours", token, data);
-                    toast.success(result.message || "تم إضافة الموعد بنجاح");
-                    loadOfficeHours();
+                toast.success(result.message || "تم إضافة الموعد بنجاح");
+                loadOfficeHours();
             }
         } catch (error: any) {
             console.error("Error processing office hour:", error);
@@ -178,6 +189,7 @@ export default function HouerLib({ token }: CheckoutFormProps) {
             to_time: officeHours.to_time
         });
         setSelectedDate(new Date(officeHours.date));
+        setDateToUpdate(new Date(officeHours.date));
         setIsOpen(true);
     };
 
@@ -187,6 +199,7 @@ export default function HouerLib({ token }: CheckoutFormProps) {
         setOfficeHoursToUpdate(null);
         setFormData({ date: "", from_time: "", to_time: "" });
         setSelectedDate(undefined);
+        setDateToUpdate(null);
     };
 
     const deleteOfficeHours = async (officeHoursId: number) => {
@@ -206,9 +219,8 @@ export default function HouerLib({ token }: CheckoutFormProps) {
 
     return (
         <>
-            {/* <ToastContainer /> */}
+            <ToastContainer />
 
-            {token}
             <TabsContent value="houerLib" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
                 <div className="flex flex-col lg:flex-row justify-between items-center mb-5">
                     <div className="flex gap-2">
@@ -233,9 +245,13 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                                                     onSelect={handleDateSelect}
                                                     disabled={disablePastDates}
                                                     className="rounded-xl shadow-sm border w-full"
-                                                    modifiers={{ booked: (date) => bookedDates.has(date.toISOString().split('T')[0]) }}
+                                                    modifiers={{
+                                                        booked: (date) => bookedDates.has(formatDateSelect(date)),
+                                                        toUpdate: (date) => dateToUpdate !== null && date.toDateString() === dateToUpdate.toDateString()
+                                                    }}
                                                     modifiersStyles={{
-                                                        booked: { backgroundColor: '#3b82f6', color: 'white' }
+                                                        booked: { backgroundColor: '#c8f0e5', color: 'dark' },
+                                                        toUpdate: { backgroundColor: '#0abc8c', color: 'white' }
                                                     }}
                                                 />
                                             </div>
@@ -337,14 +353,21 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                         <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
                         <p className="text-lg text-dark text-center font-bold my-5">
                             هل أنت متأكد من الساعة المكتبة هذه ؟
-                            <div className="flex justify-around items-center gap-3 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8 mt-4">
-                                <div className='flex flex-col items-center gap-3 '>
-                                    <span>({OfficeHoursToDelete?.date})</span>
-                                    <div className="w-full h-px bg-[rgba(0,_0,_0,_0.20)]"></div>
-                                    <span className="text-primary">من: ({OfficeHoursToDelete?.from_time}) - إلى:  ({OfficeHoursToDelete?.to_time}) </span>
+                        </p>
+                        {OfficeHoursToDelete && (
+                            <div className="flex justify-between items-center gap-3 border border-[#D9D9D9] font-bold p-3 rounded-xl px-6 my-5">
+                                <div className='flex flex-col gap-3'>
+                                    <span className="flex items-center gap-2">
+                                        <img src='/profileIcon/calender.svg' alt='التقويم' className='' />
+                                        {formatDate(OfficeHoursToDelete.date)}
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <img src='/profileIcon/time.svg' alt='الوقت' className='' />
+                                        من: {formatTimeTo12Hour(OfficeHoursToDelete.from_time)} - إلى: {formatTimeTo12Hour(OfficeHoursToDelete.to_time)}
+                                    </span>
                                 </div>
                             </div>
-                        </p>
+                        )}
                     </AlertDialogHeader>
                     <AlertDialogFooter className="w-full flex gap-2">
                         <AlertDialogAction

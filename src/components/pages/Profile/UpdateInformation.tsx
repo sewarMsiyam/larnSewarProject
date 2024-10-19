@@ -9,16 +9,21 @@ import { updateProfile, fetchProfileData } from '@/app/api/dataFetch';
 import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '@/contexts/UserContext';
+
 type CheckoutFormProps = {
     token: string;
 };
 export default function UpdateInformation({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
+    const { updateUser } = useUser();
+
     const [loading, setLoading] = useState<boolean>(false);
 
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
+        image: null as File | null,
         email: '',
         phone: '',
         phone_code: '',
@@ -33,6 +38,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                 setFormData({
                     first_name: profileData.item.first_name || '',
                     last_name: profileData.item.last_name || '',
+                    image: profileData.item.image || '',
                     email: profileData.item.email || '',
                     phone: profileData.item.phone || '',
                     phone_code: profileData.item.phone_code || '',
@@ -65,13 +71,20 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
         try {
             const response = await updateProfile('student/update', token as string, data);
             if (response.status === 200) {
+                toast.success('تم تحديث البيانات ', {
+                    autoClose: 1500,
+                });
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     first_name: response.item.first_name || prevFormData.first_name,
                     last_name: response.item.last_name || prevFormData.last_name,
                 }));
-                toast.success('تم تحديث البيانات سجل دخول مرة اخرى', {
-                    autoClose: 1500,
+                updateUser({
+                    first_name: response.item.first_name || response.item.first_name || formData.first_name,
+                    last_name: response.item.last_name || response.item.last_name || formData.last_name,
+                    email: response.item.email || formData.email,
+                    image: response.item.image || formData.image,
+                    userType: 'student',
                 });
             } else {
                 console.error('Unexpected server response:', response);

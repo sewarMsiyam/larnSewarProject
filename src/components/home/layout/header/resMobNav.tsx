@@ -30,7 +30,7 @@ const MobNav: React.FC<HeaderAuthProps> = ({ session }) => {
           </SheetTitle>
           <SheetDescription>
             <Navbar />
-            <EndNav session={session}/>
+            <EndNav />
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
