@@ -5,7 +5,6 @@ import { TabsContent } from "@/components/ui/tabsProfile"
 import Image from "next/image";
 import { Course } from '@/app/api/interfaces';
 import { fetchAllToken } from '@/app/api/dataFetch';
-import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -19,6 +18,14 @@ import Link from "next/link";
 type CheckoutFormProps = {
     token: string;
 };
+const formatTimeTo12Hour = (time: string): string => {
+    const [hours, minutes] = time.split(':');
+    const hoursNum = parseInt(hours, 10);
+    const ampm = hoursNum >= 12 ? 'م' : 'ص';
+    const hour12 = hoursNum % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+};
+
 export default function UserCourse({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
 
@@ -90,7 +97,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                                 <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3 rounded-xl px-8">
                                                     <span>{duration.date}</span>
                                                     <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
-                                                    <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
+                                                    <span className="text-primary"> {formatTimeTo12Hour(duration.from_time)}  -  {formatTimeTo12Hour(duration.to_time)}</span>
                                                 </div>
                                             </div>
                                         ))}
@@ -98,17 +105,6 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                 </>
                             )}
 
-
-                            {/* <div className="p-4 px-10 bg-[#F9F9F9] shadow-sm rounded-xl flex justify-around items-center font-bold w-fit">
-                                <div>
-                                    <p>التاريخ:</p>
-                                    <p>الوقت:</p>
-                                </div>
-                                <div>
-                                    <p className="text-primary">{course.date}</p>
-                                    <p className="text-primary">{course.time}</p>
-                                </div>
-                            </div> */}
 
                             <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                 <p className="flex-none">رابط الزوم</p>
@@ -140,6 +136,10 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                 </div>
 
                             </div>
+
+                            <Link href={`/profile/courses/${course.id}/lessons`} className="text-blue-600 hover:underline">
+                                قائمة الدروس
+                            </Link>
                         </div>
                     </div>
                 ))}

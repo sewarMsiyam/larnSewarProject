@@ -166,6 +166,7 @@ const fetchRetry = async function fetchRetry(
 };
 
 export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
+  console.log("api link= " + buildUrl(endpoint, mainCategory))
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       headers: {
@@ -173,6 +174,7 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
       },
       timeout: 8000,
     });
+
     const result = await response.json();
     if (result.item) {
       if (Array.isArray(result.item)) {
@@ -445,7 +447,7 @@ export async function CreatHeuerFun(endpoint: string, token?: string, data?: For
       timeout: 8000,
     });
     if (!response.ok) {
-      throw new Error(await response.text()|| 'Failed to create course');
+      throw new Error(await response.text() || 'Failed to create course');
     }
     return await response.json();
   } catch (error) {

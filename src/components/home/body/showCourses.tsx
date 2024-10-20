@@ -27,17 +27,13 @@ interface Specialization {
 export default function CoursesHome() {
     const t = useTranslations('HomePage');
 
-    // const [courses, setCourses] = useState<Course[]>([]);
     const [tawjihiCourses, setTawjihiCourse] = useState<Course[]>([]);
     const [universityCourses, setUniversityCourse] = useState<Course[]>([]);
 
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-   const [searchQuery, setSearchQuery] = useState<string>('');
-    const [instructorName, setInstructorName] = useState<string>('');
-    const [specialization, setSpecialization] = useState<string>('');
-    const [specializations, setSpecializations] = useState<Specialization[]>([]);
+
     const endpoint = 'courses';
 
 
@@ -45,8 +41,12 @@ export default function CoursesHome() {
         async function fetchData() {
             try {
                 setLoading(true);
-                const tawjihiData = await fetchAll<Course>(`courses?main_category=tawjihi`);
+                const tawjihiData = await fetchAll<Course>(`${endpoint}/?main_category=tawjihi`);
                 const universityData = await fetchAll<Course>('courses?main_category=university');
+
+
+                console.log(tawjihiData)
+                
                 setTawjihiCourse(tawjihiData || []);
                 setUniversityCourse(universityData || []);
             } catch (err) {
@@ -58,54 +58,6 @@ export default function CoursesHome() {
 
         fetchData();
     }, []);
-
-    //    const fetchCourses = async (category: string) => {
-    //     try {
-    //         setLoading(true);
-    //         const query = buildQuery(category, searchQuery, specialization, instructorName);
-    //         const data = await fetchAll<Course>(query);
-    //         if (category === 'tawjihi') {
-    //             setTawjihiCourses(data || []);
-    //         } else {
-    //             setUniversityCourses(data || []);
-    //         }
-    //     } catch (err) {
-    //         setError('Failed to fetch courses');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // const buildQuery = (category: string, name: string, specializationId: string, instructorName: string) => {
-    //     let query = `courses/?main_category=${category}`;
-    //     if (name) query += `&name=${encodeURIComponent(name)}`;
-    //     if (specializationId) query += `&specialization_id=${specializationId}`;
-    //     if (instructorName) query += `&instructor_name=${encodeURIComponent(instructorName)}`;
-    //     return query;
-    // };
-
-
-  useEffect(() => {
-    const loadSpecializations = async () => {
-      try {
-        const data = await fetchAll<Specialization>("specializations");
-        if (Array.isArray(data)) {
-          setSpecializations(data);
-        } else {
-          console.error("Fetched data is not an array:", data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch specializations:", error);
-      }
-    };
-    loadSpecializations();
-  }, []);
-
-   const handleSearch = () => {
-        // fetchCourses('tawjihi');
-        // fetchCourses('university');
-    };
-
 
 
     if (loading) {
