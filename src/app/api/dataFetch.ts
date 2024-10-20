@@ -355,27 +355,12 @@ export async function CreateCourseFun(endpoint: string, token?: string, data?: F
     });
 
     const responseText = await response.text();
-    console.log(responseText);
-
-    console.log('Full server response:', responseText);
-
-    let result;
-    console.log(`function  = ${result}`);
-    try {
-      result = JSON.parse(responseText);
-    } catch (e) {
-      throw new Error('Invalid server response');
-    }
-
+    let result = JSON.parse(responseText)
     if (!response.ok) {
       throw new Error(result.message || 'Failed to create course');
     }
 
-    if (result.status === true) {
-      return result;
-    } else {
-      throw new Error(result.message || 'Failed to create course');
-    }
+    return result;
   } catch (error) {
     console.error('Failed to create course:', error);
     throw error;

@@ -1,7 +1,5 @@
-
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useSession } from "next-auth/react";
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import Image from "next/image";
 import { Lessons } from '@/app/api/interfaces';
@@ -13,41 +11,62 @@ import { Button } from "@/components/ui/button";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
+import DropZone from '@/components/ui/DropZone';
 
 interface LessonsProps {
     id: string;
     token: string;
 }
-export default function CreateLessons({ id , token }: LessonsProps) {
-    const t = useTranslations('HomePage');
 
-    const [lessons, setLessons] = useState<Lessons[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+interface FormData {
+    name_ar: string;
+    course_id: string;
+    recorded_video_link: string;
+    zoom_link: string;
+    summary_file: File | null;
+}
+
+interface FormErrors {
+    name_ar: string;
+    link: string;
+}
+
+export default function CreateLessons({ id, token }: LessonsProps) {
+    const t = useTranslations('HomePage');
     const router = useRouter();
 
-    const [formData, setFormData] = useState({
+    const [lessons, setLessons] = useState<Lessons[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [formData, setFormData] = useState<FormData>({
         name_ar: "",
         course_id: id,
         recorded_video_link: "",
         zoom_link: "",
+        summary_file: null,
     });
-     const [errors, setErrors] = useState({
+
+    const [errors, setErrors] = useState<FormErrors>({
         name_ar: "",
         link: "",
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
         setErrors(prev => ({ ...prev, [id]: "", link: "" }));
     };
 
-    const validateForm = () => {
-        let isValid = true;
-        const newErrors = { name_ar: "", link: "" };
+    const handleFileUpload = (file: File | null) => {
+        setFormData(prev => ({ ...prev, summary_file: file }));
+    };
 
-        if (!formData.name_ar.trim()) {
+    const validateForm = (): boolean => {
+        let isValid = true;
+        const newErrors: FormErrors = { name_ar: "", link: "" };
+
+        if (!formData.name_ar) {
             newErrors.name_ar = "اسم الدرس مطلوب";
             isValid = false;
         }
@@ -61,24 +80,21 @@ export default function CreateLessons({ id , token }: LessonsProps) {
         return isValid;
     };
 
-
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
         setIsLoading(true);
-        const courseData = new FormData();
-
-        Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null) {
-                courseData.append(key, value.toString());
-            }
-        });
-        console.log(courseData);
+        const formDataToSend = new FormData();
+        formDataToSend.append("name_ar", formData.name_ar);
+        formDataToSend.append("course_id", formData.course_id);
+        formDataToSend.append("recorded_video_link", formData.recorded_video_link);
+        formDataToSend.append("zoom_link", formData.zoom_link);
+        if (formData.summary_file) {
+            formDataToSend.append("summary_file", formData.summary_file);
+        }
 
         try {
-
-            const result = await CreateCourseFun("instructor/lessons", token as string, courseData);
+            const result = await CreateCourseFun("instructor/lessons", token, formDataToSend);
             if (result.status) {
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
                 router.push(`/course/${id}/lessons`);
@@ -87,6 +103,7 @@ export default function CreateLessons({ id , token }: LessonsProps) {
                     course_id: id,
                     recorded_video_link: "",
                     zoom_link: "",
+                    summary_file: null,
                 });
             } else {
                 toast.error(result.message || "فشل في إنشاء الكورس.");
@@ -98,7 +115,6 @@ export default function CreateLessons({ id , token }: LessonsProps) {
             setIsLoading(false);
         }
     };
-
 
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
@@ -161,16 +177,22 @@ export default function CreateLessons({ id , token }: LessonsProps) {
                             onChange={handleChange}
                             className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
                         />
-                        
                     </div>
-                     <div className="text-end">
+                    <div className="mb-4">
+                        <Label className="block text-sm font-medium text-gray-700">ارفق ملخص</Label>
+                        <div className="relative mt-2">
+                            <DropZone
+                                onFileUpload={handleFileUpload}
+                                acceptedFileTypes={['image/*', 'application/pdf']}
+                            />
+                        </div>
+                    </div>
+                    <div className="text-end">
                         <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                             {isLoading ? "جاري الإنشاء..." : "نشر الدرس للكورس"}
                         </Button>
                     </div>
                 </form>
-
-
             </div>
         </>
     );

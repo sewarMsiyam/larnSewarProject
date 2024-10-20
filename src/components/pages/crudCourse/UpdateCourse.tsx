@@ -28,21 +28,22 @@ interface CourseFeature {
     feature: string;
 }
 interface CourseDuration {
-    day: string;
+    date: string;
     from_time: string;
     to_time: string;
 }
-interface FormData {
-    name: string;
-    description: string;
-    duration: number;
-    price: number;
-    category: string;
-    course_features: CourseFeature[];
-    image: File | null;
-    zoom_link: string | null;
-    course_durations: CourseDuration[];
-}
+// interface FormData {
+//     name: string;
+//     description: string;
+//     duration: number;
+//     price: number;
+//     category: string;
+//     course_features: CourseFeature[];
+//     image: File | null;
+//     zoom_link: string;
+//     course_start: string | null;
+//     course_durations: CourseDuration[];
+// }
 
 
 export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
@@ -67,7 +68,8 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         image: null as File | null,
         currentImage: "",
         zoom_link: "",
-        course_days: [{ day: "", from_time: "", to_time: "" }],
+        course_start: "",
+        course_days: [{ date: "", from_time: "", to_time: "" }],
     });
 
     useEffect(() => {
@@ -76,6 +78,8 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                 console.log('id = ' + id + 'token = ' + token)
                 setLoading(true);
                 const result = await fetchOneTokenUpdateCourse(`instructor/courses`, id.toString() , token as string);
+                console.log(result.item)
+
                 if (result.status) {
                     console.log(result.item)
                     setFormData(prevFormData => ({
@@ -89,14 +93,14 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                          category: result.item.category,
                          feature_ar: result.item.course_features,
                          zoom_link: result.item.zoom_link,
-                         course_days: result.item.course_durations,
+                         course_days: result.item.course_appointments,
                          currentImage: result.item.image || "", 
                         ...result.item,
                     }));
                     if (result.item.image) {
                         setSelectedImage(result.item.image);
                     }
-                    console.log("Category loaded:", result.item.category); // Log the loaded category
+                    console.log("Category loaded:", result.item.category); 
 
                 } else {
                     toast.error("Failed to fetch course data");
@@ -181,7 +185,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const addCourseDay = () => {
         setFormData(prev => ({
             ...prev,
-            course_days: [...prev.course_days, { day: "", from_time: "", to_time: "" }]
+            course_days: [...prev.course_days, { date: "", from_time: "", to_time: "" }]
         }));
     };
         console.log("formData=" +formData.currentImage)
@@ -200,8 +204,8 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             case 2:
                 if (!formData.course_result_desc_ar) newErrors.course_result_desc_ar = "الرجاء إدخال نتائج الكورس";
                 formData.course_days.forEach((day, index) => {
-                    if (!day.day) {
-                        newErrors[`course_days_${index}_day`] = "الرجاء اختيار اليوم الدرس";
+                    if (!day.date) {
+                        newErrors[`course_days_${index}_date`] = "الرجاء اختيار اليوم الدرس";
                     }
                     if (!day.from_time) {
                         newErrors[`course_days_${index}_from_time`] = "الرجاء إدخال وقت البداية الحصة";
@@ -264,7 +268,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         });
 
         formData.course_days.forEach((day, index) => {
-            courseData.append(`course_days[${index + 1}][day]`, day.day);
+            courseData.append(`course_days[${index + 1}][date]`, day.date);
             courseData.append(`course_days[${index + 1}][from_time]`, day.from_time);
             courseData.append(`course_days[${index + 1}][to_time]`, day.to_time);
         });
@@ -278,7 +282,6 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         console.log("formData=" +formData.currentImage)
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
-            if (result.status) {
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
                 router.push('/instructor/profile');
                 setFormData({
@@ -293,12 +296,10 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                     category: "",
                     feature_ar: [],
                     zoom_link: "",
-                    course_days: [{ day: "", from_time: "", to_time: "" }],
+                    course_start:"",
+                    course_days: [{ date: "", from_time: "", to_time: "" }],
                 });
                 setStep(1);
-            } else {
-                toast.error(result.message || "فشل في إنشاء الكورس.");
-            }
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -483,21 +484,35 @@ if (loading) {
                                     {errors.course_result_desc_ar && <p className="text-red-500 text-xs mt-1">{errors.course_result_desc_ar}</p>}
                             </div>
 
+                            <div className="mb-4">
+                                <Label className="block text-sm font-medium text-gray-700">تاريخ بداية الكورس</Label>
+                                <Input
+                                    type="date"
+                                    id="course_start"
+                                    value={formData.course_start}
+                                    onChange={handleChange}
+                                    className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    placeholder="اسم الكورس"
+                                    required
+                                />
+                                {errors.course_start && <p className="text-red-500 text-xs mt-1">{errors.course_start}</p>}
+                            </div>
+
                             <div className="mb-6">
                                 <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
                                 <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
-                                
-                                 {formData.course_days.map((day, index) => (
+
+                                {formData.course_days.map((day, index) => (
                                     <div key={index} className="flex flex-wrap gap-2 mt-2">
                                         <div className="flex-1 min-w-[150px]">
                                             <Input
-                                                type="text"
-                                                value={day.day}
-                                                onChange={(e) => handleCourseDayChange(index, 'day', e.target.value)}
+                                                type="date"
+                                                value={day.date}
+                                                onChange={(e) => handleCourseDayChange(index, 'date', e.target.value)}
                                                 className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
                                                 placeholder="اليوم"
                                             />
-                                            {errors[`course_days_${index}_day`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>}
+                                            {errors[`course_days_${index}_date`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_date`]}</p>}
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
                                             <Input

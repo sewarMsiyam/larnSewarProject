@@ -45,7 +45,7 @@ const DropZone: React.FC<DropZoneProps> = ({ onFileUpload, acceptedFileTypes = [
             {!file ? (
                 <div
                     {...getRootProps()}
-                    className={`p-6 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-300 ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+                    className={`p-6 border-2  border-dashed rounded-lg text-center cursor-pointer transition-colors duration-300 bg-[#f3f4f6] ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
                         }`}
                 >
                     <input {...getInputProps()} />

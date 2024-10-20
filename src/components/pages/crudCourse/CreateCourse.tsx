@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { useSession } from "next-auth/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from 'next/link';
@@ -45,6 +44,7 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         feature_ar: [] as string[],
         image: null as File | null,
         zoom_link: "",
+        course_start: "",
         course_days: [{ date: "", from_time: "", to_time: "" }],
     });
     const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -201,7 +201,6 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
 
         try {
             const result = await CreateCourseFun("instructor/courses", token as string, courseData);
-            if (result.status) {
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
                 router.push('/instructor/profile');
                 setFormData({
@@ -215,12 +214,11 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                     category: "",
                     feature_ar: [],
                     zoom_link: "",
+                    course_start:"",
                     course_days: [{ date: "", from_time: "", to_time: "" }],
                 });
                 setStep(1);
-            } else {
-                toast.error(result.message || "فشل في إنشاء الكورس.");
-            }
+           
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -350,6 +348,21 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                     {errors.course_result_desc_ar && <p className="text-red-500 text-xs mt-1">{errors.course_result_desc_ar}</p>}
                             </div>
 
+                            <div className="mb-4">
+                                <Label className="block text-sm font-medium text-gray-700">تاريخ بداية الكورس</Label>
+                                <Input
+                                    type="date"
+                                    id="course_start"
+                                    value={formData.course_start}
+                                    onChange={handleChange}
+                                    className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    placeholder="اسم الكورس"
+                                    required
+                                />
+                                {errors.course_start && <p className="text-red-500 text-xs mt-1">{errors.course_start}</p>}
+                            </div>
+
+                            
                             <div className="mb-6">
                                 <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
                                 <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
