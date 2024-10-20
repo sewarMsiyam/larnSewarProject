@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Label } from "@/components/ui/label"
-import { fetchProfileData , CreateCourseFun, updateProfileS } from '@/app/api/dataFetch';
+import { fetchProfileData, CreateCourseFun, CreatHeuerFun } from '@/app/api/dataFetch';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsPayment"
 import { Textarea } from "@/components/ui/textarea";
@@ -153,9 +153,9 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
             console.log(formDataToSend)
             const endpoint = isInstructorCheckout ? 'checkout/checkout_instructor' : 'checkout/checkout_course';
 
-            const result = await updateProfileS(endpoint, token, formDataToSend);
-
-             if (result.status) {
+            const result = await CreatHeuerFun(endpoint, token, formDataToSend);
+            console.log(result);
+             if (result) {
                 // setIsOpen(true);
                   setPaymentSuccess(true);
                 if (isInstructorCheckout) {

@@ -415,7 +415,7 @@ export async function updateProfileS(endpoint: string, token?: string, data?: an
       throw new Error(`HTTP error! status: ${response.status}, message: ${result.message || 'Unknown error'}`);
     }
 
-    if (result.status === true && result.item) {
+    if (result.status === 200 && result.item) {
       console.log('Profile updated successfully. New data:', result.item);
       return result;
     } else {
