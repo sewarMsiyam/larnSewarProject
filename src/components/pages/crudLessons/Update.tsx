@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
 import DropZone from '@/components/ui/DropZone';
+import { X, Upload, File } from 'lucide-react';
 
 interface LessonsProps {
     id: string;
@@ -38,6 +39,8 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
 
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentSummaryFile, setCurrentSummaryFile] = useState<string | null>(null);
+    const [isReplacingFile, setIsReplacingFile] = useState(false);
 
     const [formData, setFormData] = useState<FormData>({
         name_ar: "",
@@ -65,8 +68,9 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                     course_id: result.item.course_id,
                     recorded_video_link: result.item.recorded_video_link,
                     zoom_link: result.item.zoom_link,
+                    summary_file: null,
                 }));
-                // Don't set summary_file here, as it's not a File object
+                setCurrentSummaryFile(result.item.summary_file);
             } else {
                 toast.error("Failed to fetch course data");
             }
@@ -89,9 +93,35 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
         setFormData(prev => ({ ...prev, [id]: value }));
         setErrors(prev => ({ ...prev, [id]: "", link: "" }));
     };
+    
+    const getFileIcon = (fileName: string) => {
+        const extension = fileName.split('.').pop()?.toLowerCase();
+        return `https://cdn.jsdelivr.net/gh/dmhendricks/file-icon-vectors/dist/icons/vivid/${extension}.svg`;
+    };
+
+    const renderFilePreview = (fileName: string) => {
+        return (
+            <div className="relative">
+                <div className="w-32 h-32 flex items-center justify-center bg-gray-200 rounded">
+                    <img 
+                        src={getFileIcon(fileName)}
+                        alt={fileName}
+                        className="w-16 h-16"
+                    />
+                </div>
+            </div>
+        );
+    };
 
     const handleFileUpload = (file: File | null) => {
         setFormData(prev => ({ ...prev, summary_file: file }));
+        setIsReplacingFile(true);
+    };
+
+    const removeFile = () => {
+        setCurrentSummaryFile(null);
+        setFormData(prev => ({ ...prev, summary_file: null }));
+        setIsReplacingFile(true);
     };
 
     const validateForm = (): boolean => {
@@ -127,7 +157,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
         }
 
         try {
-            const result = await CreateCourseFun("instructor/lessons", token, formDataToSend);
+            const result = await CreateCourseFun(`instructor/lessons/update/${lessonId}`, token, formDataToSend);
             if (result.status) {
                 toast.success(result.message || "تم تعديل الدرس بنجاح");
                 router.push(`/course/${id}/lessons`);
@@ -204,18 +234,67 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                             className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
                     </div>
+                    
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">ارفق ملخص</Label>
-                        <div className="relative mt-2">
-                            {formData.summary_file && (
-                                <p className="text-sm text-gray-500 mb-2">
-                                    Current file: {formData.summary_file.name}
-                                </p>
+                        <Label className="block text-sm font-medium text-gray-700">ملخص الدرس</Label>
+                        <div className="mt-3">
+                            {!isReplacingFile && currentSummaryFile ? (
+                                <div className="border-2 border-dashed rounded-lg p-4 transition-colors duration-300 bg-[#f3f4f6] hover:border-gray-400">
+                                    <div className="flex items-center justify-between">
+                                        {renderFilePreview(currentSummaryFile)}
+                                        <div className="ml-4 flex-grow">
+                                            <p className="text-sm text-gray-600">{currentSummaryFile.split('/').pop()}</p>
+                                        </div>
+                                        <div className="mt-2 ">
+                                                <a
+                                                    href={currentSummaryFile}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-primary hover:underline mr-4"
+                                                >
+                                                    عرض الملف
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsReplacingFile(true)}
+                                                    className="text-blue-600 hover:underline mr-4"
+                                                >
+                                                    استبدال
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={removeFile}
+                                                    className="text-red-600  hover:underline mr-4"
+                                                >
+                                                    حذف
+                                                     {/* <X size={14} /> */}
+                                                </button>
+                                            </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <DropZone
+                                    onFileUpload={handleFileUpload}
+                                    // acceptedFileTypes={['application/pdf']}
+                                />
                             )}
-                            <DropZone
-                                onFileUpload={handleFileUpload}
-                                acceptedFileTypes={['image/*', 'application/pdf']}
-                            />
+                            {/* {formData.summary_file && (
+                                <p className="text-sm text-gray-500 mt-2">
+                                    الملف الجديد: {formData.summary_file.name}
+                                </p>
+                            )} */}
+                            {/* {isReplacingFile && (
+                                <Button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsReplacingFile(false);
+                                        setFormData(prev => ({ ...prev, summary_file: null }));
+                                    }}
+                                    className="text-red-600 hover:text-red-800 mt-2"
+                                >
+                                    إلغاء التغيير
+                                </Button>
+                            )} */}
                         </div>
                     </div>
                     <div className="text-end">

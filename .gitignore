@@ -36,3 +36,4 @@ yarn-error.log*
 next-env.d.ts
 src/components/pages/Profile/UpdateInformation.tsx
 src/components/pages/crudCourse/UpdateCourse.tsx
+src/components/pages/crudCourse/UpdateCourse.tsx

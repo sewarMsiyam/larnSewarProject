@@ -64,18 +64,18 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         introduction_video: "",
         price: "",
         category: "",
-        feature_ar: [] as CourseFeature[],
+        feature_ar: [] as string[],
         image: null as File | null,
-        currentImage: "",
+        // currentImage: "",
         zoom_link: "",
         course_start: "",
         course_days: [{ date: "", from_time: "", to_time: "" }],
     });
 
     useEffect(() => {
+
         const fetchCourseData = async () => {
             try {
-                console.log('id = ' + id + 'token = ' + token)
                 setLoading(true);
                 const result = await fetchOneTokenUpdateCourse(`instructor/courses`, id.toString() , token as string);
                 console.log(result.item)
@@ -94,7 +94,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                          feature_ar: result.item.course_features,
                          zoom_link: result.item.zoom_link,
                          course_days: result.item.course_appointments,
-                         currentImage: result.item.image || "", 
+                         image: result.item.image, 
                         ...result.item,
                     }));
                     if (result.item.image) {
@@ -132,7 +132,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         }
     };
     const prevStep = () => setStep(step - 1);
-        console.log("formData=" +formData.currentImage)
+        // console.log("formData=" +formData.currentImage)
 
      const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && inputValue.trim() !== '') {
@@ -156,7 +156,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             feature_ar: prev.feature_ar.filter(feature => feature.id !== idToRemove)
         }));
     };
-        console.log("formData=" +formData.currentImage)
+        // console.log("formData=" +formData.currentImage)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
@@ -188,7 +188,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             course_days: [...prev.course_days, { date: "", from_time: "", to_time: "" }]
         }));
     };
-        console.log("formData=" +formData.currentImage)
+        console.log("formData=" +formData.image)
 
      const validateStep = (currentStep: number) => {
         const newErrors: {[key: string]: string} = {};
@@ -231,7 +231,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         return Object.keys(newErrors).length === 0;
     };
 
-        console.log("formData=" +formData.currentImage)
+        console.log("formData=" +formData.image)
 
     const validateEndStep = () => {
         const newErrors: {[key: string]: string} = {};
@@ -239,7 +239,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         if (!formData.category) {
             newErrors.category = "الرجاء اختيار فئة المستهدفة في الكورس";
         }
-        if (!formData.currentImage && !formData.image) {
+        if (!formData.image && !formData.image) {
             newErrors.image = "الرجاء تحميل صورة الكورس";
         }
         if (!formData.introduction_video) {
@@ -248,23 +248,31 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-        console.log("formData=" +formData.currentImage)
+        console.log("formData=" +formData.image)
 
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateEndStep()) return; 
         setIsLoading(true);
         const courseData = new FormData();
 
         Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null && key !== 'course_days' && key !== 'feature_ar') {
+            if (value !== null && key !== 'course_days' && key !== 'feature_ar'&& key !== 'category') {
                 courseData.append(key, value.toString());
+                //  console.log(key + " = " + value.toString());
             }
         });
 
+          if (formData.category == "التوجيهي") {
+              courseData.append('category', "tawjihi");
+        }else{
+              courseData.append('category', "university");
+        }
+        
+
         formData.feature_ar.forEach((feature, index) => {
-            courseData.append(`feature_ar[${index}]`, JSON.stringify(feature));
+            courseData.append(`feature_ar[${index}]`, feature);
         });
 
         formData.course_days.forEach((day, index) => {
@@ -273,13 +281,12 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             courseData.append(`course_days[${index + 1}][to_time]`, day.to_time);
         });
 
-          if (formData.image) {
+        if (formData.image) {
             courseData.append('image', formData.image);
-        } else if (formData.currentImage) {
-            courseData.append('currentImage', formData.currentImage);
         }
 
-        console.log("formData=" +formData.currentImage)
+        
+
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
@@ -292,7 +299,6 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                     introduction_video: "",
                     price: "",
                     image: null,
-                    currentImage: "",
                     category: "",
                     feature_ar: [],
                     zoom_link: "",
@@ -300,6 +306,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                     course_days: [{ date: "", from_time: "", to_time: "" }],
                 });
                 setStep(1);
+           
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -307,6 +314,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             setIsLoading(false);
         }
     };
+
 
 
 if (loading) {
@@ -440,7 +448,7 @@ if (loading) {
 
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">مميزات الكورس</Label>
-                                <div className="flex flex-row flex-wrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                                <div className="flex flex-row flex-nowrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                                     {formData.feature_ar && formData.feature_ar.length > 0 ? (
                                         formData.feature_ar.map((feature) => (
                                             <div
@@ -556,8 +564,8 @@ if (loading) {
                                         <SelectValue placeholder="اختر تصنيف" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="tawjihi">توجيهي</SelectItem>
-                                        <SelectItem value="university">جامعة</SelectItem>
+                                        <SelectItem value="التوجيهي">توجيهي</SelectItem>
+                                        <SelectItem value="الجامعة">جامعة</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
@@ -576,8 +584,8 @@ if (loading) {
                                  <div className="bg-gray-100 flex flex-col mt-2 justify-center items-center rounded-xl p-8 cursor-pointer" onClick={handleImageClick}>
                                     {selectedImage ? (
                                         <img src={selectedImage} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                    ) : formData.currentImage ? (
-                                        <img src={formData.currentImage} alt="Current" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                    ) : formData.image ? (
+                                        <img src={formData.image} alt="Current" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
                                     ) : (
                                         <>
                                             <img src="/camera.svg" alt="" width="20" />

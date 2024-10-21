@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from 'next/navigation';
 import { CreateCourseFun } from "@/app/api/dataFetch";
+import { X } from 'lucide-react';
 
 type CheckoutFormProps = {
     token: string;
@@ -113,6 +114,27 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
             course_days: [...prev.course_days, { date: "", from_time: "", to_time: "" }]
         }));
     };
+
+    const removeCourseDay = (indexToRemove: number) => {
+        if (indexToRemove !== 0 && formData.course_days.length > 1) {
+            setFormData(prev => ({
+                ...prev,
+                course_days: prev.course_days.filter((_, index) => index !== indexToRemove)
+            }));
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[`course_days_${indexToRemove}_date`];
+                delete newErrors[`course_days_${indexToRemove}_from_time`];
+                delete newErrors[`course_days_${indexToRemove}_to_time`];
+                return newErrors;
+            });
+        } else if (indexToRemove === 0) {
+            toast.warning("يجب أن يكون هناك يوم واحد على الأقل للكورس");
+        } else {
+            toast.warning("يجب أن يكون هناك يوم واحد على الأقل للكورس");
+        }
+    }
+
 
      const validateStep = (currentStep: number) => {
         const newErrors: {[key: string]: string} = {};
@@ -230,10 +252,11 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
     // Render
     return (
         <>
+        
             <ToastContainer />
             <div className="container bg-white rounded-3xl py-8 lg:p-16 my-10 shadow-md">
                 <div className="flex justify-between items-center mb-8">
-                    <h3 className="font-bold text-lg">إضافة كورس</h3>
+                    <h3 className="font-bold text-2xl">إضافة كورس</h3>
                     {step > 1 && (
                         <div
                             onClick={prevStep}
@@ -362,50 +385,59 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
                                 {errors.course_start && <p className="text-red-500 text-xs mt-1">{errors.course_start}</p>}
                             </div>
 
-                            
-                            <div className="mb-6">
-                                <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
-                                <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
-                                
-                                 {formData.course_days.map((day, index) => (
-                                    <div key={index} className="flex flex-wrap gap-2 mt-2">
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Input
-                                                 type="date"
-                                                value={day.date}
-                                                onChange={(e) => handleCourseDayChange(index, 'date', e.target.value)}
-                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
-                                                placeholder="اليوم"
-                                            />
-                                            {errors[`course_days_${index}_day`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>}
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Input
-                                                type="time"
-                                                value={day.from_time}
-                                                onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
-                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_from_time`] ? 'border-red-500' : ''}`}
-                                                placeholder="وقت بداية الكورس"
-                                            />
-                                            {errors[`course_days_${index}_from_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_from_time`]}</p>}
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Input
-                                                type="time"
-                                                value={day.to_time}
-                                                onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
-                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_to_time`] ? 'border-red-500' : ''}`}
-                                                placeholder="وقت نهاية الكورس"
-                                            />
-                                            {errors[`course_days_${index}_to_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_to_time`]}</p>}
-                                        </div>
-                                    </div>
-                                ))}
 
-                                <div onClick={addCourseDay} className="mt-5">
-                                    <span className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 me-2 relative overflow-hidden border border-primary text-primary">إضافة يوم</span>
-                                </div>
-                            </div>
+    <div className="mb-6">
+      <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس</Label>
+      <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بالأسبوع بنفس التوقيت)</span>
+      
+      {formData.course_days.map((day, index) => (
+        <div key={index} className="flex flex-wrap gap-2 mt-2 items-center">
+          <div className="flex-1 min-w-[150px]">
+            <Input
+              type="date"
+              value={day.date}
+              onChange={(e) => handleCourseDayChange(index, 'date', e.target.value)}
+              className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
+              placeholder="اليوم"
+            />
+            {errors[`course_days_${index}_day`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>}
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <Input
+              type="time"
+              value={day.from_time}
+              onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
+              className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_from_time`] ? 'border-red-500' : ''}`}
+              placeholder="وقت بداية الكورس"
+            />
+            {errors[`course_days_${index}_from_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_from_time`]}</p>}
+          </div>
+          <div className="flex-1 min-w-[150px]">
+            <Input
+              type="time"
+              value={day.to_time}
+              onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
+              className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_to_time`] ? 'border-red-500' : ''}`}
+              placeholder="وقت نهاية الكورس"
+            />
+            {errors[`course_days_${index}_to_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_to_time`]}</p>}
+          </div>
+          <button
+            type="button"
+            onClick={() => removeCourseDay(index)}
+            className="mt-2 p-2 text-red-500 hover:bg-red-100 rounded-full"
+            aria-label="حذف اليوم"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ))}
+
+      <div onClick={addCourseDay} className="mt-5">
+        <span className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 me-2 relative overflow-hidden border border-primary text-primary">إضافة يوم</span>
+      </div>
+    </div>
+                       
                         </>
                     )}
                     {step === 3 && (

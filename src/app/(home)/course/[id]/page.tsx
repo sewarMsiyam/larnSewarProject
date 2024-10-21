@@ -55,13 +55,11 @@ export default function DetailCourse({ params }: DetailCourseProps) {
 
 
 
-  if (loading) {
-    return (
-      <div className="grid">
-        {/* <Skeleton className="h-10 w-40" /> */}
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      loading ..
+    </div>
+  );
 
   if (error) {
     return <p>{error}</p>;

@@ -95,7 +95,6 @@ export default function CreateLessons({ id, token }: LessonsProps) {
 
         try {
             const result = await CreateCourseFun("instructor/lessons", token, formDataToSend);
-            if (result.status) {
                 toast.success(result.message || "تم إنشاء الكورس بنجاح");
                 router.push(`/course/${id}/lessons`);
                 setFormData({
@@ -105,9 +104,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                     zoom_link: "",
                     summary_file: null,
                 });
-            } else {
-                toast.error(result.message || "فشل في إنشاء الكورس.");
-            }
+            
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -183,7 +180,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                         <div className="relative mt-2">
                             <DropZone
                                 onFileUpload={handleFileUpload}
-                                acceptedFileTypes={['image/*', 'application/pdf']}
+                                // acceptedFileTypes={['image/*', 'application/pdf']}
                             />
                         </div>
                     </div>
