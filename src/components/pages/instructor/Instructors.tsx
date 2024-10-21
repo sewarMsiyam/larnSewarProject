@@ -66,7 +66,7 @@ export default function InstructorsList() {
         setError(null);
 
         const [universityData] = await Promise.all([
-          fetchAllInstructors<Instructors>(buildQuery('', name, specialization)),
+          fetchAllInstructors<Instructors>(buildQuery('', name)),
         ]);
         setInstructors(universityData || []);
       } catch (err) {
