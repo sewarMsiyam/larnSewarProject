@@ -3,10 +3,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Instructors } from '@/app/api/interfaces';
 import { fetchAll, fetchAllInstructors } from '@/app/api/dataFetch';
-import Breadcrumb from "@/components/ui/breadcrumbHome"
-import TitleSection from '@/components/title';
-import ContactUs from '@/components/home/body/ContactUs';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -52,37 +48,40 @@ export default function InstructorsList() {
     loadSpecializations();
   }, []);
 
-  const buildQuery = (name: string = '', specialization: string = '') => {
-    let query = `instructors?`;
-    if (name) query += `&name=${name}`;
-    if (specialization) query += `&specialization_id=${specialization}`;
-    return query;
-  };
-
+ 
   const fetchInstructors = useCallback(
     debounce(async (name: string = '', specialization: string = '') => {
+      console.log("fetchInstructors called with name:", name, "and specialization:", specialization);
       try {
         setLoading(true);
         setError(null);
 
         const [universityData] = await Promise.all([
-          fetchAllInstructors<Instructors>(buildQuery('', name)),
+          fetchAllInstructors<Instructors>(`instructors?name=${name}&specialization_id=${specialization}`),
         ]);
+        console.log("Fetched data:", universityData);
         setInstructors(universityData || []);
       } catch (err) {
+        console.error("Error fetching instructors:", err);
         setError('فشل في جلب المعلمين');
       } finally {
         setLoading(false);
       }
-    }, 10),
+    }, 300),
     []
   );
+
+  useEffect(() => {
+  console.log("Specialization changed:", specialization);
+}, [specialization]);
+
 
   useEffect(() => {
     fetchInstructors();
   }, []);
 
   const handleSearch = () => {
+    console.log("Searching with query:", searchQuery, "and specialization:", specialization);
     fetchInstructors(searchQuery, specialization);
   };
 
@@ -110,13 +109,16 @@ export default function InstructorsList() {
               />
             </div>
           </div>
-          <div className="col-span-2"> {}
+          <div className="col-span-2">
             <div className="grid gap-2 col-span-4	">
               <Label htmlFor="text"> التخصص</Label>
               <div className="relative">
                 <Select
                   dir="rtl"
-                  onValueChange={(value) => setSpecialization(value)}
+                  onValueChange={(value) => {
+                    setSpecialization(value);
+                    console.log("Selected specialization ID:", value);
+                  }}
                 >
                   <SelectTrigger className="flex border-none rounded-full mt-1 bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                     <SelectValue placeholder="التخصص" />
