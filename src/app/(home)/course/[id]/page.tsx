@@ -15,7 +15,13 @@ interface DetailCourseProps {
     id: number;
   };
 }
-
+const formatTimeTo12Hour = (time: string): string => {
+    const [hours, minutes] = time.split(':');
+    const hoursNum = parseInt(hours, 10);
+    const ampm = hoursNum >= 12 ? 'م' : 'ص';
+    const hour12 = hoursNum % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+};
 export default function DetailCourse({ params }: DetailCourseProps) {
   const t = useTranslations('HomePage');
   const [course, setCourse] = useState<Course | null>(null);
@@ -179,7 +185,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                       <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3.5 rounded-xl px-8">
                         <span>{duration.date}</span>
                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
-                        <span className="text-primary">{duration.from_time} - {duration.to_time}</span>
+                        <span className="text-primary">{formatTimeTo12Hour(duration.from_time)}  - {formatTimeTo12Hour(duration.to_time)}</span>
                       </div>
                     </div>
                   ))}
@@ -189,7 +195,6 @@ export default function DetailCourse({ params }: DetailCourseProps) {
           </div>
           <div className="col-span-1"></div>
         </div>
-
       </section>
 
       <div className="my-20">

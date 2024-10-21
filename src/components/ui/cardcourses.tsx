@@ -120,7 +120,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               <span className="font-bold">{teacherName}</span>
             </div>
             <p className="text-[#FE7A36]">
-              <span className="font-bold">{price} $</span>/ حصة
+              <span className="font-bold">{price} $</span>/ الكورس
             </p>
           </>
         )}

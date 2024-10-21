@@ -189,6 +189,59 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
   }
 }
 
+export async function fetchAllCourse<T>(endpoint: string, mainCategory?: string) {
+  console.log("api link fetchAllCourse= " + buildUrl(endpoint, mainCategory));
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
+      timeout: 8000,
+    });
+
+    const result = await response.json();
+    console.log(result)
+    console.log("sewar 1")
+    console.log(result.item)
+    console.log("sewar 2")
+    console.log(result.item.courses)
+
+    if (result.item) {
+      return result.item.courses
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
+}
+
+export async function fetchAllInstructors<T>(endpoint: string, mainCategory?: string) {
+  console.log("api link fetchAllCourse= " + buildUrl(endpoint, mainCategory));
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
+      timeout: 8000,
+    });
+
+    const result = await response.json();
+    console.log(result)
+    console.log("sewar 1")
+    console.log(result.item)
+    console.log("sewar 2")
+    console.log(result.item.instructors)
+
+    if (result.item) {
+      return result.item.instructors
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return [];
+  }
+}
+
+
 export async function fetchOne(endpoint: string, id: string, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {

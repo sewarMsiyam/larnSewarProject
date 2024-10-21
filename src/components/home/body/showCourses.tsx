@@ -4,7 +4,7 @@
 
 "use client";
 import { useEffect, useState } from 'react';
-import { fetchAll } from '@/app/api/dataFetch';
+import { fetchAllCourse } from '@/app/api/dataFetch';
 import { Course } from '@/app/api/interfaces';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabs";
@@ -36,13 +36,12 @@ export default function CoursesHome() {
 
     const endpoint = 'courses';
 
-
     useEffect(() => {
-        async function fetchData() {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const tawjihiData = await fetchAll<Course>(`${endpoint}/?main_category=tawjihi`);
-                const universityData = await fetchAll<Course>('courses?main_category=university');
+                const tawjihiData = await fetchAllCourse<Course>('courses?main_category=tawjihi');
+                const universityData = await fetchAllCourse<Course>('courses?main_category=university');
 
 
                 console.log(tawjihiData)
@@ -104,8 +103,8 @@ export default function CoursesHome() {
                             id={course.id}
                             imageSrc={course.image}
                             title={course.name}
-                            duration={course.lesson_time}
-                            lessons={course.number_of_lessons}
+                            duration={course.duration}
+                            lessons={course.lessons_number}
                             exam={course.number_of_office_time_per_week}
                             summary={course.number_of_office_time_per_week}
                             teacherName={course.instructor_name}
@@ -123,8 +122,8 @@ export default function CoursesHome() {
                             id={course.id}
                             imageSrc={course.image}
                             title={course.name}
-                            duration={course.lesson_time}
-                            lessons={course.number_of_lessons}
+                            duration={course.duration}
+                            lessons={course.lessons_number}
                             exam={course.number_of_office_time_per_week}
                             summary={course.number_of_office_time_per_week}
                             teacherName={course.instructor_name}

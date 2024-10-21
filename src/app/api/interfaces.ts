@@ -8,6 +8,7 @@ export interface Course {
     instructor_image: string;
     number_of_lessons: string;
     lesson_time: string;
+    lessons_number: string;
     number_of_workingـpapers: string;
     number_of_office_time_per_week: string;
     duration:string;
@@ -109,4 +110,19 @@ export interface OfficeHours {
     from_time: string;
     to_time: string;
     zoom_link:string;
+}
+
+
+interface Pagination {
+  current_page: number;
+  first_page_url: string;
+  from: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  last_page_url: string;
+}
+
+interface CourseResponse {
+  courses: Course[];
+  pagination: Pagination;
 }

@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Instructors } from '@/app/api/interfaces';
-import { fetchAll } from '@/app/api/dataFetch';
+import { fetchAll, fetchAllInstructors } from '@/app/api/dataFetch';
 import Breadcrumb from "@/components/ui/breadcrumbHome"
 import TitleSection from '@/components/title';
 import ContactUs from '@/components/home/body/ContactUs';
@@ -66,7 +66,7 @@ export default function InstructorsList() {
         setError(null);
 
         const [universityData] = await Promise.all([
-          fetchAll<Instructors>(buildQuery('', name)),
+          fetchAllInstructors<Instructors>(buildQuery('', name, specialization)),
         ]);
         setInstructors(universityData || []);
       } catch (err) {
@@ -95,7 +95,7 @@ export default function InstructorsList() {
 
   if (loading) return (
     <>
-          <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>
+      <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>
         <div className="grid gap-5 lg:grid-cols-5 items-end">
           <div className="grid gap-2 col-span-2	">
             <Label htmlFor="search"> ابحث عن معلم</Label>
@@ -110,7 +110,7 @@ export default function InstructorsList() {
               />
             </div>
           </div>
-          <div className="col-span-2	">
+          <div className="col-span-2"> {}
             <div className="grid gap-2 col-span-4	">
               <Label htmlFor="text"> التخصص</Label>
               <div className="relative">
@@ -138,16 +138,16 @@ export default function InstructorsList() {
         </div>
       </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
-      <SkeletonInstructor />
-      <div className='hidden md:block'>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
         <SkeletonInstructor />
+        <div className='hidden md:block'>
+          <SkeletonInstructor />
+        </div>
+        <div className='hidden lg:block'>
+          <SkeletonInstructor />
+        </div>
       </div>
-      <div className='hidden lg:block'>
-        <SkeletonInstructor />
-      </div>
-    </div>
-  </>
+    </>
   );
 
   return (
@@ -201,15 +201,6 @@ export default function InstructorsList() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-3">
-            <SkeletonInstructor />
-            <div className='hidden md:block'>
-              <SkeletonInstructor />
-            </div>
-            <div className='hidden lg:block'>
-              <SkeletonInstructor />
-            </div>
-          </div>
         </>
       )}
 
