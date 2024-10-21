@@ -28,9 +28,10 @@ export default function InstructorsList() {
   const [specialization, setSpecialization] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [specializations, setSpecializations] = useState<Specialization[]>([]);
+
 
   const endpoint = 'instructors';
-  const [specializations, setSpecializations] = useState<Specialization[]>([]);
 
   useEffect(() => {
     const loadSpecializations = async () => {

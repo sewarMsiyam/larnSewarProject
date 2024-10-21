@@ -29,61 +29,13 @@ export default function CoursesHome() {
 
     const [tawjihiCourses, setTawjihiCourse] = useState<Course[]>([]);
     const [universityCourses, setUniversityCourse] = useState<Course[]>([]);
-
-
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-   const [searchQuery, setSearchQuery] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [instructorName, setInstructorName] = useState<string>('');
     const [specialization, setSpecialization] = useState<string>('');
     const [specializations, setSpecializations] = useState<Specialization[]>([]);
     const endpoint = 'courses';
-
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                setLoading(true);
-                const tawjihiData = await fetchAllCourse<Course>(`courses?main_category=tawjihi`);
-                const universityData = await fetchAllCourse<Course>('courses?main_category=university');
-              
-                setTawjihiCourse(tawjihiData || []);
-                setUniversityCourse(universityData || []);
-            } catch (err) {
-                setError('Failed to fetch instructors');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchData();
-    }, []);
-
-    //    const fetchCourses = async (category: string) => {
-    //     try {
-    //         setLoading(true);
-    //         const query = buildQuery(category, searchQuery, specialization, instructorName);
-    //         const data = await fetchAll<Course>(query);
-    //         if (category === 'tawjihi') {
-    //             setTawjihiCourses(data || []);
-    //         } else {
-    //             setUniversityCourses(data || []);
-    //         }
-    //     } catch (err) {
-    //         setError('Failed to fetch courses');
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // const buildQuery = (category: string, name: string, specializationId: string, instructorName: string) => {
-    //     let query = `courses/?main_category=${category}`;
-    //     if (name) query += `&name=${encodeURIComponent(name)}`;
-    //     if (specializationId) query += `&specialization_id=${specializationId}`;
-    //     if (instructorName) query += `&instructor_name=${encodeURIComponent(instructorName)}`;
-    //     return query;
-    // };
-
 
   useEffect(() => {
     const loadSpecializations = async () => {
@@ -98,15 +50,34 @@ export default function CoursesHome() {
         console.error("Failed to fetch specializations:", error);
       }
     };
-    loadSpecializations();
+      loadSpecializations();
+      fetchData();
+
   }, []);
 
-   const handleSearch = () => {
-        // fetchCourses('tawjihi');
-        // fetchCourses('university');
+    const fetchData = async (params = {}) => {
+        try {
+            setLoading(true);
+            const queryString = new URLSearchParams(params).toString();
+            const tawjihiData = await fetchAllCourse<Course>(`courses?main_category=tawjihi&${queryString}`);
+            const universityData = await fetchAllCourse<Course>(`courses?main_category=university&${queryString}`);
+
+            setTawjihiCourse(tawjihiData || []);
+            setUniversityCourse(universityData || []);
+        } catch (err) {
+            setError('Failed to fetch courses');
+        } finally {
+            setLoading(false);
+        }
     };
 
-
+    const handleSearch = () => {
+        const params: any = {};
+        if (searchQuery) params.name = searchQuery;
+        if (specialization) params.specialization_id = specialization;
+        if (instructorName) params.instructor_name = instructorName;
+        fetchData(params);
+    };
 
     if (loading) {
         return (
@@ -203,7 +174,7 @@ export default function CoursesHome() {
     }
 
     if (error) {
-        return <p className="text-red-500">{error}</p>; // Display error message if any
+        return <p className="text-red-500">{error}</p>;
     }
 
     return (
