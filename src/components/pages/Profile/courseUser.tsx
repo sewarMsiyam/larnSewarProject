@@ -95,7 +95,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                         {course.course_appointments.map((duration) => (
                                             <div key={duration.id} className="col-span-1">
                                                 <div className="flex justify-evenly gap-3 bg-[#F2F2F3] text-sm font-bold p-3 rounded-xl px-4">
-                                                    <span>{duration.date}</span>
+                                                    <span>{duration.day}</span>
                                                     <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                                                     <span className="text-primary"> {formatTimeTo12Hour(duration.from_time)}  -  {formatTimeTo12Hour(duration.to_time)}</span>
                                                 </div>

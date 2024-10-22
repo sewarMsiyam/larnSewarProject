@@ -28,23 +28,24 @@ interface CourseFeature {
     feature: string;
 }
 interface CourseDuration {
-    date: string;
+    day: string;
     from_time: string;
     to_time: string;
 }
-// interface FormData {
-//     name: string;
-//     description: string;
-//     duration: number;
-//     price: number;
-//     category: string;
-//     course_features: CourseFeature[];
-//     image: File | null;
-//     zoom_link: string;
-//     course_start: string | null;
-//     course_durations: CourseDuration[];
-// }
-
+interface FormData {
+    name_ar: string;
+    description_ar: string;
+    course_result_desc_ar: string;
+    duration: string;
+    introduction_video: string;
+    price: string;
+    category: string;
+    feature_ar: CourseFeature[]; 
+    image: File | string | null;
+    zoom_link: string;
+    course_start: string;
+    course_days: CourseDuration[];
+}
 
 export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const t = useTranslations("HomePage");
@@ -56,7 +57,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const router = useRouter();
     const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         name_ar: "",
         description_ar: "",
         course_result_desc_ar: "",
@@ -64,12 +65,11 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         introduction_video: "",
         price: "",
         category: "",
-        feature_ar: [] as string[],
+        feature_ar: [],
         image: null as File | null,
-        // currentImage: "",
         zoom_link: "",
         course_start: "",
-        course_days: [{ date: "", from_time: "", to_time: "" }],
+        course_days: [{ day: "", from_time: "", to_time: "" }],
     });
 
     useEffect(() => {
@@ -78,10 +78,15 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             try {
                 setLoading(true);
                 const result = await fetchOneTokenUpdateCourse(`instructor/courses`, id.toString() , token as string);
-                console.log(result.item)
 
                 if (result.status) {
-                    console.log(result.item)
+                    const currentImage = result.item.image || null;
+                    const formattedFeatures = Array.isArray(result.item.course_features)
+                        ? result.item.course_features.map((feature: string, index: number) => ({
+                            id: index + 1,
+                            feature: feature
+                        }))
+                        : [];
                     setFormData(prevFormData => ({
                         ...prevFormData,
                          name_ar: result.item.name,
@@ -90,24 +95,23 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                          duration: result.item.duration,
                          introduction_video: result.item.introduction_video,
                          price: result.item.price,
-                         category: result.item.category,
-                         feature_ar: result.item.course_features,
+                         category: result.item.category === 'tawjihi' ? 'التوجيهي' : 'الجامعة',
+                        feature_ar: formattedFeatures,
                          zoom_link: result.item.zoom_link,
                          course_days: result.item.course_appointments,
-                         image: result.item.image, 
+                          image: currentImage,
                         ...result.item,
                     }));
-                    if (result.item.image) {
-                        setSelectedImage(result.item.image);
+                    if (currentImage) {
+                        setSelectedImage(currentImage);
                     }
-                    console.log("Category loaded:", result.item.category); 
 
                 } else {
-                    toast.error("Failed to fetch course data");
+                    toast.error("فشل في جلب بيانات الكورس");
                 }
             } catch (error) {
                 console.error("Error fetching course data:", error);
-                toast.error("An error occurred while fetching course data");
+                toast.error("حدث خطأ أثناء جلب بيانات الكورس");
             } finally {
                 setLoading(false);
             }
@@ -116,7 +120,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         if (id && token) {
             fetchCourseData();
         }
-    }, []);
+    }, [token]);
 
   // Refs
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +136,26 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         }
     };
     const prevStep = () => setStep(step - 1);
-        // console.log("formData=" +formData.currentImage)
+
+    
+
+    interface DayOption {
+    value: string;
+    label: string;
+    arabicLabel: string;
+}
+
+const dayOptions: DayOption[] = [
+    { value: 'saturday', label: 'Saturday', arabicLabel: 'السبت' },
+    { value: 'sunday', label: 'Sunday', arabicLabel: 'الأحد' },
+    { value: 'monday', label: 'Monday', arabicLabel: 'الاثنين' },
+    { value: 'tuesday', label: 'Tuesday', arabicLabel: 'الثلاثاء' },
+    { value: 'wednesday', label: 'Wednesday', arabicLabel: 'الأربعاء' },
+    { value: 'thursday', label: 'Thursday', arabicLabel: 'الخميس' },
+    { value: 'friday', label: 'Friday', arabicLabel: 'الجمعة' }
+];
+
+
 
      const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && inputValue.trim() !== '') {
@@ -156,7 +179,6 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             feature_ar: prev.feature_ar.filter(feature => feature.id !== idToRemove)
         }));
     };
-        // console.log("formData=" +formData.currentImage)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
@@ -167,12 +189,13 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         if (file) {
-            setSelectedImage(URL.createObjectURL(file));
-        }
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            image: file,
+        setSelectedImage(URL.createObjectURL(file));
+        setFormData(prev => ({
+            ...prev,
+            image: file
         }));
+        setErrors(prev => ({ ...prev, image: '' }));
+    }
     };
 
     const handleCourseDayChange = (index: number, field: string, value: string) => {
@@ -185,10 +208,9 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
     const addCourseDay = () => {
         setFormData(prev => ({
             ...prev,
-            course_days: [...prev.course_days, { date: "", from_time: "", to_time: "" }]
+            course_days: [...prev.course_days, { day: "", from_time: "", to_time: "" }]
         }));
     };
-        console.log("formData=" +formData.image)
 
      const validateStep = (currentStep: number) => {
         const newErrors: {[key: string]: string} = {};
@@ -204,8 +226,8 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
             case 2:
                 if (!formData.course_result_desc_ar) newErrors.course_result_desc_ar = "الرجاء إدخال نتائج الكورس";
                 formData.course_days.forEach((day, index) => {
-                    if (!day.date) {
-                        newErrors[`course_days_${index}_date`] = "الرجاء اختيار اليوم الدرس";
+                    if (!day.day) {
+                        newErrors[`course_days_${index}_day`] = "الرجاء اختيار اليوم الدرس";
                     }
                     if (!day.from_time) {
                         newErrors[`course_days_${index}_from_time`] = "الرجاء إدخال وقت البداية الحصة";
@@ -219,7 +241,7 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                 if (!formData.category) {
                     newErrors.category = "الرجاء اختيار فئة المستهدفة للكورس";
                 }
-                if (!formData.image) {
+               if (!formData.image && !selectedImage) {
                     newErrors.image = "الرجاء تحميل صورة للكورس";
                 }
                 if (!formData.introduction_video) {
@@ -231,7 +253,6 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         return Object.keys(newErrors).length === 0;
     };
 
-        console.log("formData=" +formData.image)
 
     const validateEndStep = () => {
         const newErrors: {[key: string]: string} = {};
@@ -239,16 +260,15 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         if (!formData.category) {
             newErrors.category = "الرجاء اختيار فئة المستهدفة في الكورس";
         }
-        if (!formData.image && !formData.image) {
-            newErrors.image = "الرجاء تحميل صورة الكورس";
-        }
+        if (!formData.image && !selectedImage) {
+    newErrors.image = "الرجاء تحميل صورة الكورس";
+}
         if (!formData.introduction_video) {
             newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-        console.log("formData=" +formData.image)
 
 
       const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -258,55 +278,36 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
         const courseData = new FormData();
 
         Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null && key !== 'course_days' && key !== 'feature_ar'&& key !== 'category') {
+            if (value !== null && key !== 'course_days' && key !== 'feature_ar'&& key !== 'category'&& key !== 'image') {
                 courseData.append(key, value.toString());
-                //  console.log(key + " = " + value.toString());
             }
         });
 
-          if (formData.category == "التوجيهي") {
-              courseData.append('category', "tawjihi");
-        }else{
-              courseData.append('category', "university");
-        }
-        
+        courseData.append('category', formData.category === 'التوجيهي' ? 'tawjihi' : 'university');
+
 
         formData.feature_ar.forEach((feature, index) => {
-            courseData.append(`feature_ar[${index}]`, feature);
+            courseData.append(`feature_ar[${index}]`, feature.feature);
         });
 
         formData.course_days.forEach((day, index) => {
-            courseData.append(`course_days[${index + 1}][date]`, day.date);
+            courseData.append(`course_days[${index + 1}][day]`, day.day);
             courseData.append(`course_days[${index + 1}][from_time]`, day.from_time);
             courseData.append(`course_days[${index + 1}][to_time]`, day.to_time);
         });
 
-        if (formData.image) {
-            courseData.append('image', formData.image);
-        }
+       if (formData.image instanceof File) {
+    courseData.append('image', formData.image);
+} else if (typeof formData.image === 'string') {
+    courseData.append('old_image', formData.image);
+}
 
-        
 
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
-                toast.success(result.message || "تم إنشاء الكورس بنجاح");
+                toast.success("تم تحديث الكورس بنجاح");
                 router.push('/instructor/profile');
-                setFormData({
-                    name_ar: "",
-                    description_ar: "",
-                    course_result_desc_ar: "",
-                    duration: "",
-                    introduction_video: "",
-                    price: "",
-                    image: null,
-                    category: "",
-                    feature_ar: [],
-                    zoom_link: "",
-                    course_start:"",
-                    course_days: [{ date: "", from_time: "", to_time: "" }],
-                });
                 setStep(1);
-           
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -449,23 +450,21 @@ if (loading) {
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">مميزات الكورس</Label>
                                 <div className="flex flex-row flex-nowrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
-                                    {formData.feature_ar && formData.feature_ar.length > 0 ? (
-                                        formData.feature_ar.map((feature) => (
-                                            <div
-                                                key={feature.id}
-                                                className="bg-white text-sm flex items-center whitespace-nowrap p-1 m-1 rounded-full"
+                                    {formData.feature_ar.length > 0 && formData.feature_ar.map((feature) => (
+                                        <div
+                                            key={feature.id}
+                                            className="bg-white text-sm flex items-center whitespace-nowrap p-1 m-1 rounded-full"
+                                        >
+                                            {feature.feature}
+                                            <button
+                                                type="button"
+                                                className="ps-2 pe-1 align-middle"
+                                                onClick={() => removeTag(feature.id)}
                                             >
-                                                {feature.feature}
-                                                <button
-                                                    type="button"
-                                                    className="ps-2 pe-1 align-middle"
-                                                    onClick={() => removeTag(feature.id)}
-                                                >
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        ))
-                                    ) : null}
+                                                &times;
+                                            </button>
+                                        </div>
+                                    ))}
                                     <Input
                                         type="text"
                                         value={inputValue}
@@ -475,7 +474,7 @@ if (loading) {
                                         placeholder="أضف ميزة واضغط Enter"
                                     />
                                 </div>
-                                {errors.feature_ar && <p className="text-red-500 text-xs mt-1">{errors.feature_ar} (بعد الكتابة اضغط انتر , حتى يتم حفظها)</p>}
+                                {errors.feature_ar && <p className="text-red-500 text-xs mt-1">{errors.feature_ar}</p>}
                             </div>
                         </>
                     )}
@@ -512,15 +511,28 @@ if (loading) {
 
                                 {formData.course_days.map((day, index) => (
                                     <div key={index} className="flex flex-wrap gap-2 mt-2">
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Input
-                                                type="date"
-                                                value={day.date}
-                                                onChange={(e) => handleCourseDayChange(index, 'date', e.target.value)}
-                                                className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_day`] ? 'border-red-500' : ''}`}
-                                                placeholder="اليوم"
-                                            />
-                                            {errors[`course_days_${index}_date`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_date`]}</p>}
+                                          <div className="flex-1 min-w-[150px]">
+                                            <Select
+                                                value={day.day}
+                                                onValueChange={(value) => handleCourseDayChange(index, 'day', value)}
+                                                name={`course_days_${index}_day`}
+                                                dir="rtl"
+                                            >
+                                                <SelectTrigger  className="border-none rounded-full bg-gray-100 mt-2"
+                                                >
+                                                    <SelectValue placeholder="اختر اليوم" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {dayOptions.map((option) => (
+                                                        <SelectItem key={option.value} value={option.value}>
+                                                            {option.arabicLabel}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {errors[`course_days_${index}_day`] && (
+                                                <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_day`]}</p>
+                                            )}
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
                                             <Input
@@ -580,19 +592,23 @@ if (loading) {
                                     onChange={handleFileChange}
                                     className="hidden" 
                                     ref={fileInputRef} 
+                                    accept="image/*"
                                 />
-                                 <div className="bg-gray-100 flex flex-col mt-2 justify-center items-center rounded-xl p-8 cursor-pointer" onClick={handleImageClick}>
-                                    {selectedImage ? (
-                                        <img src={selectedImage} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                    ) : formData.image ? (
-                                        <img src={formData.image} alt="Current" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px' }} />
+                                <div  className="bg-gray-100 flex flex-col mt-2 justify-center items-center rounded-xl p-8 cursor-pointer"  onClick={handleImageClick}>
+                                    {(selectedImage || formData.image) ? (
+                                        <img 
+                                            src={selectedImage || (typeof formData.image === 'string' ? formData.image : '')} 
+                                            alt="Course Cover" 
+                                            className="mt-4 object-contain" 
+                                            style={{ maxWidth: '100%', maxHeight: '300px' }} 
+                                        />
                                     ) : (
                                         <>
                                             <img src="/camera.svg" alt="" width="20" />
                                             <h2>أرفع الصورة هنا</h2>
                                         </>
                                     )}
-                                 </div>
+                                </div>
                                 {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                             </div>
                              <div className="mb-4">

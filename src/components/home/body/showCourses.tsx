@@ -10,7 +10,7 @@ import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabs";
 import CourseCard from '@/components/ui/cardcourses';
 import SkeletonCardcourses from '@/components/ui/SkeletonCardcourses';
-import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -46,8 +46,8 @@ export default function CoursesHome() {
 
                 console.log(tawjihiData)
                 
-                setTawjihiCourse(tawjihiData || []);
-                setUniversityCourse(universityData || []);
+                // setTawjihiCourse(tawjihiData || []);
+                // setUniversityCourse(universityData || []);
             } catch (err) {
                 setError('Failed to fetch instructors');
             } finally {
@@ -84,6 +84,12 @@ export default function CoursesHome() {
                         </div>
                     </div>
                 </TabsContent>
+
+                  <div className="flex flex-col md:flex-row justify-center items-center mt-8">
+                <Link href="/course" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                    <span className="relative z-10">عرض الكورسات</span>
+                </Link>
+            </div>
             </>
         );
     }
@@ -133,6 +139,12 @@ export default function CoursesHome() {
                     ))}
                 </div>
             </TabsContent>
+
+            <div className="flex flex-col md:flex-row justify-center items-center mt-8">
+                <Link href="/course" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                    <span className="relative z-10">عرض الكورسات</span>
+                </Link>
+            </div>
 
         </>
     );

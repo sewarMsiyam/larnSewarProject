@@ -20,7 +20,7 @@ export interface Course {
     // course_appointments
     course_appointments: Array<{
         id: number;
-        date: string;
+        day: string;
         from_time: string;
         to_time: string;
     }>;

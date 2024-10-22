@@ -190,7 +190,6 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
 }
 
 export async function fetchAllCourse<T>(endpoint: string, mainCategory?: string) {
-  console.log("api link fetchAllCourse= " + buildUrl(endpoint, mainCategory));
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       headers: {
@@ -200,24 +199,23 @@ export async function fetchAllCourse<T>(endpoint: string, mainCategory?: string)
     });
 
     const result = await response.json();
-    console.log(result)
-    console.log("sewar 1")
-    console.log(result.item)
-    console.log("sewar 2")
-    console.log(result.item.courses)
-
     if (result.item) {
-      return result.item.courses
+      return {
+        courses: result.item.courses,
+        pagination: result.item.pagination
+      };
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    return [];
+    return {
+      courses: [],
+      pagination: null
+    };
   }
 }
 
 export async function fetchAllInstructors<T>(endpoint: string, mainCategory?: string) {
-  console.log("api link fetchAllCourse= " + buildUrl(endpoint, mainCategory));
-  try {
+   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
       headers: {
         'Accept-Language': 'ar',
@@ -226,18 +224,18 @@ export async function fetchAllInstructors<T>(endpoint: string, mainCategory?: st
     });
 
     const result = await response.json();
-    console.log(result)
-    console.log("sewar 1")
-    console.log(result.item)
-    console.log("sewar 2")
-    console.log(result.item.instructors)
-
     if (result.item) {
-      return result.item.instructors
+      return {
+        instructors: result.item.instructors,
+        pagination: result.item.pagination
+      };
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    return [];
+    return {
+      instructors: [],
+      pagination: null
+    };
   }
 }
 

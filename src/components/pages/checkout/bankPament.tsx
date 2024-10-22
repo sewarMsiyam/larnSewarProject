@@ -222,7 +222,7 @@ export default function CheckoutBank({ token }: CheckoutFormProps) {
                             <div className="relative">
                                 <DropZone
                                     onFileUpload={handleFileUpload}
-                                    acceptedFileTypes={['image/*', 'application/pdf']}
+                                    // acceptedFileTypes={['image/*', 'application/pdf']}
                                 />
                             </div>
                         </div>

@@ -23,14 +23,14 @@ export default async function Courses() {
 
     return (
         <>
-              {session ? (
-                    <>
-                        <Breadcrumb breadcrumbs={breadcrumbs} />
-                        <CreateCourse token={authToken} />
-                    </>
-                ):(
-                    <Unauthenticated />
-                )}
-    </>
+            {session ? (
+                <>
+                    <Breadcrumb breadcrumbs={breadcrumbs} />
+                    <CreateCourse token={authToken} />
+                </>
+            ) : (
+                <Unauthenticated />
+            )}
+        </>
     );
 };

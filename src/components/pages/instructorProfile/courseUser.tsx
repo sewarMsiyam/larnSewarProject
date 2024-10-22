@@ -58,6 +58,21 @@ export default function UserCourse({ token }: CheckoutFormProps) {
         setActiveTab(value);
     };
 
+    const getDayInArabic = (day: string): string => {
+    const daysMap: { [key: string]: string } = {
+        'saturday': 'السبت',
+        'sunday': 'الأحد',
+        'monday': 'الاثنين',
+        'tuesday': 'الثلاثاء',
+        'wednesday': 'الأربعاء',
+        'thursday': 'الخميس',
+        'friday': 'الجمعة'
+    };
+    
+    const normalizedDay = day.toLowerCase();
+    return daysMap[normalizedDay] || day;
+    };
+    
     useEffect(() => {
         const loadCourses = async () => {
             if (token) {
@@ -77,7 +92,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
         };
 
         loadCourses();
-    }, []);
+    }, [token]);
 
     const copyToClipboard = async (text: string) => {
         try {
@@ -167,33 +182,37 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                 {courses.map((course , index) => (
                     <>
                         <div key={index} className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
-                            <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
+                            <img src={course.image} alt="" className="w-full h-56 lg:w-72 lg:h-60 rounded-lg" />
                             <div className="p-5 w-full">
-                                <div className="flex items-center">
-
-                                    <h3 className='font-bold text-lg'>{course.name}</h3>
-                                    <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs ms-5">
-                                        {course.duration} دقيقة
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <h3 className='font-bold text-lg'>{course.name}</h3>
+                                        <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs ms-5">
+                                            {course.duration} دقيقة
+                                        </div>
                                     </div>
+                                    <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
                                 </div>
+                               
 
                                 {course.course_appointments && course.course_appointments.length > 0 && (
                                     <>
-                                        <h2 className="font-bold mb-3 mt-5">وقت الكورس </h2>
+                                        <h2 className="font-bold mb-3 mt-5">وقت الكورس</h2>
                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                                             {course.course_appointments.map((duration, i) => (
                                                 <div key={i} className="col-span-1">
                                                     <div className="flex items-center justify-evenly gap-3 bg-[#F2F2F3] font-bold text-sm p-3 rounded-xl px-5">
-                                                        <span>{duration.date}</span>
+                                                        <span>{getDayInArabic(duration.day)}</span>
                                                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
-                                                        <span className="text-primary">{formatTimeTo12Hour(duration.from_time)} - {formatTimeTo12Hour(duration.to_time)} </span>
+                                                        <span className="text-primary">
+                                                            {formatTimeTo12Hour(duration.from_time)} - {formatTimeTo12Hour(duration.to_time)}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
                                     </>
                                 )}
-
                                 <div className="flex flex-col lg:flex-row justify-between items-center gap-3 mt-4">
                                     <p className="flex-none">رابط الزوم</p>
                                     {course.zoom_link ? (
@@ -220,7 +239,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                         </div>
                                     )}
                                 </div>
-                                <h3 className='font-bold text-lg text-[#FE7A36]'>{course.price} $</h3>
+                                
                             </div>
 
 
