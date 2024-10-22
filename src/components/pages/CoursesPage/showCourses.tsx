@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { Fragment } from 'react';
-import { fetchAll, fetchAllCourse } from '@/app/api/dataFetch';
+import { fetchAll, fetchAllCoursepagination } from '@/app/api/dataFetch';
 import { Course } from '@/app/api/interfaces';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabs";
@@ -75,8 +75,8 @@ export default function CoursesHome() {
             setLoading(true);
             const queryString = new URLSearchParams(params).toString();
 
-            const tawjihiResponse = await fetchAllCourse<CourseResponse>(tawjihiUrl || `courses?main_category=tawjihi&${queryString}`);
-            const universityResponse = await fetchAllCourse<CourseResponse>(universityUrl || `courses?main_category=university&${queryString}`);
+            const tawjihiResponse = await fetchAllCoursepagination<CourseResponse>(tawjihiUrl || `courses?main_category=tawjihi&${queryString}`);
+            const universityResponse = await fetchAllCoursepagination<CourseResponse>(universityUrl || `courses?main_category=university&${queryString}`);
 
             if (tawjihiResponse && universityResponse) {
                 setTawjihiCourse(tawjihiResponse.courses);
@@ -113,7 +113,6 @@ export default function CoursesHome() {
    const renderPagination = (pagination: Pagination | null, category: 'tawjihi' | 'university') => {
     if (!pagination) return null;
 
-    // دالة لإنشاء مصفوفة الأرقام للصفحات
     const getPageNumbers = () => {
         const total = pagination.last_page;
         const current = pagination.current_page;

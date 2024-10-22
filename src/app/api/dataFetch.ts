@@ -200,6 +200,27 @@ export async function fetchAllCourse<T>(endpoint: string, mainCategory?: string)
 
     const result = await response.json();
     if (result.item) {
+      return  result.item.courses
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      courses: [],
+    };
+  }
+}
+
+export async function fetchAllCoursepagination<T>(endpoint: string, mainCategory?: string) {
+  try {
+    const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
+      timeout: 8000,
+    });
+
+    const result = await response.json();
+    if (result.item) {
       return {
         courses: result.item.courses,
         pagination: result.item.pagination

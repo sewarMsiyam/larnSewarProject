@@ -43,11 +43,8 @@ export default function CoursesHome() {
                 const tawjihiData = await fetchAllCourse<Course>('courses?main_category=tawjihi');
                 const universityData = await fetchAllCourse<Course>('courses?main_category=university');
 
-
-                console.log(tawjihiData)
-                
-                // setTawjihiCourse(tawjihiData || []);
-                // setUniversityCourse(universityData || []);
+                setTawjihiCourse(tawjihiData || []);
+                setUniversityCourse(universityData || []);
             } catch (err) {
                 setError('Failed to fetch instructors');
             } finally {

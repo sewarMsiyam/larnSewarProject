@@ -111,19 +111,24 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
     return (
         <div className="grid col-span-1 lg:grid-cols-3 gap-5">
             <div className="col-span-2">
-                <div className="flex flex-col lg:flex-row">
-                    <h3 className="font-bold text-xl mb-3">
-                        حدد التاريخ المناسب
-                    </h3>
-                    {instructor.instructor_office_hours.length > 0 && (
-                        <p className="text-sm text-[#707070] ps-5 ">
-                            الأيام المتاح فيها المعلم
-                        </p>
-                    )}
-                    {instructor.instructor_office_hours.length <= 0 && (
-                        <p className="text-sm text-[#707070] ps-5 ">لا يوجد ايام فراغ لدى المعلم</p>
-                    )}
+
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col lg:flex-row">
+                        <h3 className="font-bold text-xl mb-3">
+                            حدد التاريخ المناسب
+                        </h3>
+                        {instructor.instructor_office_hours.length > 0 && (
+                            <p className="text-sm text-[#707070] ps-5 ">
+                                الأيام المتاح فيها المعلم
+                            </p>
+                        )}
+                        {instructor.instructor_office_hours.length <= 0 && (
+                            <p className="text-sm text-[#707070] ps-5 ">لا يوجد ايام فراغ لدى المعلم</p>
+                        )}
+                    </div>
+                    <p className="text-[#FE7A36] px-3">سعر الحصة الخصوصي <span className="font-bold">{instructor.hourly_rate_price}$</span></p>
                 </div>
+             
 
                 <Calendar
                     mode="single"
@@ -155,7 +160,7 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
                 <h3 className="font-bold text-xl">
                     حدد الوقت المناسب
                 </h3>
-                <span className="text-sm text-[#707070] ">( اختار يومك المناسب من الايام المتاحة ثم حدد وقتك المناسب)</span>
+                <span className="text-sm text-[#707070] ">(اضغط ع التوقيت المناسب لك)</span>
                 {selectedDate && (
                     <>
                         <div className="grid grid-cols-1 gap-5 mb-5 mt-3">

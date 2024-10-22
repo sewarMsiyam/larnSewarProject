@@ -99,17 +99,17 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
                             </Avatar>
                         </div>
                         <div>
-                            <h4 className="text-xl font-bold">{instructor.name}</h4>
-                            <p className="text-primary">{instructor.specialization}</p>
+                            <h4 className="text-2xl font-bold">{instructor.name}</h4>
+                            <p className="text-lg text-primary">{instructor.specialization}</p>
                         </div>
                     </div>
-                    <div className="hidden md:flex gap-1 items-center ">
+                    {/* <div className="hidden md:flex gap-1 items-center ">
                         <Star />
                         <Star />
                         <Star />
                         <Star />
                         <span className="text-[#707070] text-sm px-2"> (300) تقييم</span>
-                    </div>
+                    </div> */}
                 </div>
             </section>
 
@@ -172,7 +172,6 @@ export default function DetailsInstructors({ id }: DetailsInstructorsProps) {
 
             <section className="mb-12 lg:container shadow-[0px 4px 40px 0px #0000000D] bg-white rounded-3xl p-5 py-10 lg:p-10 space-y-10">
                 <BookPrivate id={instructor.id} />
-                   سعر الساعة = {instructor.hourly_rate_price}
             </section>
 
 
