@@ -128,7 +128,7 @@ export default function ShowLessons({ id, token }: LessonsProps) {
 
                 </div>
 
-                <div className='w-full overflow-scroll'>
+                <div className='w-full overflow-auto'>
                     <table className="border-separate border-spacing-y-5 w-full">
                         <thead>
                             <tr>
