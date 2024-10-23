@@ -27,7 +27,7 @@ export default async function Profile() {
     }
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },
-        { label: 'الملف الشخصي', href: '/Profile', isActive: true }
+        { label: 'الملف الشخصي', href: '/profile', isActive: true }
     ]
     
   return (

@@ -22,8 +22,8 @@ export default async function Lessons({ params }: DetailLessonsProps) {
     }
 
     const breadcrumbs = [
-        { label: 'الرئيسية', href: '/' },
-        { label: 'الكورسات', href: '/', isActive: true},
+        { label: 'الكورسات', href: '/instructor/profile'},
+        { label: 'الدروس', href: `/course/${params.id.toString()}/lessons`},
         { label: 'الدروس', href: '/', isActive: true }
     ]
 
