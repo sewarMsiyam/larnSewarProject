@@ -68,11 +68,44 @@ export default function UserCourse({ token }: CheckoutFormProps) {
     };
 
 
-    if (loading) return <p>جاري التحميل...</p>;
+     const getDayInArabic = (day: string): string => {
+    const daysMap: { [key: string]: string } = {
+        'saturday': 'السبت',
+        'sunday': 'الأحد',
+        'monday': 'الاثنين',
+        'tuesday': 'الثلاثاء',
+        'wednesday': 'الأربعاء',
+        'thursday': 'الخميس',
+        'friday': 'الجمعة'
+    };
+    
+    const normalizedDay = day.toLowerCase();
+    return daysMap[normalizedDay] || day;
+    };
+
+
+    if (loading) return (
+        <TabsContent value="course" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
+            <div className="flex justify-between items-center mb-5">
+                <div className="flex gap-2">
+                    <h4 className='font-bold text-lg'> كورساتي </h4>
+                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
+                </div>
+                <div>
+                    <Link href="/course/create_course-new" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                        <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
+                        <span>اضافة كورس</span>
+                    </Link>
+                </div>
+            </div>
+                <div className="flex justify-center items-center h-screen">
+        جاري التحميل ..
+        </div>
+        </TabsContent >
+    );
     if (error) return <p>{error}</p>;
 
     return (
-        <>
             <TabsContent value="course" className="bg-white rounded-lg p-10 shadow-md">
                 <div className="flex justify-between items-center mb-5">
                     <h4 className='font-bold text-lg'> الكورسات </h4>
@@ -81,7 +114,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
 
                 {courses.map((course, index) => (
                     <div key={index} className="flex flex-col lg:flex-row border rounded-lg p-5 mb-4">
-                        <img src={course.image} alt="" className="w-full h-56 lg:w-1/4 lg:h-auto rounded-lg" />
+                        <img src={course.image} alt="" className="w-full h-56 lg:w-72 lg:h-60 rounded-lg" />
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">
                                 <h3 className='font-bold text-lg'>{course.name}</h3>
@@ -95,7 +128,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                         {course.course_appointments.map((duration) => (
                                             <div key={duration.id} className="col-span-1">
                                                 <div className="flex justify-evenly items-center gap-3 bg-[#F2F2F3] text-sm font-bold p-3 rounded-xl px-4">
-                                                    <span>{duration.day}</span>
+                                                    <span>{getDayInArabic(duration.day)}</span>
                                                     <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                                                     <span className="text-primary"> {formatTimeTo12Hour(duration.from_time)}  -  {formatTimeTo12Hour(duration.to_time)}</span>
                                                 </div>
@@ -143,11 +176,8 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                         </div>
                     </div>
                 ))}
+                            <ToastContainer />
+
             </TabsContent>
-            <ToastContainer />
-
-
-
-        </>
     );
 }

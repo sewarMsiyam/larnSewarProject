@@ -174,11 +174,14 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                 </div>
             </div>
             <div className='lg:absolute mx-4 end-0 top-1/4 grow-0'>
-              
+            
             </div>
           </div>
         </div>
       </section>
+        <div className="flex justify-center items-center h-screen">
+        جاري التحميل ..
+        </div>
     </>
   );
 
@@ -263,7 +266,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                 </div>
                 <div className="p-5 pt-0 space-y-5">
                   <div className='flex items-center justify-between'>
-                    <div className='text-[#FE7A36] text-lg'><span className="font-bold">{course.price} $</span>/ حصة</div>
+                    <div className='text-[#FE7A36] text-lg'><span className="font-bold">{course.price} $</span>/ الكورس</div>
                     <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs">
                       {/* 40 دقيقة */} {course.duration}
                     </div>
@@ -294,14 +297,14 @@ export default function DetailCourse({ params }: DetailCourseProps) {
 
             {course.description && course.description.length > 0 && (
               <div className="mb-5">
-                <h3 className="font-bold mb-3">محتوى الكورس</h3>
+                <h3 className="font-bold mb-3 text-primary">محتوى الكورس</h3>
                 {course.description}
               </div>
             )}
 
             {course.course_result_desc && course.course_result_desc.length > 0 && (
               <div className="mb-5">
-                <h3 className="font-bold mb-3">مخرجات الكورس</h3>
+                <h3 className="font-bold mb-3  text-primary">مخرجات الكورس</h3>
                 {course.course_result_desc}
               </div>
             )}

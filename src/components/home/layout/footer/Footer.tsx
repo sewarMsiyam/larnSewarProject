@@ -38,8 +38,8 @@ const Footer = () => {
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">
                         <h5 className="lg:mb-4 font-bold text-base">لينكات سريعة</h5>
-                        <Link href="/">انضم كمعلم</Link>
-                        <Link href="/">الدروس التعليمية</Link>
+                        <Link href="/instructor/register">انضم كمعلم</Link>
+                        <Link href="/course">الدروس التعليمية</Link>
                         <Link href="/">بنك الأسئلة</Link>
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">

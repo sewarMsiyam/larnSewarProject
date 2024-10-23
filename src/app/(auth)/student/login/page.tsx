@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from  'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,9 @@ const Login = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -50,7 +53,8 @@ const Login = () => {
     } else {
       setLoading(false);
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
-      router.push('/'); 
+      // router.push('/'); 
+      router.push(callbackUrl);
     }
   };
 
@@ -116,7 +120,7 @@ const Login = () => {
                 <label>
                   <input type="checkbox" className="h-4 w-4 shrink-0 bg-gray-10 rounded-sm " /> تذكرني
                 </label>
-                <Link href="/forgetpass" className="text-primary">هل نسيت كلمة المرور؟</Link>
+                {/* <Link href="/forgetpass" className="text-primary">هل نسيت كلمة المرور؟</Link> */}
               </div>
 
               <Button type="submit" className="w-full bg-btn-authColor rounded-xl text-white" disabled={loading}>

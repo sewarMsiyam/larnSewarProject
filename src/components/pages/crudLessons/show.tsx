@@ -97,7 +97,7 @@ export default function ShowLessons({ id, token }: LessonsProps) {
 
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
-            loading ..
+        جاري التحميل ..
         </div>
     );
 

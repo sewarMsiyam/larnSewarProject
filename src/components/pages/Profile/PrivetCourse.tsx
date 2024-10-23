@@ -34,13 +34,13 @@ interface Instructors {
         zoom_link: string;
     }>;
 }
-// const formatTimeTo12Hour = (time: string): string => {
-//     const [hours, minutes] = time.split(':');
-//     const hoursNum = parseInt(hours, 10);
-//     const ampm = hoursNum >= 12 ? 'م' : 'ص';
-//     const hour12 = hoursNum % 12 || 12;
-//     return `${hour12}:${minutes} ${ampm}`;
-// };
+const formatTimeTo12Hour = (time: string): string => {
+    const [hours, minutes] = time.split(':');
+    const hoursNum = parseInt(hours, 10);
+    const ampm = hoursNum >= 12 ? 'م' : 'ص';
+    const hour12 = hoursNum % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+};
 
 export default function PrivetInstructors({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
@@ -85,11 +85,12 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
     };
 
 
-    if (loading) return <p>جاري التحميل...</p>;
+    if (loading) return <div className="flex justify-center items-center h-screen">
+        جاري التحميل ..
+    </div>;
     if (error) return <p>{error}</p>;
 
     return (
-        <>
             <TabsContent value="privetCourse" className="bg-white rounded-lg p-10 shadow-md">
                 <div className="flex justify-between items-center mb-5">
                     <h4 className='font-bold text-lg'> معلم خصوصي </h4>
@@ -102,7 +103,7 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                         <div className="p-5 w-full">
                             <div className="flex justify-between items-center">
                                 <h3 className='font-bold text-lg'>{x.instructor.name}</h3>
-                                <h3 className='font-bold text-lg text-[#FE7A36]'>{x.instructor.hourly_rate_price}</h3>
+                                <h3 className='font-bold text-lg text-[#FE7A36]'>{x.instructor.hourly_rate_price}$</h3>
                             </div>
 
                             {x.private_lesson_appointments.length > 0 && (
@@ -124,7 +125,9 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                                                             {/* من: {formatTimeTo12Hour(duration.from_time)} - إلى: {formatTimeTo12Hour(duration.to_time)} */}
                                                         </span>
                                                         <span className="flex items-center gap-2">
-                                                            <img src='/profileIcon/time.svg' alt='' className='' />
+                                                            <img src='/profileIcon/zoom.svg' alt='' className='' />
+
+
                                                             {duration.zoom_link ? (
                                                                 <a href={duration.zoom_link} target="_blank" className="text-[#226AC8] line-clamp-1 text-ellipsis overflow-hidden">
                                                                     {duration.zoom_link}
@@ -146,8 +149,8 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                         </div>
                     </div>
                 ))}
+
+                <ToastContainer />
             </TabsContent>
-            <ToastContainer />
-        </>
     );
 }

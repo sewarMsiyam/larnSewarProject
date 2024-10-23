@@ -2,9 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from '@/contexts/UserContext';
+import { useRouter } from 'next/navigation';
 
 const EndNav: React.FC = () => {
     const { user, logout } = useUser();
+    const router = useRouter();
 
     const getProfileLink = () => {
         if (user?.userType === 'instructor') {
@@ -40,6 +42,7 @@ const EndNav: React.FC = () => {
     };
 
     const handleLogout = async () => {
+        router.push('/student/login');
         await logout();
     };
 

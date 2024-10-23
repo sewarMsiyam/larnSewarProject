@@ -22,8 +22,6 @@ const Forget: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
 
-  //go to verficationcode
-
   return (
     <>
   <form>

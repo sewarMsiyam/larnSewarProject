@@ -147,6 +147,7 @@ export default function UserCourseLessons({ token, id }: CheckoutFormProps) {
               </ul>
               <div className="col-span-1 lg:col-span-2 ">
 
+                
                 {selectedLesson && (
                   (() => {
                     const { type, embedUrl } = getVideoEmbedUrl(selectedLesson.recorded_video_link);
@@ -165,7 +166,7 @@ export default function UserCourseLessons({ token, id }: CheckoutFormProps) {
                           height="400"
                           frameBorder="0"
                           allow="autoplay; fullscreen; picture-in-picture"
-                          allowFullScreen
+                          allowFullScreen 
                         ></iframe>
                       );
                     }

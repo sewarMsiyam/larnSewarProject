@@ -158,7 +158,9 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                     </Link>
                 </div>
             </div>
-          
+                <div className="flex justify-center items-center h-screen">
+        جاري التحميل ..
+        </div>
         </TabsContent >
     );
     if (error) return <p>{error}</p>;
