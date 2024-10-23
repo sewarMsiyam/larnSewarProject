@@ -11,10 +11,41 @@ import AOSWrapper from '@/components/AOSWrapper';
 import SessionWrapper from '@/components/home/layout/SessionWrapper';
 
 export const metadata: Metadata = {
-  title: "سوار",
-  description: "نظم تعليمك بسهولة وفعالية أكثر ",
+  title: "سوار - نظم تعليمك بسهولة وفعالية",
+  description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة لإدارة المساقات والدورات التعليمية",
+  keywords: [
+    "سوار",
+    "تعليم",
+    "دورات تعليمية",
+    "منصة تعليمية",
+    "إدارة المساقات",
+    "تعلم عن بعد",
+    "تعليم إلكتروني"
+  ],
+  openGraph: {
+    title: "سوار - نظم تعليمك بسهولة وفعالية",
+    description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة",
+    type: "website",
+    locale: "ar_SA",
+    siteName: "سوار"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "سوار - نظم تعليمك بسهولة وفعالية",
+    description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة"
+  },
+  alternates: {
+    canonical: "https://sewaar.com"
+  },
+  viewport: "width=device-width, initial-scale=1",
+  robots: "index, follow",
+  themeColor: "#ffffff",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png"
+  }
 };
-
 export default async function RootLayout({ children }: { children: React.ReactNode; }) {
   const locale = await getLocale();
   const messages = await getMessages();
