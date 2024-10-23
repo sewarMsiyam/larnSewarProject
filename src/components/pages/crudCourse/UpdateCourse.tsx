@@ -81,12 +81,25 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
 
                 if (result.status) {
                     const currentImage = result.item.image || null;
+                    // const formattedFeatures = Array.isArray(result.item.course_features)
+                    //     ? result.item.course_features.map((x: string, index: number) => ({
+                    //         feature: x.feature
+                    //     }))
+                    //     : [];
                     const formattedFeatures = Array.isArray(result.item.course_features)
-                        ? result.item.course_features.map((feature: string, index: number) => ({
-                            feature: feature.feature
+                        ? result.item.course_features.map((feature: string) => ({
+                            feature: feature
                         }))
-                        : [];
+                    
+                    
 
+                    // const formattedFeatures = Array.isArray(result.item.course_features)
+                    //     ? result.item.course_features.map((feature: CourseFeature) => ({
+                    //         feature: feature.feature
+                    //     }))
+                    //     : [];
+                                            
+                        : [];
                         console.log(formattedFeatures)
                     setFormData(prevFormData => ({
                         ...prevFormData,
