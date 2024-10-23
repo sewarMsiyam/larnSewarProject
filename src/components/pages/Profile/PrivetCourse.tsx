@@ -122,7 +122,7 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                                                         </span>
                                                         <span className="flex items-center gap-2">
                                                             <img src='/profileIcon/time.svg' alt='' className='' />
-                                                            {/* من: {formatTimeTo12Hour(duration.from_time)} - إلى: {formatTimeTo12Hour(duration.to_time)} */}
+                                                            من: {formatTimeTo12Hour(duration.from_time)} - إلى: {formatTimeTo12Hour(duration.to_time)}
                                                         </span>
                                                         <span className="flex items-center gap-2">
                                                             <img src='/profileIcon/zoom.svg' alt='' className='' />
