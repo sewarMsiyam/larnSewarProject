@@ -128,7 +128,7 @@ export default function RegisterForm() {
 
           <div className="space-y-3">
             <Label htmlFor="specialization_id">التخصص</Label>
-            <Select
+            <Select dir="rtl"
               name="specialization_id"
               value={formData.specialization_id}
               onValueChange={(value) => handleChange({ target: { name: 'specialization_id', value } })}
