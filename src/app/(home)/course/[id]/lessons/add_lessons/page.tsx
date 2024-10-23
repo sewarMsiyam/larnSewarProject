@@ -23,8 +23,8 @@ export default async function CreatePageLessons({ params }: DetailLessonsProps) 
     
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },
-        { label: 'الكورسات', href: '/'},
-        { label: 'الدروس', href: '/'},
+        { label: 'الكورسات', href: '/instructor/profile'},
+        { label: 'الدروس', href: `/course/${params.id.toString()}/lessons`},
         { label: 'اضافة درس', href: '/', isActive: true }
     ]
 
