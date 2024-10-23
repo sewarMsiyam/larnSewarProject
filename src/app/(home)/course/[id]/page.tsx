@@ -7,14 +7,40 @@ import { Course } from '@/app/api/interfaces';
 import Star from '@/components/svgIcon/star';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
 import Opinions from "@/components/home/body/Opinions"
 import Video from "@/components/svgIcon/video"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface DetailCourseProps {
   params: {
     id: number;
   };
 }
+
+
+    const getDayInArabic = (day: string): string => {
+    const daysMap: { [key: string]: string } = {
+        'saturday': 'السبت',
+        'sunday': 'الأحد',
+        'monday': 'الاثنين',
+        'tuesday': 'الثلاثاء',
+        'wednesday': 'الأربعاء',
+        'thursday': 'الخميس',
+        'friday': 'الجمعة'
+    };
+    
+    const normalizedDay = day.toLowerCase();
+    return daysMap[normalizedDay] || day;
+    };
+    
 const formatTimeTo12Hour = (time: string): string => {
     const [hours, minutes] = time.split(':');
     const hoursNum = parseInt(hours, 10);
@@ -22,6 +48,57 @@ const formatTimeTo12Hour = (time: string): string => {
     const hour12 = hoursNum % 12 || 12;
     return `${hour12}:${minutes} ${ampm}`;
 };
+
+
+const getVideoEmbedUrl = (url: string): { type: string; embedUrl: string } => {
+  if (!url) return { type: 'none', embedUrl: '' };
+  
+  // YouTube
+  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const youtubeMatch = url.match(youtubeRegex);
+  if (youtubeMatch) {
+    return { type: 'youtube', embedUrl: `https://www.youtube.com/embed/${youtubeMatch[1]}` };
+  }
+
+  // Vimeo
+  const vimeoRegex = /vimeo\.com\/(\d+)/;
+  const vimeoMatch = url.match(vimeoRegex);
+  if (vimeoMatch) {
+    return { type: 'vimeo', embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}` };
+  }
+
+  return { type: 'direct', embedUrl: url };
+};
+
+const VideoPlayer = ({ url }: { url: string }) => {
+  const { type, embedUrl } = getVideoEmbedUrl(url);
+
+  if (type === 'none') return null;
+  
+  if (type === 'direct') {
+    return (
+      <video width="100%" height="400" controls className="rounded-lg">
+        <source src={embedUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    );
+  }
+
+  return (
+    <iframe
+      src={embedUrl}
+      width="100%"
+      height="400"
+      className="rounded-lg"
+      frameBorder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowFullScreen
+    />
+  );
+};
+
+
+
 export default function DetailCourse({ params }: DetailCourseProps) {
   const t = useTranslations('HomePage');
   const [course, setCourse] = useState<Course | null>(null);
@@ -85,15 +162,16 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                   </li>
                 </ol>
               </nav>
-              <h1 className="font-bold text-2xl lg:text-3xl leading-10">ss</h1>
-              <div className='flex items-center gap-2'>
-                <Avatar>
-                  <AvatarImage
-                    src="" alt="Teacher Image" className="w-10 h-10 rounded-full" />
-                  <AvatarFallback>i</AvatarFallback>
-                </Avatar>
-                <span className="font-bold">namwe</span>
-              </div>
+              <h1 className="font-bold text-2xl lg:text-3xl leading-10">
+                <Skeleton className="h-6 w-full" />
+              </h1>
+                <div className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
             </div>
             <div className='lg:absolute mx-4 end-0 top-1/4 grow-0'>
               
@@ -117,7 +195,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
       <section className="bg-gridColor">
         <div className='lg:container relative'>
           <div className="flex flex-col lg:flex-row gap-5">
-            <div className="p-5 lg:p-10 space-y-2 lg:space-y-5">
+            <div className="p-5 lg:p-10 space-y-2 lg:space-y-5 lg:w-[75%]">
               <nav aria-label="Breadcrumb">
                 <ol role="list" className="flex items-center space-x-5 ">
                   <li>
@@ -142,36 +220,48 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                   </li>
                 </ol>
               </nav>
-              <h1 className="font-bold text-2xl lg:text-3xl leading-10">{course.name}</h1>
+              <h1 className="font-bold text-2xl lg:text-3xl leading-10 mb-8 ">{course.name}</h1>
               {/* <div className="flex gap-1">
                 <Star />
                 <Star />
                 <Star />
                 <span> (300) تقييم</span>
               </div> */}
-              <div className='flex items-center gap-2'>
+              <Link href={`/instructor/${course.instructor_id}`} className='flex items-center gap-2'>
                 <Avatar>
                   <AvatarImage
                     src={course.instructor_image} alt="Teacher Image" className="w-10 h-10 rounded-full" />
                   <AvatarFallback>{course.instructor_name.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <span className="font-bold">{course.instructor_name}</span>
-              </div>
+                <div>
+                  <p className="font-bold">{course.instructor_name}</p>
+                  <p className="text-primary text-xs">{course.category}</p>
+                </div>
+              </Link>
             </div>
             <div className='lg:absolute mx-4 end-0 top-1/4 grow-0'>
               <div className='bg-white shadow-lg rounded-2xl'>
                 <div className='relative'>
-                  <img src={course.image} alt='' className='h-[288px] w-full rounded-t-2xl' />
-
-                  {course.introduction_video && (
-                    <a href={course.introduction_video} className="w-full h-full block absolute z-10 top-0">
-                      <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <Video />
-                      </span>
-                    </a>
-                  )}
+                  <img src={course.image} alt='' className='h-[288px] w-full lg:w-[370px] rounded-t-2xl' />
+                  <Dialog>
+                    <DialogTrigger>
+                      {course.introduction_video && (
+                        <div className="w-full h-full block absolute z-10 top-0">
+                          <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <Video />
+                          </span>
+                        </div>
+                      )}
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl" dir="rtl">
+                      <DialogHeader>
+                        <DialogTitle className="mb-4">{course.name}</DialogTitle>
+                        <VideoPlayer url={course.introduction_video} />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-                <div className="p-5 space-y-5">
+                <div className="p-5 pt-0 space-y-5">
                   <div className='flex items-center justify-between'>
                     <div className='text-[#FE7A36] text-lg'><span className="font-bold">{course.price} $</span>/ حصة</div>
                     <div className="text-primary bg-[#eeeeee] py-1 px-2 rounded-lg text-xs">
@@ -224,7 +314,7 @@ export default function DetailCourse({ params }: DetailCourseProps) {
                   {course.course_appointments.map((duration) => (
                     <div key={duration.id} className="col-span-1">
                       <div className="flex justify-evenly gap-4 bg-[#F2F2F3] font-bold p-3.5 rounded-xl px-8">
-                        <span>{duration.day}</span>
+                        <span>{getDayInArabic(duration.day)}</span>
                         <div className="w-px h-[29px] bg-[rgba(0,_0,_0,_0.20)]"></div>
                         <span className="text-primary">{formatTimeTo12Hour(duration.from_time)}  - {formatTimeTo12Hour(duration.to_time)}</span>
                       </div>

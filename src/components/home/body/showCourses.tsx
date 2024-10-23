@@ -92,7 +92,7 @@ export default function CoursesHome() {
     }
 
     if (error) {
-        return <p className="text-red-500">{error}</p>; // Display error message if any
+        return <p className="text-red-500">{error}</p>; 
     }
 
     return (
@@ -112,6 +112,7 @@ export default function CoursesHome() {
                             summary={course.number_of_office_time_per_week}
                             teacherName={course.instructor_name}
                             teacherImage={course.instructor_image}
+                            instructor_id={course.instructor_id}
                             price={course.price}
                         />
                     ))}
@@ -131,6 +132,7 @@ export default function CoursesHome() {
                             summary={course.number_of_office_time_per_week}
                             teacherName={course.instructor_name}
                             teacherImage={course.instructor_image}
+                            instructor_id={course.instructor_id}
                             price={course.price}
                         />
                     ))}

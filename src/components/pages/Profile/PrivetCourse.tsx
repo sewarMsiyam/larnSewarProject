@@ -34,13 +34,13 @@ interface Instructors {
         zoom_link: string;
     }>;
 }
-const formatTimeTo12Hour = (time: string): string => {
-    const [hours, minutes] = time.split(':');
-    const hoursNum = parseInt(hours, 10);
-    const ampm = hoursNum >= 12 ? 'م' : 'ص';
-    const hour12 = hoursNum % 12 || 12;
-    return `${hour12}:${minutes} ${ampm}`;
-};
+// const formatTimeTo12Hour = (time: string): string => {
+//     const [hours, minutes] = time.split(':');
+//     const hoursNum = parseInt(hours, 10);
+//     const ampm = hoursNum >= 12 ? 'م' : 'ص';
+//     const hour12 = hoursNum % 12 || 12;
+//     return `${hour12}:${minutes} ${ampm}`;
+// };
 
 export default function PrivetInstructors({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
@@ -121,7 +121,7 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                                                         </span>
                                                         <span className="flex items-center gap-2">
                                                             <img src='/profileIcon/time.svg' alt='' className='' />
-                                                            من: {formatTimeTo12Hour(duration.from_time)} - إلى: {formatTimeTo12Hour(duration.to_time)}
+                                                            {/* من: {formatTimeTo12Hour(duration.from_time)} - إلى: {formatTimeTo12Hour(duration.to_time)} */}
                                                         </span>
                                                         <span className="flex items-center gap-2">
                                                             <img src='/profileIcon/time.svg' alt='' className='' />

@@ -16,6 +16,7 @@ interface CourseCardProps {
   summary?: string;
   teacherImage?: string;
   teacherName?: string;
+  instructor_id?: string;
   price?: string;
 }
 
@@ -33,6 +34,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   summary,
   teacherImage,
   teacherName,
+  instructor_id,
   price
 }: any) => {
   const [loading, setLoading] = useState(true);
@@ -108,7 +110,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </>
         ) : (
           <>
-            <div className="flex gap-2 items-center">
+            <Link href={`/instructor/${instructor_id}`} className="flex gap-2 items-center">
               <Avatar>
                 <AvatarImage
                   src={teacherImage}
@@ -118,7 +120,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                 <AvatarFallback>{teacherName?.charAt(0)}</AvatarFallback>
               </Avatar>
               <span className="font-bold">{teacherName}</span>
-            </div>
+            </Link>
             <p className="text-[#FE7A36]">
               <span className="font-bold">{price} $</span>/ الكورس
             </p>
@@ -135,7 +137,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         ) : (
           <>       
             <Link href={`/course/${id}`}  className="btn-primary font-medium py-2.5 w-1/2 before:ease relative overflow-hidden btn-primary px-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">اشترك في الكورس</Link>
-            <Link href={`/instructor/${id}`}  className="btn-outLine-primary relative overflow-hidden btn-outLine-primary font-medium py-2.5 w-1/2 px-3 transition-all before:absolute before:bottom-0 before:right-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-color-gradient before:transition-all before:duration-500 hover:text-white hover:before:right-0 hover:before:w-full "><span className="relative z-10">احجز المعلم</span></Link>
+            <Link href={`/instructor/${instructor_id}`}  className="btn-outLine-primary relative overflow-hidden btn-outLine-primary font-medium py-2.5 w-1/2 px-3 transition-all before:absolute before:bottom-0 before:right-0 before:top-0 before:z-0 before:h-full before:w-0 before:bg-color-gradient before:transition-all before:duration-500 hover:text-white hover:before:right-0 hover:before:w-full "><span className="relative z-10">احجز المعلم</span></Link>
           
           </>
         )}

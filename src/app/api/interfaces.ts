@@ -4,6 +4,7 @@ export interface Course {
     name: string;
     description: string;
     image: string;
+    category: string;
     instructor_name: string;
     instructor_image: string;
     number_of_lessons: string;
@@ -13,6 +14,7 @@ export interface Course {
     number_of_office_time_per_week: string;
     duration:string;
     price: string;
+    instructor_id: string;
     course_features: Array<{
         id: number;
         feature: string;
