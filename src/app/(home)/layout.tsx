@@ -10,42 +10,76 @@ import '@/app/globals.css';
 import AOSWrapper from '@/components/AOSWrapper';
 import SessionWrapper from '@/components/home/layout/SessionWrapper';
 
+
 export const metadata: Metadata = {
-  title: "سوار - نظم تعليمك بسهولة وفعالية",
-  description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة لإدارة المساقات والدورات التعليمية",
+  title: "سوار - منصة تعليمية رائدة في الوطن العربي",
+  description: "منصة سوار التعليمية - نظام تعليمي متكامل يخدم الطلاب والمعلمين في فلسطين، مصر، السعودية والأردن. تعلم بسهولة وفعالية مع أفضل المناهج العربية",
   keywords: [
     "سوار",
-    "تعليم",
-    "دورات تعليمية",
     "منصة تعليمية",
-    "إدارة المساقات",
-    "تعلم عن بعد",
-    "تعليم إلكتروني"
+    "تعليم في فلسطين",
+    "تعليم في مصر",
+    "تعليم في السعودية",
+    "تعليم في الأردن",
+    "المناهج الفلسطينية",
+    "المناهج المصرية",
+    "المناهج السعودية",
+    "المناهج الأردنية",
+    "تعليم عن بعد",
+    "تعلم إلكتروني",
+    "مدارس عربية",
+    "تعليم عربي"
   ],
+  authors: [{ name: 'سوار' }],
   openGraph: {
-    title: "سوار - نظم تعليمك بسهولة وفعالية",
-    description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة",
-    type: "website",
-    locale: "ar_SA",
-    siteName: "سوار"
+    type: 'website',
+    locale: 'ar',
+    title: 'سوار - منصة تعليمية رائدة في الوطن العربي',
+    description: 'نظام تعليمي متكامل يخدم الطلاب والمعلمين في فلسطين، مصر، السعودية والأردن',
+    siteName: 'سوار',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "سوار - نظم تعليمك بسهولة وفعالية",
-    description: "نظم تعليمك بسهولة وفعالية أكثر مع سوار - منصة تعليمية متكاملة"
+    card: 'summary_large_image',
+    title: 'سوار - منصة تعليمية رائدة في الوطن العربي',
+    description: 'نظام تعليمي متكامل يخدم الطلاب والمعلمين في فلسطين، مصر، السعودية والأردن',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    }
   },
   alternates: {
-    canonical: "https://sewaar.com"
+    canonical: 'https://sewaar.com',
   },
-  viewport: "width=device-width, initial-scale=1",
-  robots: "index, follow",
-  themeColor: "#ffffff",
-  manifest: "/manifest.json",
+  other: {
+    'theme-color': '#ffffff',
+    'google-site-verification': 'your-verification-code',
+  },
+  metadataBase: new URL('https://sewaar.com'),
+  category: 'education',
+  creator: 'سوار',
+  generator: 'Next.js',
+  applicationName: 'سوار',
+  referrer: 'origin-when-cross-origin',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png"
+    icon: '/favicon.ico',
+    apple: '/apple-icon.png',
   }
-};
+}
+
+
 export default async function RootLayout({ children }: { children: React.ReactNode; }) {
   const locale = await getLocale();
   const messages = await getMessages();
