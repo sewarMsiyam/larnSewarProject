@@ -122,18 +122,11 @@ export default function UserCourse({ token }: CheckoutFormProps) {
         setIsDeleting(true);
         try {
             const result = await deleteOneToken('instructor/courses', courseId, token as string);
-            if (result) {
                 console.log('تم حذف الكورس بنجاح');
                 toast.success('تم حذف الكورس بنجاح');
                 setCourses(prevCourses => prevCourses.filter(course => course.id !== Number(courseId)));
                 setCourseToDelete(null);
                 setIsDeleting(false)
-            } else {
-                console.error('فشل في حذف الكورس');
-                toast.error('فشل في حذف الكورس');
-                setCourseToDelete(null);
-                setIsDeleting(false)
-            }
         } catch (error) {
             console.error('خطأ أثناء حذف الكورس:', error);
             toast.error('حدث خطأ أثناء محاولة حذف الكورس');

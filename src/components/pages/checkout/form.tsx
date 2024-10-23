@@ -15,10 +15,10 @@ export default function CheckoutForm({ token }: CheckoutFormProps) {
         <div className="col-span-2">
             <div className="bg-white p-10 rounded-2xl shadow-md">
                 <h2 className="text-xl font-bold mb-4">تفاصيل الدفع</h2>
-                <Tabs defaultValue="card" dir="rtl">
+                <Tabs defaultValue="bank" dir="rtl">
                     <TabsList>
                         <RadioGroup dir="rtl" defaultValue="card">
-                            <TabsTrigger value="card" asChild>
+                            {/* <TabsTrigger value="card" asChild>
                                 <RadioGroupItem value="card" >
                                 <div className="flex items-center gap-2">
                                     <Image
@@ -31,7 +31,7 @@ export default function CheckoutForm({ token }: CheckoutFormProps) {
                                     بطاقة الدفع
                                 </div>
                                 </RadioGroupItem>
-                            </TabsTrigger>
+                            </TabsTrigger> */}
 
                             <TabsTrigger value="bank" asChild>
                                 <RadioGroupItem value="bank">
