@@ -83,10 +83,11 @@ export default function UpdateCourse({ id , token  }: DetailsInstructorsProps) {
                     const currentImage = result.item.image || null;
                     const formattedFeatures = Array.isArray(result.item.course_features)
                         ? result.item.course_features.map((feature: string, index: number) => ({
-                            id: index + 1,
-                            feature: feature
+                            feature: feature.feature
                         }))
                         : [];
+
+                        console.log(formattedFeatures)
                     setFormData(prevFormData => ({
                         ...prevFormData,
                          name_ar: result.item.name,
