@@ -143,36 +143,42 @@ export default function UserCourseLessons({ token, id }: CheckoutFormProps) {
                       </svg>
                     </span>
                   </li>
+                  
                 ))}
               </ul>
               <div className="col-span-1 lg:col-span-2 ">
 
-                
-                {selectedLesson && (
-                  (() => {
-                    const { type, embedUrl } = getVideoEmbedUrl(selectedLesson.recorded_video_link);
-                    if (type === 'direct') {
-                      return (
-                        <video width="100%" height="400" controls>
-                          <source src={embedUrl} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      );
-                    } else {
-                      return (
-                        <iframe
-                          src={embedUrl}
-                          width="100%"
-                          height="400"
-                          frameBorder="0"
-                          allow="autoplay; fullscreen; picture-in-picture"
-                          allowFullScreen 
-                        ></iframe>
-                      );
-                    }
-                  })()
-                )}
-
+      
+             {selectedLesson ? (
+  selectedLesson.recorded_video_link ? (
+    (() => {
+      const { type, embedUrl } = getVideoEmbedUrl(selectedLesson.recorded_video_link);
+      if (type === 'direct') {
+        return (
+          <video width="100%" height="400" controls>
+            <source src={embedUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        );
+      } else {
+        return (
+          <iframe
+            src={embedUrl}
+            width="100%"
+            height="400"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        );
+      }
+    })()
+  ) : (
+    <p>لا يوجد فيديو مسجل بعد  تابع اوقات الكورس مع المعلم , رابط الزوم في واجهة الكورسات </p>
+  )
+) : (
+  <p>الدرس غير موجود</p>
+)}
                 {selectedLesson && selectedLesson.summary_file && (
                   <div className="mt-8">
                     <h5 className="font-bold mb-3">الملخص</h5>
