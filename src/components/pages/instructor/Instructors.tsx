@@ -16,40 +16,39 @@ import {
 import renderInstructorCard from "@/components/ui/cardInstructors"
 import SkeletonInstructor from "@/components/ui/SkeletonInstructor"
 import debounce from 'lodash.debounce';
+
 interface Specialization {
   id: number;
   name: string;
 }
+
 interface Pagination {
-    current_page: number;
-    first_page_url: string;
-    from: number;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-    last_page_url: string;
-    to: number;
-    total: number;
-    last_page: number;
+  current_page: number;
+  first_page_url: string;
+  from: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  last_page_url: string;
+  to: number;
+  total: number;
+  last_page: number;
 }
 
 interface InstructorsResponse {
-    instructors: Instructors[];
-    pagination: Pagination;
+  instructors: Instructors[];
+  pagination: Pagination;
 }
+
 export default function InstructorsList() {
   const t = useTranslations('HomePage');
 
   const [instructors, setInstructors] = useState<Instructors[]>([]);
   const [instructorsPagination, setInstructorsPagination] = useState<Pagination | null>(null);
-
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [specialization, setSpecialization] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
-
-
-  const endpoint = 'instructors';
 
   useEffect(() => {
     const loadSpecializations = async () => {
@@ -68,12 +67,17 @@ export default function InstructorsList() {
   }, []);
 
   const fetchInstructors = useCallback(
-    debounce(async (name: string = '', specialization: string = '', url?: string) => {
+    debounce(async (name: string = '', specialization: string = '', page: number = 1) => {
       try {
         setLoading(true);
         setError(null);
 
-        const endpoint = url || `instructors?name=${name}&specialization_id=${specialization}`;
+        let queryParams = new URLSearchParams();
+        if (name) queryParams.append('name', name);
+        if (specialization) queryParams.append('specialization_id', specialization);
+        if (page > 1) queryParams.append('page', page.toString());
+
+        const endpoint = `instructors${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
         const response = await fetchAllInstructors<InstructorsResponse>(endpoint);
 
         if (response) {
@@ -91,30 +95,16 @@ export default function InstructorsList() {
   );
 
   useEffect(() => {
-  console.log("Specialization changed:", specialization);
-}, [specialization]);
-
-
-  useEffect(() => {
-    fetchInstructors();
+    fetchInstructors(searchQuery, specialization);
   }, []);
 
-  const handlePageChange = (url: string | null) => {
-    if (url) {
-      fetchInstructors(searchQuery, specialization, url);
-    }
-  }; 
+  const handlePageChange = (page: number) => {
+    fetchInstructors(searchQuery, specialization, page);
+  };
+
   const handleSearch = () => {
     fetchInstructors(searchQuery, specialization);
   };
-
-
-  if (error) return (
-    <div className="text-center text-red-500 text-2xl mt-10">
-      {error}
-    </div>
-  );
-
 
   const renderPagination = (pagination: Pagination | null) => {
     if (!pagination) return null;
@@ -156,8 +146,8 @@ export default function InstructorsList() {
     return (
       <div className="flex items-center justify-center gap-2 mt-8 select-none">
         <button
-          onClick={() => handlePageChange(pagination.prev_page_url)}
-          disabled={!pagination.prev_page_url}
+          onClick={() => handlePageChange(pagination.current_page - 1)}
+          disabled={pagination.current_page === 1}
           className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
         >
           <span className="rtl:rotate-180">
@@ -165,7 +155,7 @@ export default function InstructorsList() {
               <path fill="currentColor" d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
             </svg>
           </span>
-          التالي
+          التالي   
         </button>
 
         <div className="flex items-center gap-1">
@@ -176,13 +166,11 @@ export default function InstructorsList() {
               ) : (
                 <button
                   className={`w-[40px] h-[40px] flex items-center justify-center rounded-lg
-                                    ${pagination.current_page === page
+                      ${pagination.current_page === page
                       ? 'bg-[#00A88A] text-white'
                       : 'text-gray-500 hover:bg-gray-100'
                     }`}
-                  onClick={() => handlePageChange(
-                    `${pagination.first_page_url.split('?')[0]}?page=${page}`
-                  )}
+                  onClick={() => handlePageChange(page as number)}
                   disabled={pagination.current_page === page}
                 >
                   {page}
@@ -191,10 +179,13 @@ export default function InstructorsList() {
             </Fragment>
           ))}
         </div>
+        {/* <div className="text-sm text-gray-500">
+           <span className="font-semibold text-[#00A88A]">{pagination.current_page}</span> 
+        </div> */}
 
         <button
-          onClick={() => handlePageChange(pagination.next_page_url)}
-          disabled={!pagination.next_page_url}
+          onClick={() => handlePageChange(pagination.current_page + 1)}
+          disabled={pagination.current_page === pagination.last_page}
           className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
         >
           السابق
@@ -204,9 +195,12 @@ export default function InstructorsList() {
             </svg>
           </span>
         </button>
+
+        
       </div>
     );
   };
+
 
   if (loading) return (
     <>
