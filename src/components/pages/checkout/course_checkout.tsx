@@ -15,13 +15,13 @@ export default function CheckoutCourse({ token }: CheckoutFormProps) {
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
 
-useEffect(() => {
+    useEffect(() => {
     const fetchcourse = async () => {
         if (!id || !token) return;
         setLoading(true);
         try {
-            const data = await fetchOneToken('checkout/courses', id, token);
-            setCourse(data);
+              const data = await fetchOneToken('checkout/courses', id, token);
+              setCourse(data);
         } catch (error) {
             console.error("Error fetching course data:", error);
         } finally {
