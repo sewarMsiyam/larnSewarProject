@@ -221,7 +221,6 @@ export default function HouerLib({ token }: CheckoutFormProps) {
         <>
             <ToastContainer />
 
-            <TabsContent value="houerLib" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
                 <div className="flex flex-col lg:flex-row justify-between items-center mb-5">
                     <div className="flex gap-2">
                         <h4 className='font-bold text-lg'> الساعات المكتبية الحالية </h4>
@@ -340,8 +339,6 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                     <p className="mb-6">لا توجد ساعات مكتبية مضافة حاليًا.</p>
                 )}
 
-
-            </TabsContent>
 
 
 

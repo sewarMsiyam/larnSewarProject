@@ -127,7 +127,7 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
     };
 
     return (
-        <TabsContent value="setting" className="bg-white rounded-xl p-5 lg:p-10">
+        <>
             <h4 className='font-bold text-lg mb-4'> معلومات عامة </h4>
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -236,6 +236,6 @@ export default function UpdateInformation({ token }: CheckoutFormProps) {
                 </div>
             </form>
             <ToastContainer />
-        </TabsContent>
+        </>
     );
 }

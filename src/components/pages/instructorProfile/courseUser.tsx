@@ -14,7 +14,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link";
-import { TabsContent } from "@/components/ui/tabsProfile"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -138,7 +137,7 @@ export default function UserCourse({ token }: CheckoutFormProps) {
     };
 
     if (loading) return (
-        <TabsContent value="course" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
+        <div className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
             <div className="flex justify-between items-center mb-5">
                 <div className="flex gap-2">
                     <h4 className='font-bold text-lg'> كورساتي </h4>
@@ -154,13 +153,12 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                 <div className="flex justify-center items-center h-screen">
         جاري التحميل ..
         </div>
-        </TabsContent >
+        </div >
     );
     if (error) return <p>{error}</p>;
 
     return (
         <>
-            <TabsContent value="course" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
                 <div className="flex justify-between items-center mb-5">
                     <div className="flex flex-col lg:flex-row gap-2">
                         <h4 className='font-bold text-lg'> كورساتي </h4>
@@ -305,7 +303,6 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                         </AlertDialog>
                     </>
                 ))}
-            </TabsContent >
             <ToastContainer />
         </>
     );

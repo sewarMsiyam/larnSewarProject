@@ -4,7 +4,7 @@ import Unauthenticated from "@/components/Unauthenticated"
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
-import CourseUser from "@/components/pages/instructorProfile/courseUser";
+import PrivetCourse from "@/components/pages/instructorProfile/privetCourse";
 
 export const metadata: Metadata = {
     title: "سوار -  الملف الشخصي",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 
-export default async function Course() {
+export default async function Private() {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
         redirect("/student/login?callbackUrl=/instructor/profile");
@@ -32,7 +32,7 @@ export default async function Course() {
     return (
         <>
           {session ? (
-            <CourseUser token={authToken} />
+            <PrivetCourse token={authToken} /> 
           ) : (
             <Unauthenticated />
           )}

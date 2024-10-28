@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import { TabsContent } from "@/components/ui/tabsProfile"
 import { fetchAllToken, CreateCourseFun } from '@/app/api/dataFetch';
@@ -92,7 +93,7 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
     };
 
     return (
-        <TabsContent value="privetCourse" className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
+        <>
             <div className="flex justify-between items-center mb-5">
                 <div className="flex flex-col lg:flex-row gap-2">
                     <h4 className='font-bold text-lg'> مواعيد الخصوصي </h4>
@@ -171,6 +172,6 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
                     ))}
                 </tbody>
             </table>
-        </TabsContent>
+        </>
     );
 }
