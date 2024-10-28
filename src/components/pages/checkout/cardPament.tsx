@@ -41,7 +41,6 @@ export default function CardPament ({ token }: CheckoutFormProps){
         fetchcourse();
     }, [id, token]);
 
-    
 
     if (loading) {
         return <>loading ... </>;
@@ -59,8 +58,7 @@ export default function CardPament ({ token }: CheckoutFormProps){
 
     return (
         <TabsContent value="card">
-            {amount}
-            <div className="mt-5">
+            <div className="mt-8">
                  <Elements stripe={stripePromise}
                 options={{
                     mode: "payment",
@@ -69,9 +67,7 @@ export default function CardPament ({ token }: CheckoutFormProps){
                 }}>
                 <CheckoutPage amount={amount} />
             </Elements>
-            </div>
-
-           
+            </div>          
         </TabsContent>
     );
 };

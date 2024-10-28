@@ -3,7 +3,7 @@ function convertToSubcurrency(amount: string | number, factor = 100) {
         amount = parseFloat(amount.replace(/[$,]/g, ''));
     }
     
-    return Math.round(amount * factor);
+    return Math.round(amount*factor);
 }
 
 export default convertToSubcurrency;
