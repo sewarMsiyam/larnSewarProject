@@ -145,7 +145,7 @@ export default function RegisterForm() {
           password: formData.password,
         }),
       });
-
+ 
       const responseData = await response.json();
 
       if (!response.ok) {
