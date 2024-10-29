@@ -1,3 +1,4 @@
+
 "use client";
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -91,7 +92,7 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
     if (error) return <p>{error}</p>;
 
     return (
-            <TabsContent value="privetCourse" className="bg-white rounded-lg p-10 shadow-md">
+            <>
                 <div className="flex justify-between items-center mb-5">
                     <h4 className='font-bold text-lg'> معلم خصوصي </h4>
                     <p className='text-gray-300'>عدد حجز الخصوصي  <span className='text-gray-950'>{instructors.length}</span></p>
@@ -151,6 +152,6 @@ export default function PrivetInstructors({ token }: CheckoutFormProps) {
                 ))}
 
                 <ToastContainer />
-            </TabsContent>
+            </>
     );
 }

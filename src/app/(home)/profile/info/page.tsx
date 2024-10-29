@@ -4,7 +4,7 @@ import Unauthenticated from "@/components/Unauthenticated"
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
-import CourseUser from "@/components/pages/Profile/courseUser";
+import UpdateInformation from "@/components/pages/Profile/UpdateInformation";
 
 export const metadata: Metadata = {
   title: "سوار -  الملف الشخصي",
@@ -32,7 +32,7 @@ export default async function Course() {
   return (
     <>
       {session ? (
-        <CourseUser token={authToken} />
+        <UpdateInformation token={authToken} />
       ) : (
         <Unauthenticated />
       )}
