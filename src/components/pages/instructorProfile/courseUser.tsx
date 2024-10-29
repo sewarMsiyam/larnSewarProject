@@ -29,6 +29,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Loader2 } from "lucide-react";
 
 type CheckoutFormProps = {
     token: string;
@@ -137,8 +138,8 @@ export default function UserCourse({ token }: CheckoutFormProps) {
     };
 
     if (loading) return (
-        <div className="bg-white rounded-lg p-2 lg:p-10 shadow-md">
-            <div className="flex justify-between items-center mb-5">
+        <>
+      <div className="flex justify-between items-center mb-5">
                 <div className="flex gap-2">
                     <h4 className='font-bold text-lg'> كورساتي </h4>
                     <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
@@ -150,10 +151,11 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                     </Link>
                 </div>
             </div>
-                <div className="flex justify-center items-center h-screen">
-        جاري التحميل ..
+                <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+            <Loader2 className="h-16 w-16 text-primary animate-spin" />
+            <p className="text-lg font-medium text-gray-600">جاري تحميل الساعات المكتبية...</p>
         </div>
-        </div >
+        </>
     );
     if (error) return <p>{error}</p>;
 

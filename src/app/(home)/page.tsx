@@ -7,6 +7,7 @@ import WhyUs from '@/components/home/body/whyus';
 import Opinions from '@/components/home/body/Opinions';
 import RegisterNow from '@/components/home/body/registerNow';
 import ContactUs from '@/components/home/body/ContactUs';
+import '@/app/globals.css';
 
 export const metadata: Metadata = {
   title: "سوار - الصفحة الئيسية",

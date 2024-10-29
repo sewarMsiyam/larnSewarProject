@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { TabsContent } from "@/components/ui/tabsProfile"
-import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -9,8 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CreatHeuerFun, fetchAllToken, deleteOneToken } from "@/app/api/dataFetch";
 import { OfficeHours } from '@/app/api/interfaces';
-import Link from "next/link";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 import {
     AlertDialog,
@@ -28,80 +27,46 @@ type CheckoutFormProps = {
     token: string;
 };
 
+const DAYS_MAP = {
+    'saturday': 'السبت',
+    'sunday': 'الأحد',
+    'monday': 'الإثنين',
+    'tuesday': 'الثلاثاء',
+    'wednesday': 'الأربعاء',
+    'thursday': 'الخميس',
+    'friday': 'الجمعة'
+} as const;
+
+type DayType = keyof typeof DAYS_MAP;
+
+interface OfficeHoursWithDay extends Omit<OfficeHours, 'date'> {
+    day: DayType;
+}
+
 export default function HouerLib({ token }: CheckoutFormProps) {
-    const [officeHours, setOfficeHours] = useState<OfficeHours[]>([]);
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+    const [officeHours, setOfficeHours] = useState<OfficeHoursWithDay[]>([]);
+    const [selectedDay, setSelectedDay] = useState<DayType | ''>('');
     const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState({
-        date: "",
-        from_time: "",
-        to_time: "",
+        day: '',
+        from_time: '',
+        to_time: '',
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const [isLoading, setIsLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [OfficeHoursToDelete, setOfficeHoursToDelete] = useState<OfficeHours | null>(null);
-    const [OfficeHoursToUpdate, setOfficeHoursToUpdate] = useState<OfficeHours | null>(null);
+    const [officeHoursToDelete, setOfficeHoursToDelete] = useState<OfficeHoursWithDay | null>(null);
+    const [officeHoursToUpdate, setOfficeHoursToUpdate] = useState<OfficeHoursWithDay | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenD, setIsOpenD] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [dateToUpdate, setDateToUpdate] = useState<Date | null>(null);
 
-
-    const formatDateSelect = (date: string | Date): string => {
-        const d = date instanceof Date ? date : new Date(date);
-        if (isNaN(d.getTime())) {
-            console.error('Invalid date:', date);
-            return '';
-        }
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    };
-    const bookedDates = useMemo(() => {
-        return new Set(officeHours.map(hour => formatDateSelect(hour.date)));
-    }, [officeHours]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
         setErrors(prev => ({ ...prev, [id]: '' }));
-    };
-
-    const disablePastDates = (date: Date) => {
-        return date < new Date(new Date().setHours(0, 0, 0, 0));
-    };
-
-    const handleDateSelect = (date: Date | undefined) => {
-        setSelectedDate(date);
-        if (date) {
-            const formattedDate = date.toLocaleDateString('en-GB', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1');
-
-            setFormData(prev => ({ ...prev, date: formattedDate }));
-        } else {
-            setFormData(prev => ({ ...prev, date: "" }));
+        if (id === 'day') {
+            setSelectedDay(value as DayType);
         }
-    };
-
-    const formatDate = (date: Date | string | undefined): string => {
-        if (!date) return "لم يتم اختيار تاريخ";
-        let dateObj: Date;
-        if (typeof date === 'string') {
-            dateObj = new Date(date);
-            if (isNaN(dateObj.getTime())) {
-                return "تاريخ غير صالح";
-            }
-        } else {
-            dateObj = date;
-        }
-
-        return dateObj.toLocaleDateString('en-GB', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        }).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1');
     };
 
     const formatTimeTo12Hour = (time: string): string => {
@@ -114,7 +79,7 @@ export default function HouerLib({ token }: CheckoutFormProps) {
 
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
-        if (!formData.date) newErrors.date = "الرجاء تحديد يوم";
+        if (!formData.day) newErrors.day = "الرجاء تحديد اليوم";
         if (!formData.from_time) newErrors.from_time = "الرجاء تحديد وقت البدء";
         if (!formData.to_time) newErrors.to_time = "الرجاء تحديد وقت الانتهاء";
         setErrors(newErrors);
@@ -154,9 +119,10 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                 data.append(key, value.toString());
             }
         });
+
         try {
-            if (OfficeHoursToUpdate) {
-                const result = await CreatHeuerFun(`instructor/instructor_office_hours/update/${OfficeHoursToUpdate.id}`, token, data);
+            if (officeHoursToUpdate) {
+                const result = await CreatHeuerFun(`instructor/instructor_office_hours/update/${officeHoursToUpdate.id}`, token, data);
                 toast.success(result.message || "تم تحديث الموعد بنجاح");
                 loadOfficeHours();
             } else {
@@ -171,25 +137,24 @@ export default function HouerLib({ token }: CheckoutFormProps) {
             setIsLoading(false);
             setIsOpen(false);
             setOfficeHoursToUpdate(null);
-            setFormData({ date: "", from_time: "", to_time: "" });
-            setSelectedDate(undefined);
+            setFormData({ day: "", from_time: "", to_time: "" });
+            setSelectedDay('');
         }
     };
 
-    const handleDeleteClick = (officeHours: OfficeHours) => {
+    const handleDeleteClick = (officeHours: OfficeHoursWithDay) => {
         setOfficeHoursToDelete(officeHours);
         setIsOpenD(true);
     };
 
-    const handleUpdateClick = (officeHours: OfficeHours) => {
+    const handleUpdateClick = (officeHours: OfficeHoursWithDay) => {
         setOfficeHoursToUpdate(officeHours);
         setFormData({
-            date: officeHours.date,
+            day: officeHours.day,
             from_time: officeHours.from_time,
             to_time: officeHours.to_time
         });
-        setSelectedDate(new Date(officeHours.date));
-        setDateToUpdate(new Date(officeHours.date));
+        setSelectedDay(officeHours.day);
         setIsOpen(true);
     };
 
@@ -197,9 +162,8 @@ export default function HouerLib({ token }: CheckoutFormProps) {
         setIsOpen(false);
         setIsOpenD(false);
         setOfficeHoursToUpdate(null);
-        setFormData({ date: "", from_time: "", to_time: "" });
-        setSelectedDate(undefined);
-        setDateToUpdate(null);
+        setFormData({ day: "", from_time: "", to_time: "" });
+        setSelectedDay('');
     };
 
     const deleteOfficeHours = async (officeHoursId: number) => {
@@ -217,82 +181,84 @@ export default function HouerLib({ token }: CheckoutFormProps) {
         }
     };
 
+    if(isLoading){
+        return <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+            <Loader2 className="h-16 w-16 text-primary animate-spin" />
+            <p className="text-lg font-medium text-gray-600">جاري تحميل الساعات المكتبية...</p>
+        </div>;
+    }
     return (
         <>
             <ToastContainer />
-
-                <div className="flex flex-col lg:flex-row justify-between items-center mb-5">
-                    <div className="flex gap-2">
-                        <h4 className='font-bold text-lg'> الساعات المكتبية الحالية </h4>
-                        <p className='text-gray-300'>العدد <span className='text-gray-950'>{officeHours.length}</span></p>
-                    </div>
-                    <div>
-                        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-                            <AlertDialogTrigger className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
-                                <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
-                                <span>اضافة ساعات مكتبية</span>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent className="max-w-4xl">
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-center">اضافة الأوقات التي تستطيع فيها اعطاء دروس خصوصي</AlertDialogTitle>
-                                    <div>
-                                        <div className="grid col-span-1 lg:grid-cols-3 gap-5">
-                                            <div className="col-span-1 lg:col-span-2">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={selectedDate}
-                                                    onSelect={handleDateSelect}
-                                                    disabled={disablePastDates}
-                                                    className="rounded-xl shadow-sm border w-full"
-                                                    modifiers={{
-                                                        booked: (date) => bookedDates.has(formatDateSelect(date)),
-                                                        toUpdate: (date) => dateToUpdate !== null && date.toDateString() === dateToUpdate.toDateString()
-                                                    }}
-                                                    modifiersStyles={{
-                                                        booked: { backgroundColor: '#c8f0e5', color: 'dark' },
-                                                        toUpdate: { backgroundColor: '#0abc8c', color: 'white' }
-                                                    }}
+            <div className="flex flex-col lg:flex-row justify-between items-center mb-5">
+                <div className="flex gap-2">
+                    <h4 className='font-bold text-lg'> الساعات المكتبية الحالية </h4>
+                    <p className='text-gray-300'>العدد <span className='text-gray-950'>{officeHours.length}</span></p>
+                </div>
+                <div>
+                    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                        <AlertDialogTrigger className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                            <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
+                            <span>اضافة ساعات مكتبية</span>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="max-w-4xl">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-center">
+                                    {(officeHoursToUpdate ? "تعديل وقت وموعد الدرس الخصوصي " : "إضافة الأوقات التي تستطيع فيها اعطاء دروس خاصة ")}
+                                </AlertDialogTitle>
+                                <div className="col-span-1 text-start">
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="mb-4">
+                                            <Label className="block text-sm font-medium text-start text-gray-700">اليوم</Label>
+                                            <select
+                                                id="day"
+                                                value={formData.day}
+                                                onChange={handleChange}
+                                                className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-2"
+                                            >
+                                                <option value="">اختر اليوم</option>
+                                                {Object.entries(DAYS_MAP).map(([value, label]) => (
+                                                    <option key={value} value={value}>{label}</option>
+                                                ))}
+                                            </select>
+                                            {errors.day && <p className="text-red-500 text-xs mt-1">{errors.day}</p>}
+                                        </div>
+                                        <div className="flex gap-4">
+                                            <div className="mb-4 w-full">
+                                                <Label className="block text-sm font-medium text-start text-gray-700">من</Label>
+                                                <Input
+                                                    type="time"
+                                                    id="from_time"
+                                                    value={formData.from_time}
+                                                    onChange={handleChange}
+                                                    className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                                 />
+                                                {errors.from_time && <p className="text-red-500 text-xs mt-1">{errors.from_time}</p>}
                                             </div>
-                                            <div className="col-span-1 text-start">
-                                                <p>التاريخ المختار: {formatDate(selectedDate)}</p>
-                                                <form onSubmit={handleSubmit}>
-                                                    {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
-                                                    <div className="mb-4">
-                                                        <Label className="block text-sm font-medium text-start text-gray-700">من</Label>
-                                                        <Input
-                                                            type="time"
-                                                            id="from_time"
-                                                            value={formData.from_time}
-                                                            onChange={handleChange}
-                                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                        />
-                                                        {errors.from_time && <p className="text-red-500 text-xs mt-1">{errors.from_time}</p>}
-                                                    </div>
-                                                    <div className="mb-4">
-                                                        <Label className="block text-sm font-medium text-start text-gray-700">إلى</Label>
-                                                        <Input
-                                                            type="time"
-                                                            id="to_time"
-                                                            value={formData.to_time}
-                                                            onChange={handleChange}
-                                                            className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                                                        />
-                                                        {errors.to_time && <p className="text-red-500 text-xs mt-1">{errors.to_time}</p>}
-                                                    </div>
-                                                    <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl w-full font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-[350px] mb-3">
-                                                        {isLoading ? "جاري المعالجة..." : (OfficeHoursToUpdate ? "تحديث الموعد" : "إضافة الموعد")}
-                                                    </Button>
-                                                    <AlertDialogCancel onClick={handleCancel} className="w-full rounded-2xl">إلغاء</AlertDialogCancel>
-                                                </form>
+                                            <div className="mb-4 w-full">
+                                                <Label className="block text-sm font-medium text-start text-gray-700">إلى</Label>
+                                                <Input
+                                                    type="time"
+                                                    id="to_time"
+                                                    value={formData.to_time}
+                                                    onChange={handleChange}
+                                                    className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                />
+                                                {errors.to_time && <p className="text-red-500 text-xs mt-1">{errors.to_time}</p>}
                                             </div>
                                         </div>
-                                    </div>
-                                </AlertDialogHeader>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
+                                        
+                                        <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl w-full font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-[350px] mb-3">
+                                            {isLoading ? "جاري المعالجة..." : (officeHoursToUpdate ? "تحديث الموعد" : "إضافة الموعد")}
+                                        </Button>
+                                        <AlertDialogCancel onClick={handleCancel} className="w-full rounded-2xl">إلغاء</AlertDialogCancel>
+                                    </form>
+                                </div>
+                            </AlertDialogHeader>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
+            </div>
 
 
                 {officeHours.length > 0 ? (
@@ -306,7 +272,7 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                                             <div className='flex flex-col gap-3'>
                                                 <span className="flex items-center gap-2">
                                                     <img src='/profileIcon/calender.svg' alt='' className='' />
-                                                    {formatDate(hour.date)}
+                                                    {DAYS_MAP[hour.day]}
                                                 </span>
                                                 <span className="flex items-center gap-2">
                                                     <img src='/profileIcon/time.svg' alt='' className='' />
@@ -340,44 +306,40 @@ export default function HouerLib({ token }: CheckoutFormProps) {
                 )}
 
 
-
-
-
-            <AlertDialog open={isOpenD} onOpenChange={setIsOpenD}>
-                <AlertDialogTitle></AlertDialogTitle>
-                <AlertDialogContent>
-                    <AlertDialogHeader className='flex flex-col items-center'>
-                        <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
-                        <p className="text-lg text-dark text-center font-bold my-5">
-                            هل أنت متأكد من الساعة المكتبة هذه ؟
-                        </p>
-                        {OfficeHoursToDelete && (
-                            <div className="flex justify-between items-center gap-3 border border-[#D9D9D9] font-bold p-3 rounded-xl px-6 my-5">
-                                <div className='flex flex-col gap-3'>
-                                    <span className="flex items-center gap-2">
-                                        <img src='/profileIcon/calender.svg' alt='التقويم' className='' />
-                                        {formatDate(OfficeHoursToDelete.date)}
-                                    </span>
-                                    <span className="flex items-center gap-2">
-                                        <img src='/profileIcon/time.svg' alt='الوقت' className='' />
-                                        من: {formatTimeTo12Hour(OfficeHoursToDelete.from_time)} - إلى: {formatTimeTo12Hour(OfficeHoursToDelete.to_time)}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                    </AlertDialogHeader>
-                    <AlertDialogFooter className="w-full flex gap-2">
-                        <AlertDialogAction
-                            onClick={() => OfficeHoursToDelete && deleteOfficeHours(OfficeHoursToDelete.id)}
-                            disabled={isDeleting}
-                            className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
-                        >
-                            {isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف'}
-                        </AlertDialogAction>
-                        <AlertDialogCancel onClick={handleCancel} className="w-full">إلغاء</AlertDialogCancel>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+<AlertDialog open={isOpenD} onOpenChange={setIsOpenD}>
+    <AlertDialogContent>
+        <AlertDialogHeader className='flex flex-col items-center'>
+            <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
+            <p className="text-lg text-dark text-center font-bold my-5">
+                هل أنت متأكد من حذف هذه الساعة المكتبية؟
+            </p>
+            {officeHoursToDelete && (
+                <div className="flex justify-between items-center gap-3 border border-[#D9D9D9] font-bold p-3 rounded-xl px-6 my-5">
+                    <div className='flex flex-col gap-3'>
+                        <span className="flex items-center gap-2">
+                            <img src='/profileIcon/calender.svg' alt='التقويم' className='' />
+                            {DAYS_MAP[officeHoursToDelete.day]}
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <img src='/profileIcon/time.svg' alt='الوقت' className='' />
+                            من: {formatTimeTo12Hour(officeHoursToDelete.from_time)} - إلى: {formatTimeTo12Hour(officeHoursToDelete.to_time)}
+                        </span>
+                    </div>
+                </div>
+            )}
+        </AlertDialogHeader>
+        <AlertDialogFooter className="w-full flex gap-2">
+            <AlertDialogAction
+                onClick={() => officeHoursToDelete && deleteOfficeHours(officeHoursToDelete.id)}
+                disabled={isDeleting}
+                className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
+            >
+                {isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف'}
+            </AlertDialogAction>
+            <AlertDialogCancel onClick={handleCancel} className="w-full">إلغاء</AlertDialogCancel>
+        </AlertDialogFooter>
+    </AlertDialogContent>
+</AlertDialog>
         </>
     );
 }

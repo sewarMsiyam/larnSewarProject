@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { TabsContent } from "@/components/ui/tabsProfile"
 import { fetchAllToken, CreateCourseFun } from '@/app/api/dataFetch';
 import { OfficeHours } from '@/app/api/interfaces'
+import { Loader2 } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,6 +22,16 @@ import { toast } from "react-toastify";
 type CheckoutFormProps = {
     token: string;
 };
+
+const LoadingSpinner = () => {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+            <Loader2 className="h-16 w-16 text-primary animate-spin" />
+            <p className="text-lg font-medium text-gray-600">جاري تحميل جدول المواعيد...</p>
+        </div>
+    );
+};
+
 const formatTimeTo12Hour = (time: string): string => {
     // {formatTimeTo12Hour(duration.from_time)}
     const [hours, minutes] = time.split(':');
@@ -91,6 +102,10 @@ export default function PrivetCourse({ token }: CheckoutFormProps) {
             toast.error(error.message || "فشل في إضافة رابط الزوم");
         }
     };
+
+        if (loading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <>

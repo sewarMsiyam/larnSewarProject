@@ -58,6 +58,7 @@ export interface Instructors{
     instructor_office_hours: Array<{
         id: number;
         date: string;
+        day: string;
         from_time: string;
         to_time: string;
     }>;
@@ -108,6 +109,7 @@ export interface Checkout {
 export interface OfficeHours {
     id: number;
     student_name:string;
+    day: string;
     date: string;
     from_time: string;
     to_time: string;
