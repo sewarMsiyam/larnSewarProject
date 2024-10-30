@@ -1,10 +1,9 @@
-
 "use client";
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Image from "next/image";
 import { Course } from '@/app/api/interfaces';
-import { fetchAllToken, deleteOneToken } from '@/app/api/dataFetch';
+import { fetchAllCoursepaginationToken, deleteOneToken } from '@/app/api/dataFetch';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -34,63 +33,93 @@ import { Loader2 } from "lucide-react";
 type CheckoutFormProps = {
     token: string;
 };
+
+interface Pagination {
+    current_page: number;
+    first_page_url: string;
+    from: number;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+    last_page_url: string;
+    to: number;
+    total: number;
+    last_page: number;
+}
+
 const formatTimeTo12Hour = (time: string): string => {
-    // {formatTimeTo12Hour(duration.from_time)}
     const [hours, minutes] = time.split(':');
     const hoursNum = parseInt(hours, 10);
     const ampm = hoursNum >= 12 ? 'م' : 'ص';
     const hour12 = hoursNum % 12 || 12;
     return `${hour12}:${minutes} ${ampm}`;
 };
+
 export default function UserCourse({ token }: CheckoutFormProps) {
     const t = useTranslations('HomePage');
 
     const [courses, setCourses] = useState<Course[]>([]);
+    const [pagination, setPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState('course');
     const [isDeleting, setIsDeleting] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
-
     const handleTabChange = (value: string) => {
         setActiveTab(value);
     };
 
     const getDayInArabic = (day: string): string => {
-    const daysMap: { [key: string]: string } = {
-        'saturday': 'السبت',
-        'sunday': 'الأحد',
-        'monday': 'الاثنين',
-        'tuesday': 'الثلاثاء',
-        'wednesday': 'الأربعاء',
-        'thursday': 'الخميس',
-        'friday': 'الجمعة'
-    };
-    
-    const normalizedDay = day.toLowerCase();
-    return daysMap[normalizedDay] || day;
-    };
-    
-    useEffect(() => {
-        const loadCourses = async () => {
-            if (token) {
-                try {
-                    const fetchedCourses = await fetchAllToken('instructor/instructor_courses', token);
-                    if (Array.isArray(fetchedCourses)) {
-                        setCourses(fetchedCourses);
-                    } else {
-                        setError('البيانات المستلمة غير صحيحة');
-                    }
-                } catch (err) {
-                    setError('حدث خطأ أثناء تحميل البيانات');
-                } finally {
-                    setLoading(false);
-                }
-            }
+        const daysMap: { [key: string]: string } = {
+            'saturday': 'السبت',
+            'sunday': 'الأحد',
+            'monday': 'الاثنين',
+            'tuesday': 'الثلاثاء',
+            'wednesday': 'الأربعاء',
+            'thursday': 'الخميس',
+            'friday': 'الجمعة'
         };
 
+        const normalizedDay = day.toLowerCase();
+        return daysMap[normalizedDay] || day;
+    };
+
+    const loadCourses = async (isLoadMore: boolean = false) => {
+        if (!token) return;
+
+        try {
+            if (isLoadMore) {
+                setLoadingMore(true);
+            } else {
+                setLoading(true);
+            }
+
+            const pageUrl = isLoadMore && pagination?.next_page_url
+                ? pagination.next_page_url.split('v1/')[1]
+                : 'instructor/instructor_courses';
+
+            const response = await fetchAllCoursepaginationToken(pageUrl, token);
+
+            if (response) {
+                const newCourses = response.courses;
+                if (isLoadMore) {
+                    setCourses(prev => [...prev, ...newCourses]);
+                } else {
+                    setCourses(newCourses);
+                }
+                setPagination(response.pagination);
+            }
+        } catch (err) {
+            setError('حدث خطأ أثناء تحميل البيانات');
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
+        }
+    };
+
+    useEffect(() => {
         loadCourses();
     }, [token]);
 
@@ -105,13 +134,9 @@ export default function UserCourse({ token }: CheckoutFormProps) {
         }
     };
 
-
     const handleDeleteClick = (course: Course) => {
         setCourseToDelete(course);
         setIsOpen(true);
-        // if (alertDialogTriggerRef.current) {
-        //     (alertDialogTriggerRef.current as HTMLButtonElement).click();
-        // }
     };
 
     const handleCancel = () => {
@@ -121,25 +146,46 @@ export default function UserCourse({ token }: CheckoutFormProps) {
     const deleteCourse = async (courseId: number) => {
         setIsDeleting(true);
         try {
-            const result = await deleteOneToken('instructor/courses', courseId, token as string);
-                console.log('تم حذف الكورس بنجاح');
-                toast.success('تم حذف الكورس بنجاح');
-                setCourses(prevCourses => prevCourses.filter(course => course.id !== Number(courseId)));
-                setCourseToDelete(null);
-                setIsDeleting(false)
+            await deleteOneToken('instructor/courses', courseId, token);
+            toast.success('تم حذف الكورس بنجاح');
+            setCourses(prevCourses => prevCourses.filter(course => course.id !== Number(courseId)));
+            setCourseToDelete(null);
         } catch (error) {
             console.error('خطأ أثناء حذف الكورس:', error);
             toast.error('حدث خطأ أثناء محاولة حذف الكورس');
-
         } finally {
             setIsDeleting(false);
+            setIsOpen(false);
             setCourseToDelete(null);
         }
     };
 
+    const renderLoadMoreButton = () => {
+        if (!pagination?.next_page_url) return null;
+
+        return (
+            <div className="flex justify-center mt-8">
+                <button
+                    onClick={() => loadCourses(true)}
+                    disabled={loadingMore}
+                    className="btn-primary font-medium py-2.5 px-6 before:ease relative overflow-hidden transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60"
+                >
+                    {loadingMore ? (
+                        <div className="flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            جاري التحميل...
+                        </div>
+                    ) : (
+                        "تحميل المزيد"
+                    )}
+                </button>
+            </div>
+        );
+    };
+
     if (loading) return (
         <>
-      <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5">
                 <div className="flex gap-2">
                     <h4 className='font-bold text-lg'> كورساتي </h4>
                     <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
@@ -151,30 +197,31 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                     </Link>
                 </div>
             </div>
-                <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-            <Loader2 className="h-16 w-16 text-primary animate-spin" />
-            <p className="text-lg font-medium text-gray-600">جاري تحميل الساعات المكتبية...</p>
-        </div>
+            <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+                <Loader2 className="h-16 w-16 text-primary animate-spin" />
+                <p className="text-lg font-medium text-gray-600">جاري تحميل الكورسات...</p>
+            </div>
         </>
     );
+
     if (error) return <p>{error}</p>;
 
     return (
         <>
-                <div className="flex justify-between items-center mb-5">
-                    <div className="flex flex-col lg:flex-row gap-2">
-                        <h4 className='font-bold text-lg'> كورساتي </h4>
-                        <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
-                    </div>
-                    <div>
-                        <Link href="/course/create_course-new" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
-                            <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
-                            <span>اضافة كورس</span>
-                        </Link>
-                    </div>
+            <div className="flex justify-between items-center mb-5">
+                <div className="flex flex-col lg:flex-row gap-2">
+                    <h4 className='font-bold text-lg'> كورساتي </h4>
+                    <p className='text-gray-300'>عدد الكورسات  <span className='text-gray-950'>{courses.length}</span></p>
                 </div>
+                <div>
+                    <Link href="/course/create_course-new" className="flex items-center gap-2 before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                        <Image src="/profileIcon/IconAdd.svg" alt='خصوصي' width="30" height="30" />
+                        <span>اضافة كورس</span>
+                    </Link>
+                </div>
+            </div>
 
-                {courses.map((course , index) => (
+           {courses.map((course , index) => (
                     <>
                         <div key={index} className="flex items-center flex-col lg:flex-row border rounded-lg p-3 mb-4">
                             <img src={course.image} alt="" className="w-full h-56 lg:w-72 lg:h-60 rounded-lg" />
@@ -279,32 +326,34 @@ export default function UserCourse({ token }: CheckoutFormProps) {
                                 </DropdownMenu>
                             </div>
                         </div>
-
-
-                        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-                            {/* <AlertDialogTrigger asChild></AlertDialogTrigger>*/}
-                            <AlertDialogTitle></AlertDialogTitle> 
-                            <AlertDialogContent>
-                                <AlertDialogHeader className='flex flex-col items-center'>
-                                    <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
-                                    <p className="text-lg text-dark text-center font-bold my-5">
-                                        هل أنت متأكد من حذف الكورس ({courseToDelete?.name}) ؟
-                                    </p>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter className="w-full flex gap-2">
-                                    <AlertDialogAction
-                                        onClick={() => courseToDelete && deleteCourse(courseToDelete.id)}
-                                        disabled={isDeleting}
-                                        className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
-                                    >
-                                        {isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف'}
-                                    </AlertDialogAction>
-                                    <AlertDialogCancel onClick={handleCancel} className="w-full">إلغاء</AlertDialogCancel>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
                     </>
                 ))}
+
+            {/* Load More Button */}
+            {renderLoadMoreButton()}
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader className='flex flex-col items-center'>
+                        <Image src="/login.png" alt="" width={150} height={150} className="text-center" />
+                        <p className="text-lg text-dark text-center font-bold my-5">
+                            هل أنت متأكد من حذف الكورس ({courseToDelete?.name}) ؟
+                        </p>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="w-full flex gap-2">
+                        <AlertDialogAction
+                            onClick={() => courseToDelete && deleteCourse(courseToDelete.id)}
+                            disabled={isDeleting}
+                            className="before:ease relative overflow-hidden w-full btn-primary text-white font-medium py-2.5 px-6 md:px-3 lg:px-6 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
+                        >
+                            {isDeleting ? 'جاري الحذف...' : 'تأكيد الحذف'}
+                        </AlertDialogAction>
+                        <AlertDialogCancel onClick={handleCancel} className="w-full">إلغاء</AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             <ToastContainer />
         </>
     );

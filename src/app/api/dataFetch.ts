@@ -354,17 +354,17 @@ export async function fetchAllToken(endpoint: string, token: string, mainCategor
 
 
 
-export async function fetchAllCoursepaginationToken<T>(endpoint: string, mainCategory?: string) {
+export async function fetchAllCoursepaginationToken(endpoint: string, token: string,) {
     console.log(buildUrl(endpoint));
 
   try {
     const response = await fetchRetry(buildUrl(endpoint), {
       headers: {
         'Accept-Language': 'ar',
+        'Authorization': `Bearer ${token}`,
       },
       timeout: 8000,
     });
-     console.log(response);
 
      const result = await response.json();
      console.log(result);
