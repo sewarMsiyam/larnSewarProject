@@ -136,7 +136,7 @@ export default function BookPrivate({ id }: DetailsInstructorsProps) {
         const date = new Date();
         date.setHours(parseInt(hours, 10));
         date.setMinutes(parseInt(minutes, 10));
-        return date.toLocaleTimeString('ar-EG', { 
+        return date.toLocaleTimeString('EN-US', { 
             hour: 'numeric', 
             minute: '2-digit', 
             hour12: true 

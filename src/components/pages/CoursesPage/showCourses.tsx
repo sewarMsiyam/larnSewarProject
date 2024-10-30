@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { Fragment } from 'react';
 import { fetchAll, fetchAllCoursepagination } from '@/app/api/dataFetch';
 import { Course } from '@/app/api/interfaces';
 import { useTranslations } from 'next-intl';
@@ -47,6 +46,7 @@ export default function CoursesHome() {
     const [tawjihiPagination, setTawjihiPagination] = useState<Pagination | null>(null);
     const [universityPagination, setUniversityPagination] = useState<Pagination | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [loadingMore, setLoadingMore] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [instructorName, setInstructorName] = useState<string>('');
@@ -70,17 +70,27 @@ export default function CoursesHome() {
         fetchData();
     }, []);
 
-    const fetchData = async (params = {}, tawjihiUrl?: string, universityUrl?: string) => {
+    const fetchData = async (params = {}, reset = true) => {
         try {
-            setLoading(true);
+            if (reset) {
+                setLoading(true);
+            } else {
+                setLoadingMore(true);
+            }
+
             const queryString = new URLSearchParams(params).toString();
 
-            const tawjihiResponse = await fetchAllCoursepagination<CourseResponse>(tawjihiUrl || `courses?main_category=tawjihi&${queryString}`);
-            const universityResponse = await fetchAllCoursepagination<CourseResponse>(universityUrl || `courses?main_category=university&${queryString}`);
+            const tawjihiResponse = await fetchAllCoursepagination<CourseResponse>(`courses?main_category=tawjihi&${queryString}`);
+            const universityResponse = await fetchAllCoursepagination<CourseResponse>(`courses?main_category=university&${queryString}`);
 
             if (tawjihiResponse && universityResponse) {
-                setTawjihiCourse(tawjihiResponse.courses);
-                setUniversityCourse(universityResponse.courses);
+                if (reset) {
+                    setTawjihiCourse(tawjihiResponse.courses);
+                    setUniversityCourse(universityResponse.courses);
+                } else {
+                    setTawjihiCourse(prev => [...prev, ...tawjihiResponse.courses]);
+                    setUniversityCourse(prev => [...prev, ...universityResponse.courses]);
+                }
                 setTawjihiPagination(tawjihiResponse.pagination);
                 setUniversityPagination(universityResponse.pagination);
             }
@@ -88,6 +98,7 @@ export default function CoursesHome() {
             setError('Failed to fetch courses');
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
     };
 
@@ -99,106 +110,35 @@ export default function CoursesHome() {
         fetchData(params);
     };
 
-    const handlePageChange = (category: 'tawjihi' | 'university', url: string | null) => {
-        if (url) {
-            const params = Object.fromEntries(new URL(url).searchParams);
-            if (category === 'tawjihi') {
-                fetchData(params, url, undefined);
-            } else {
-                fetchData(params, undefined, url);
-            }
-        }
+    const loadMore = async (category: 'tawjihi' | 'university') => {
+        const pagination = category === 'tawjihi' ? tawjihiPagination : universityPagination;
+        if (!pagination?.next_page_url) return;
+
+        const params = Object.fromEntries(new URL(pagination.next_page_url).searchParams);
+        if (searchQuery) params.name = searchQuery;
+        if (specialization && specialization !== 'all') params.specialization_id = specialization;
+        if (instructorName) params.instructor_name = instructorName;
+
+        await fetchData(params, false);
     };
 
-   const renderPagination = (pagination: Pagination | null, category: 'tawjihi' | 'university') => {
-    if (!pagination) return null;
+    const renderLoadMoreButton = (category: 'tawjihi' | 'university') => {
+        const pagination = category === 'tawjihi' ? tawjihiPagination : universityPagination;
 
-    const getPageNumbers = () => {
-        const total = pagination.last_page;
-        const current = pagination.current_page;
-        let pages = [];
+        if (!pagination?.next_page_url) return null;
 
-        if (total <= 4) {
-            for (let i = 1; i <= total; i++) {
-                pages.push(i);
-            }
-        } else {
-            if (current > 2) {
-                pages.push(1);
-                if (current > 3) {
-                    pages.push('...');
-                }
-            }
-
-            for (let i = Math.max(1, current - 1); i <= Math.min(total, current + 1); i++) {
-                pages.push(i);
-            }
-
-            if (current < total - 1) {
-                if (current < total - 2) {
-                    pages.push('...');
-                }
-                pages.push(total);
-            }
-        }
-
-        return pages;
-    };
-
-    const pageNumbers = getPageNumbers();
-
-    return (
-        <div className="flex items-center justify-center gap-2 mt-8 select-none">
-            <button
-                onClick={() => handlePageChange(category, pagination.prev_page_url)}
-                disabled={!pagination.prev_page_url}
-                className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
-            >
-                <span className="rtl:rotate-180">
-                    <svg width="16" height="16" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
-                    </svg>
-                </span>
-                التالي
-            </button>
-
-            <div className="flex items-center gap-1">
-                {pageNumbers.map((page, index) => (
-                    <Fragment key={index}>
-                        {page === '...' ? (
-                            <span className="px-2">...</span>
-                        ) : (
-                            <button
-                                className={`w-[40px] h-[40px] flex items-center justify-center rounded-lg
-                                    ${pagination.current_page === page 
-                                        ? 'bg-[#00A88A] text-white' 
-                                        : 'text-gray-500 hover:bg-gray-100'
-                                    }`}
-                                onClick={() => handlePageChange(category, `${pagination.first_page_url.split('?')[0]}?page=${page}`)}
-                                disabled={pagination.current_page === page}
-                            >
-                                {page}
-                            </button>
-                        )}
-                    </Fragment>
-                ))}
+        return (
+            <div className="flex justify-center mt-8">
+                <button
+                    onClick={() => loadMore(category)}
+                    disabled={loadingMore}
+                    className="btn-primary font-medium py-2.5 px-6 before:ease relative overflow-hidden transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60"
+                >
+                    {loadingMore ? "جاري التحميل..." : "تحميل المزيد"}
+                </button>
             </div>
-
-            <button
-                onClick={() => handlePageChange(category, pagination.next_page_url)}
-                disabled={!pagination.next_page_url}
-                className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
-            >
-                السابق
-                <span className="rtl:rotate-180">
-                    <svg width="16" height="16" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
-                </span>
-            </button>
-        </div>
-    );
-};
+        );
+    };
 
     const renderSearchForm = () => (
         <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>
@@ -322,7 +262,7 @@ export default function CoursesHome() {
                         />
                     ))}
                 </div>
-                {renderPagination(tawjihiPagination, 'tawjihi')}
+                {renderLoadMoreButton('tawjihi')}
             </TabsContent>
             <TabsContent value="university">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -342,7 +282,7 @@ export default function CoursesHome() {
                         />
                     ))}
                 </div>
-                {renderPagination(universityPagination, 'university')}
+                {renderLoadMoreButton('university')}
             </TabsContent>
         </>
     );

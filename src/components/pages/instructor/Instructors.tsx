@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState, useCallback } from 'react';
-import { Fragment } from 'react';
 import { useTranslations } from 'next-intl';
 import { Instructors } from '@/app/api/interfaces';
 import { fetchAll, fetchAllInstructors } from '@/app/api/dataFetch';
@@ -47,6 +46,7 @@ export default function InstructorsList() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [specialization, setSpecialization] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
 
@@ -67,9 +67,13 @@ export default function InstructorsList() {
   }, []);
 
   const fetchInstructors = useCallback(
-    debounce(async (name: string = '', specialization: string = '', page: number = 1) => {
+    debounce(async (name: string = '', specialization: string = '', page: number = 1, isLoadMore: boolean = false) => {
       try {
-        setLoading(true);
+        if (isLoadMore) {
+          setLoadingMore(true);
+        } else {
+          setLoading(true);
+        }
         setError(null);
 
         let queryParams = new URLSearchParams();
@@ -81,7 +85,11 @@ export default function InstructorsList() {
         const response = await fetchAllInstructors<InstructorsResponse>(endpoint);
 
         if (response) {
-          setInstructors(response.instructors || []);
+          if (isLoadMore) {
+            setInstructors(prev => [...prev, ...response.instructors]);
+          } else {
+            setInstructors(response.instructors || []);
+          }
           setInstructorsPagination(response.pagination);
         }
       } catch (err) {
@@ -89,6 +97,7 @@ export default function InstructorsList() {
         setError('فشل في جلب المعلمين');
       } finally {
         setLoading(false);
+        setLoadingMore(false);
       }
     }, 300),
     []
@@ -98,116 +107,39 @@ export default function InstructorsList() {
     fetchInstructors(searchQuery, specialization);
   }, []);
 
-  const handlePageChange = (page: number) => {
-    fetchInstructors(searchQuery, specialization, page);
-  };
-
   const handleSearch = () => {
     fetchInstructors(searchQuery, specialization);
   };
 
-  const renderPagination = (pagination: Pagination | null) => {
-    if (!pagination) return null;
+  const handleLoadMore = () => {
+    if (instructorsPagination?.next_page_url) {
+      const nextPage = instructorsPagination.current_page + 1;
+      fetchInstructors(searchQuery, specialization, nextPage, true);
+    }
+  };
 
-    const getPageNumbers = () => {
-      const total = pagination.last_page;
-      const current = pagination.current_page;
-      let pages = [];
-
-      if (total <= 4) {
-        for (let i = 1; i <= total; i++) {
-          pages.push(i);
-        }
-      } else {
-        if (current > 2) {
-          pages.push(1);
-          if (current > 3) {
-            pages.push('...');
-          }
-        }
-
-        for (let i = Math.max(1, current - 1); i <= Math.min(total, current + 1); i++) {
-          pages.push(i);
-        }
-
-        if (current < total - 1) {
-          if (current < total - 2) {
-            pages.push('...');
-          }
-          pages.push(total);
-        }
-      }
-
-      return pages;
-    };
-
-    const pageNumbers = getPageNumbers();
+  const renderLoadMoreButton = () => {
+    if (!instructorsPagination?.next_page_url) return null;
 
     return (
-      <div className="flex items-center justify-center gap-2 mt-8 select-none">
+      <div className="flex justify-center mt-8">
         <button
-          onClick={() => handlePageChange(pagination.current_page - 1)}
-          disabled={pagination.current_page === 1}
-          className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
+          onClick={handleLoadMore}
+          disabled={loadingMore}
+          className="btn-primary font-medium py-2.5 px-6 before:ease relative overflow-hidden transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60"
         >
-          <span className="rtl:rotate-180">
-            <svg width="16" height="16" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-            </svg>
-          </span>
-          التالي   
+          {loadingMore ? "جاري التحميل..." : "تحميل المزيد"}
         </button>
-
-        <div className="flex items-center gap-1">
-          {pageNumbers.map((page, index) => (
-            <Fragment key={index}>
-              {page === '...' ? (
-                <span className="px-2">...</span>
-              ) : (
-                <button
-                  className={`w-[40px] h-[40px] flex items-center justify-center rounded-lg
-                      ${pagination.current_page === page
-                      ? 'bg-[#00A88A] text-white'
-                      : 'text-gray-500 hover:bg-gray-100'
-                    }`}
-                  onClick={() => handlePageChange(page as number)}
-                  disabled={pagination.current_page === page}
-                >
-                  {page}
-                </button>
-              )}
-            </Fragment>
-          ))}
-        </div>
-        {/* <div className="text-sm text-gray-500">
-           <span className="font-semibold text-[#00A88A]">{pagination.current_page}</span> 
-        </div> */}
-
-        <button
-          onClick={() => handlePageChange(pagination.current_page + 1)}
-          disabled={pagination.current_page === pagination.last_page}
-          className="flex items-center text-sm text-[#00A88A] disabled:text-gray-300 gap-2"
-        >
-          السابق
-          <span className="rtl:rotate-180">
-            <svg width="16" height="16" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-            </svg>
-          </span>
-        </button>
-
-        
       </div>
     );
   };
-
 
   if (loading) return (
     <>
       <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>
         <div className="grid gap-5 lg:grid-cols-5 items-end">
-          <div className="grid gap-2 col-span-2	">
-            <Label htmlFor="search"> ابحث عن معلم</Label>
+          <div className="grid gap-2 col-span-2">
+            <Label htmlFor="search">ابحث عن معلم</Label>
             <div className="relative">
               <Input
                 id="search"
@@ -220,15 +152,12 @@ export default function InstructorsList() {
             </div>
           </div>
           <div className="col-span-2">
-            <div className="grid gap-2 col-span-4	">
-              <Label htmlFor="text"> التخصص</Label>
+            <div className="grid gap-2 col-span-4">
+              <Label htmlFor="text">التخصص</Label>
               <div className="relative">
                 <Select
                   dir="rtl"
-                  onValueChange={(value) => {
-                    setSpecialization(value);
-                    console.log("Selected specialization ID:", value);
-                  }}
+                  onValueChange={(value) => setSpecialization(value)}
                 >
                   <SelectTrigger className="flex border-none rounded-full mt-1 bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                     <SelectValue placeholder="التخصص" />
@@ -244,8 +173,14 @@ export default function InstructorsList() {
               </div>
             </div>
           </div>
-          <div className="col-span-1	">
-            <button type="submit" onClick={handleSearch} className='btn-primary font-medium py-2.5 w-full before:ease relative overflow-hidden px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60'>ابحث</button>
+          <div className="col-span-1">
+            <button
+              type="submit"
+              onClick={handleSearch}
+              className='btn-primary font-medium py-2.5 w-full before:ease relative overflow-hidden px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60'
+            >
+              ابحث
+            </button>
           </div>
         </div>
       </div>
@@ -266,8 +201,8 @@ export default function InstructorsList() {
     <>
       <div className='grid gap-8 bg-white shadow-sm rounded-3xl p-10 mb-10 text-start'>
         <div className="grid gap-5 lg:grid-cols-5 items-end">
-          <div className="grid gap-2 col-span-2	">
-            <Label htmlFor="search"> ابحث عن معلم</Label>
+          <div className="grid gap-2 col-span-2">
+            <Label htmlFor="search">ابحث عن معلم</Label>
             <div className="relative">
               <Input
                 id="search"
@@ -279,9 +214,9 @@ export default function InstructorsList() {
               />
             </div>
           </div>
-          <div className="col-span-2	">
-            <div className="grid gap-2 col-span-4	">
-              <Label htmlFor="text"> التخصص</Label>
+          <div className="col-span-2">
+            <div className="grid gap-2 col-span-4">
+              <Label htmlFor="text">التخصص</Label>
               <div className="relative">
                 <Select
                   dir="rtl"
@@ -291,7 +226,6 @@ export default function InstructorsList() {
                     <SelectValue placeholder="التخصص" />
                   </SelectTrigger>
                   <SelectContent>
-                     {/* <SelectItem value=""></SelectItem> */}
                     {specializations.map((spec) => (
                       <SelectItem key={spec.id} value={spec.id.toString()}>
                         {spec.name}
@@ -302,8 +236,14 @@ export default function InstructorsList() {
               </div>
             </div>
           </div>
-          <div className="col-span-1	">
-            <button type="submit" onClick={handleSearch} className='btn-primary font-medium py-2.5 w-full before:ease relative overflow-hidden px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60'>ابحث</button>
+          <div className="col-span-1">
+            <button
+              type="submit"
+              onClick={handleSearch}
+              className='btn-primary font-medium py-2.5 w-full before:ease relative overflow-hidden px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-60'
+            >
+              ابحث
+            </button>
           </div>
         </div>
       </div>
@@ -313,13 +253,9 @@ export default function InstructorsList() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {instructors.map(renderInstructorCard)}
           </div>
-          {renderPagination(instructorsPagination)}
+          {renderLoadMoreButton()}
         </>
-      ) : (
-        <>
-        </>
-      )}
-
+      ) : null}
     </>
   );
 }

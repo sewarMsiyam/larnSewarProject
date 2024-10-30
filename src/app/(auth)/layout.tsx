@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { signIn } from 'next-auth/react';
 import RightSection from '@/components/auth/rightSection';
+
 export const metadata = {
   title: "سوار",
   description: "نظم تعليمك بسهولة وفعالية أكثر ",

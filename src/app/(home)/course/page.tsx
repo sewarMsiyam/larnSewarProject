@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from "@/lib/authOptions";
 import CoursesHome from "@/components/pages/CoursesPage/coursesHome";
 import Breadcrumb from "@/components/ui/breadcrumbHome"
+import '@/app/globals.css';
 
 export default async function Courses() {
   const session = await getServerSession(authOptions);

@@ -353,6 +353,36 @@ export async function fetchAllToken(endpoint: string, token: string, mainCategor
 }
 
 
+
+export async function fetchAllCoursepaginationToken<T>(endpoint: string, mainCategory?: string) {
+    console.log(buildUrl(endpoint));
+
+  try {
+    const response = await fetchRetry(buildUrl(endpoint), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
+      timeout: 8000,
+    });
+     console.log(response);
+
+     const result = await response.json();
+     console.log(result);
+    if (result.item) {
+      return {
+        courses: result.item.courses,
+        pagination: result.item.pagination
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return {
+      courses: [],
+      pagination: null
+    };
+  }
+}
+
 export async function updateProfile(endpoint: string, token?: string, data?: any, mainCategory?: string) {
   console.log(data);
   try {
@@ -553,6 +583,33 @@ export async function deleteOneToken(endpoint: string, id: number, token: string
     throw error;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
