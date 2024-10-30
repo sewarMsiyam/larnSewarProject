@@ -299,11 +299,15 @@ const dayOptions: DayOption[] = [
         });
 
        if (formData.image instanceof File) {
-    courseData.append('image', formData.image);
-} else if (typeof formData.image === 'string') {
-    courseData.append('old_image', formData.image);
-}
+        courseData.append('image', formData.image);
+        } else if (typeof formData.image === 'string') {
+            console.log("sewar")
+           courseData.append("image", []);
+        }
 
+        courseData.entries(formData).forEach(([key, value]) => {
+             console.log(key, value.toString())
+        });
 
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
@@ -452,9 +456,9 @@ if (loading) {
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">مميزات الكورس</Label>
                                 <div className="flex flex-row flex-nowrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
-                                    {formData.feature_ar.length > 0 && formData.feature_ar.map((feature) => (
+                                    {formData.feature_ar.length > 0 && formData.feature_ar.map((feature,index) => (
                                         <div
-                                            key={feature.id}
+                                            key={index}
                                             className="bg-white text-sm flex items-center whitespace-nowrap p-1 m-1 rounded-full"
                                         >
                                             {feature.feature}
@@ -525,8 +529,8 @@ if (loading) {
                                                     <SelectValue placeholder="اختر اليوم" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {dayOptions.map((option) => (
-                                                        <SelectItem key={option.value} value={option.value}>
+                                                    {dayOptions.map((option,index) => (
+                                                        <SelectItem key={index} value={option.value}>
                                                             {option.arabicLabel}
                                                         </SelectItem>
                                                     ))}
