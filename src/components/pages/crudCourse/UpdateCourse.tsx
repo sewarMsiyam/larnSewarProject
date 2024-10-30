@@ -301,13 +301,8 @@ const dayOptions: DayOption[] = [
        if (formData.image instanceof File) {
         courseData.append('image', formData.image);
         } else if (typeof formData.image === 'string') {
-            console.log("sewar")
-           courseData.append("image", []);
+           courseData.append("image",  [] as unknown as Blob);
         }
-
-        courseData.entries(formData).forEach(([key, value]) => {
-             console.log(key, value.toString())
-        });
 
         try {
             const result = await CreateCourseFun(`instructor/courses/update/${id}`, token as string, courseData);
