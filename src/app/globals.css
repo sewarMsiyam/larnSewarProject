@@ -126,3 +126,15 @@
 .bg-black\/80 {
     background-color: rgb(0 0 0 / 10%);
 }
+
+.react-tel-input .flag-dropdown {
+    background-color: #f5f5f500 !important;
+    border: 1px solid #cacaca00 !important;
+    left: 0px;
+}
+.react-tel-input .form-control{
+  padding-left: 65px !important;
+}
+.react-tel-input .flag-dropdown.open .selected-flag {
+    background: #95797900 !important;
+}

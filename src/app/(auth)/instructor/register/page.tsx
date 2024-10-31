@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from "next/link";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,8 +28,8 @@ import {
 
 interface FormData {
   name: string;
-  phone: string;
-  phone_code: string;
+  phoneNumber: string;
+  dialCode: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -42,8 +44,8 @@ interface Specialization {
 export default function RegisterForm() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
-    phone: "",
-    phone_code: "",
+    phoneNumber: "",
+    dialCode: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -78,11 +80,20 @@ export default function RegisterForm() {
     setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
+  const handlePhoneChange = (value: string, country: any) => {
+    setFormData(prev => ({
+      ...prev,
+      phoneNumber: value.slice(country.dialCode.length), 
+      dialCode: country.dialCode
+    }));
+    setErrors(prev => ({ ...prev, phoneNumber: "", dialCode: "" }));
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
     if (!formData.name) newErrors.name = "الاسم مطلوب";
-    if (!formData.phone) newErrors.phone = "رقم الهاتف مطلوب";
-    if (!formData.phone_code) newErrors.phone_code = "رمز الهاتف مطلوب";
+    if (!formData.phoneNumber) newErrors.phoneNumber = "رقم الهاتف مطلوب";
+    if (!formData.dialCode) newErrors.dialCode = "رمز الهاتف مطلوب";
     if (!formData.specialization_id) newErrors.specialization_id = "التخصص مطلوب";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "البريد الإلكتروني غير صالح";
     if (formData.password.length < 8) newErrors.password = "كلمة المرور يجب أن تكون أكثر من 8 أحرف";
@@ -96,12 +107,22 @@ export default function RegisterForm() {
     e.preventDefault();
     if (!validateForm()) return;
 
+    // Prepare the data for API submission
+    const submitData = {
+      name: formData.name,
+      phone: formData.phoneNumber,
+      phone_code: formData.dialCode,
+      email: formData.email,
+      password: formData.password,
+      specialization_id: formData.specialization_id
+    };
+
     setLoading(true);
     try {
       const response = await fetch("https://sewaar.net/api/v1/instructors/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       const data = await response.json();
@@ -148,26 +169,18 @@ export default function RegisterForm() {
           </div>
 
           <div className="space-y-3">
-            <Label htmlFor="phone">رقم الهاتف</Label>
-            <div className="flex gap-3">
-              <Input
-                name="phone"
-                type="tel"
-                placeholder="056666666"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-5/6 border-none rounded-full mt-1 bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <Input
-                name="phone_code"
-                type="text"
-                placeholder="056"
-                value={formData.phone_code}
-                onChange={handleChange}
-                className="w-1/6 border-none rounded-full mt-1 bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-            </div>
-            {(errors.phone || errors.phone_code) && <p className="text-red-600 text-sm">{errors.phone || errors.phone_code}</p>}
+            <Label htmlFor="phone">رقم الهاتف <span className="text-sm text-gray-500">(يفضل رقم الواتساب لانه سيتم التواصل معك من خلاله)</span></Label>
+            <PhoneInput
+              country={'sa'}
+              value={formData.dialCode + formData.phoneNumber}
+              onChange={handlePhoneChange}
+              inputClass="!w-full !h-10 !border-none !rounded-full !mt-1 !bg-gray-100 !ring-0 !focus-visible:ring-0 !focus-visible:ring-offset-0 "
+              containerClass="!w-full"
+              dropdownClass="!bg-white"
+            />
+            {(errors.phoneNumber || errors.dialCode) && (
+              <p className="text-red-600 text-sm">{errors.phoneNumber || errors.dialCode}</p>
+            )}
           </div>
 
           <FormField label="البريد الإلكتروني" name="email" type="email" value={formData.email} onChange={handleChange} error={errors.email} />
@@ -176,7 +189,7 @@ export default function RegisterForm() {
 
           <div className="space-y-3">
             <label className="flex items-center">
-              <input type="checkbox" className="accent-primary mr-2" />
+              <input type="checkbox" className="accent-primary mx-2" required />
               <span>أوافق على <Link href="/" className="text-primary">الشروط والأحكام</Link></span>
             </label>
           </div>
