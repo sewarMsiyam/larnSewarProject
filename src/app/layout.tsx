@@ -24,13 +24,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions);
 
   return (
-    <AOSWrapper>
-      <SessionWrapper>
-        <Header session={session}/>
-        {children}
-        <Footer />
-        <Toaster />
-      </SessionWrapper>
-    </AOSWrapper>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+      <body className="font-expo">
+          <NextIntlClientProvider messages={messages}>
+              {children}
+          </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }

@@ -38,7 +38,7 @@ export default function Navbar() {
                 transition-all
                 duration-300
                 hover:text-primary
-                ${isActive(item.href) ? 'text-primary font-semibold' : 'text-gray-600'}
+                ${isActive(item.href) ? 'text-primary font-semibold' : ''}
                 group
               `}
             >

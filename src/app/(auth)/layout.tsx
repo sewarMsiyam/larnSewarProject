@@ -22,8 +22,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className="font-expo">
         <div className="relative min-h-screen">
           <div className="absolute inset-0 z-0">
             <Image src="/Authlayout.png" alt="Background" fill className="object-cover w-full h-full" />
@@ -32,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           <NextIntlClientProvider messages={messages}>
             <AOSWrapper>
-              <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
+              <div className="relative z-10 flex flex-col items-center justify-center min-h-screen ">
                 <HeaderAuth session={session} />
                 <div className="flex flex-row items-center justify-center flex-grow">
                   <div className='flex flex-col lg:flex-row justify-center'>
@@ -50,8 +48,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </AOSWrapper>
           </NextIntlClientProvider>
         </div>
-      </body>
-    </html>
 
   );
 }
