@@ -5,14 +5,44 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatarlg";
 import Link from 'next/link';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from "@/lib/authOptions";
 import Image from "next/image";
 import CheckoutForm from "@/components/pages/checkout/form";
 import InstructionPrivate from "@/components/pages/checkout/InstructionPrivate";
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from "@/lib/authOptions";
+import { redirect } from 'next/navigation';
 
+
+interface SessionUser {
+  authToken?: string;
+  userType?: 'student' | 'instructor';
+  [key: string]: any;
+}
+
+interface Session {
+  user?: SessionUser;
+  [key: string]: any;
+}
 export default async function CheckoutCourse() {
-    const session = await getServerSession(authOptions);
+    const session: Session | null = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+        redirect("/student/login?callbackUrl=/profile");
+    }
+    const { authToken, userType } = session.user;
+
+    if (!authToken || typeof authToken !== 'string') {
+        console.error("Auth token is missing or invalid");
+        redirect("/student/login?callbackUrl=/profile&error=invalid_token");
+    }
+
+    if (userType && userType == 'instructor') {
+        redirect("/cannot-buy-private");
+    }
+    
+    if (userType && userType !== 'student') {
+        redirect("/unauthorized");
+    }
 
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },
@@ -26,7 +56,7 @@ export default async function CheckoutCourse() {
                     <Breadcrumb breadcrumbs={breadcrumbs} />
                     <div className="container my-10">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <CheckoutForm token={session.user?.authToken} />
+                            <CheckoutForm token={authToken} />
                             <InstructionPrivate />
 
                         </div>

@@ -54,12 +54,12 @@ const ERRORS_DETAILS: Record<
   400: {
     status: 400,
     statusText: "BAD_REQUEST",
-    message: "تأكد من ادخال جميع الداتا المطلوبة "
+    message: "تأكد من ان  الداتا المدخلة صحيحة  "
   },
   401: {
     status: 401,
     statusText: "NOT_AUTHORIZED",
-    message: "You are not authorized to access this resource."
+    message: "لا يوجد لك صلاحيات للوصول "
   },
   403: {
     status: 403,
@@ -74,7 +74,7 @@ const ERRORS_DETAILS: Record<
   408: {
     status: 408,
     statusText: "REQUEST_TIMEOUT",
-    message: "The request timed out. Please try again."
+    message: "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى."
   },
   500: {
     status: 500,
@@ -89,7 +89,7 @@ const ERRORS_DETAILS: Record<
   network: {
     status: 0,
     statusText: "NETWORK",
-    message: "A network error occurred. Please check your connection and try again."
+    message: "حدث خطأ في الشبكة. يرجى التحقق من اتصالك والمحاولة مرة أخرى."
   },
   unknown: {
     status: 0,

@@ -7,16 +7,37 @@ import Course from "@/components/pages/checkout/course_checkout";
 import Link from 'next/link';
 import { redirect } from "next/navigation";
 
+interface SessionUser {
+    authToken?: string;
+    userType?: 'student' | 'instructor';
+    [key: string]: any;
+}
+
+interface Session {
+    user?: SessionUser;
+    [key: string]: any;
+}
+
 
 export default async function CheckoutCourse() {
-    const session = await getServerSession(authOptions);
+    const session: Session | null = await getServerSession(authOptions);
+
     if (!session || !session.user) {
-        redirect("/student/login?callbackUrl=/checkout_course");
+        redirect("/student/login?callbackUrl=/profile");
     }
-    const authToken = session.user.authToken;
-    if (typeof authToken !== 'string' || !authToken) {
+    const { authToken, userType } = session.user;
+
+    if (!authToken || typeof authToken !== 'string') {
         console.error("Auth token is missing or invalid");
-        return <div>An error occurred. Please try logging in again.</div>;
+        redirect("/student/login?callbackUrl=/profile&error=invalid_token");
+    }
+
+    if (userType && userType == 'instructor') {
+        redirect("/cannot-buy-course");
+    }
+
+    if (userType && userType !== 'student') {
+        redirect("/unauthorized");
     }
 
 

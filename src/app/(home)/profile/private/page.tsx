@@ -11,22 +11,44 @@ export const metadata: Metadata = {
   description: "نظم تعليمك بسهولة وفعالية أكثر ",
   keywords: ['Next.js', 'SEO', 'website'],
 };
+interface SessionUser {
+  authToken?: string;
+  userType?: 'student' | 'instructor';
+  [key: string]: any;
+}
+
+interface Session {
+  user?: SessionUser;
+  [key: string]: any;
+}
 
 
 export default async function Course() {
-  const session = await getServerSession(authOptions);
+  const session: Session | null = await getServerSession(authOptions);
+ 
   if (!session || !session.user) {
-    redirect("/student/login?callbackUrl=/instructor/profile");
+    redirect("/student/login?callbackUrl=/profile/private");
   }
-  const authToken = session.user.authToken;
-  if (typeof authToken !== 'string' || !authToken) {
+  const { authToken, userType } = session.user;
+
+  if (!authToken || typeof authToken !== 'string') {
     console.error("Auth token is missing or invalid");
-    return <div>An error occurred. Please try logging in again.</div>;
+    redirect("/student/login?callbackUrl=/profile/private&error=invalid_token");
+  }
+
+  
+  if (userType && userType == 'instructor') {
+    redirect("/instructor/profile/private");
+  }
+  
+  if (userType && userType !== 'student') {
+    redirect("/unauthorized");
   }
 
   const breadcrumbs = [
     { label: 'الرئيسية', href: '/' },
-    { label: 'الملف الشخصي', href: '/profile', isActive: true }
+    { label: 'الملف الشخصي', href: '/profile', isActive: true },
+    { label: 'الدروس الخصوصية', href: '/profile/private', isActive: true }
   ]
 
   return (

@@ -18,17 +18,40 @@ export const metadata: Metadata = {
   keywords: ['Next.js', 'SEO', 'website'],
 };
 
+interface SessionUser {
+  authToken?: string;
+  userType?: 'student' | 'instructor';
+  [key: string]: any;
+}
+
+interface Session {
+  user?: SessionUser;
+  [key: string]: any;
+}
+
 
 export default async function Profile({ params }: DetailCourseProps) {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-          redirect("/student/login?callbackUrl=/profile");
-      }
-      const authToken = session.user.authToken;
-      if (typeof authToken !== 'string' || !authToken) {
-          console.error("Auth token is missing or invalid");
-          return <div>An error occurred. Please try logging in again.</div>;
-      }
+      const session: Session | null = await getServerSession(authOptions);
+ 
+  if (!session || !session.user) {
+    redirect("/student/login?callbackUrl=/profile");
+  }
+  const { authToken, userType } = session.user;
+
+  if (!authToken || typeof authToken !== 'string') {
+    console.error("Auth token is missing or invalid");
+    redirect("/student/login?callbackUrl=/profile&error=invalid_token");
+  }
+
+  
+  if (userType && userType == 'instructor') {
+    redirect("/instructor/profile/courses");
+  }
+  
+  if (userType && userType !== 'student') {
+    redirect("/unauthorized");
+  }
+
 
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },
