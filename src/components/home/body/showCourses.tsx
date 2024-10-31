@@ -117,6 +117,11 @@ export default function CoursesHome() {
                         />
                     ))}
                 </div>
+                   <div className="flex flex-col md:flex-row justify-center items-center mt-8">
+                <Link href="/courses/tawjihi" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                    <span className="relative z-10">عرض الكورسات</span>
+                </Link>
+            </div>
             </TabsContent>
             <TabsContent value="university">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -137,13 +142,14 @@ export default function CoursesHome() {
                         />
                     ))}
                 </div>
-            </TabsContent>
-
-            <div className="flex flex-col md:flex-row justify-center items-center mt-8">
-                <Link href="/course" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                   <div className="flex flex-col md:flex-row justify-center items-center mt-8">
+                <Link href="/courses/university" className="before:ease relative overflow-hidden btn-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
                     <span className="relative z-10">عرض الكورسات</span>
                 </Link>
             </div>
+            </TabsContent>
+
+         
 
         </>
     );

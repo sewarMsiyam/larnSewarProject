@@ -9,6 +9,7 @@ import { authOptions } from "@/lib/authOptions";
 import '@/app/globals.css';
 import AOSWrapper from '@/components/AOSWrapper';
 import SessionWrapper from '@/components/home/layout/SessionWrapper';
+import { Toaster } from "@/components/ui/toaster";
 
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Header session={session}/>
               {children}
               <Footer />
+              <Toaster />
               </SessionWrapper>
             </AOSWrapper>
           </NextIntlClientProvider>
