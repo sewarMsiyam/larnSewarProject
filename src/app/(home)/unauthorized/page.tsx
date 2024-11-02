@@ -14,7 +14,7 @@ export default async function Unauthorized() {
       <div className="flex flex-col items-center justify-center min-h-[400px] p-4">
         <h2 className="text-xl font-bold text-red-600 mb-2">عذراً، حدث خطأ</h2>
         <p className="text-gray-600">يرجى تحديث الصفحة أو تسجيل الدخول مرة أخرى</p>
-        <Link href="/instructor/profile">بروفايلك ايها المعلم اللعين</Link>
+        <Link href="/">اذهب للرئيسية</Link>
       </div>
     );
 }

@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <>
 
-        سسس
+        404 لسا بدها تصميم 
     </>
   );
 }
