@@ -49,7 +49,15 @@ export default function CreateCourse({ token }: CheckoutFormProps) {
         course_days: [{ day: "", from_time: "", to_time: "" }],
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
+    const dateRef = useRef(null);
+    const fromTimeRef = useRef(null);
+    const toTimeRef = useRef(null);
+    const handleInputClick = (ref: React.RefObject<HTMLInputElement>) => {
+        if (ref.current) {
+            ref.current.showPicker();
+        }
+    };
+    
     // Refs
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleImageClick = () => {
@@ -390,6 +398,7 @@ const dayOptions: DayOption[] = [
                             <div className="mb-4">
                                 <Label className="block text-sm font-medium text-gray-700">تاريخ بداية الكورس</Label>
                                 <Input
+                                    ref={dateRef}
                                     type="date"
                                     id="course_start"
                                     value={formData.course_start}
@@ -397,6 +406,8 @@ const dayOptions: DayOption[] = [
                                     className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                     placeholder="اسم الكورس"
                                     required
+                                    onClick={() => handleInputClick(dateRef)}
+
                                 />
                                 {errors.course_start && <p className="text-red-500 text-xs mt-1">{errors.course_start}</p>}
                             </div>
@@ -433,22 +444,26 @@ const dayOptions: DayOption[] = [
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
                                             <Input
+                                                ref={fromTimeRef}
                                                 type="time"
                                                 value={day.from_time}
                                                 onChange={(e) => handleCourseDayChange(index, 'from_time', e.target.value)}
                                                 className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_from_time`] ? 'border-red-500' : ''}`}
                                                 placeholder="وقت بداية الكورس"
-                                            />
+                                                onClick={() => handleInputClick(fromTimeRef)}
+                                                />
                                             {errors[`course_days_${index}_from_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_from_time`]}</p>}
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
                                             <Input
+                                                ref={toTimeRef}
                                                 type="time"
                                                 value={day.to_time}
                                                 onChange={(e) => handleCourseDayChange(index, 'to_time', e.target.value)}
                                                 className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors[`course_days_${index}_to_time`] ? 'border-red-500' : ''}`}
                                                 placeholder="وقت نهاية الكورس"
-                                            />
+                                                onClick={() => handleInputClick(toTimeRef)}
+                                                />
                                             {errors[`course_days_${index}_to_time`] && <p className="text-red-500 text-xs mt-1">{errors[`course_days_${index}_to_time`]}</p>}
                                         </div>
                                         <button

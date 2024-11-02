@@ -50,7 +50,7 @@ export default async function Profile() {
     <>
       {session ? (
         <>
-          <Breadcrumb breadcrumbs={breadcrumbs} />
+          {/* <Breadcrumb breadcrumbs={breadcrumbs} /> */}
           <section>
             <ProfileIndex token={authToken} />
           </section>            
