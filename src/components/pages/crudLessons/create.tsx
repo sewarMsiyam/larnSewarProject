@@ -29,6 +29,7 @@ interface FormData {
 interface FormErrors {
     name_ar: string;
     link: string;
+    zoom_link: string;
 }
 
 export default function CreateLessons({ id, token }: LessonsProps) {
@@ -50,12 +51,33 @@ export default function CreateLessons({ id, token }: LessonsProps) {
     const [errors, setErrors] = useState<FormErrors>({
         name_ar: "",
         link: "",
+        zoom_link: ""
     });
+
+    // دالة للتحقق من صحة رابط Zoom
+    const isValidZoomLink = (link: string): boolean => {
+        if (!link) return true; 
+        const zoomPattern = /^https?:\/\/[^.]+\.?zoom\.us\/(j|my|w|rec)\/[\w\-]+(\?pwd=[\w-]+\.?\d*)?$/i;
+    
+        return zoomPattern.test(link);
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+        
+        // إعادة تعيين الأخطاء
         setErrors(prev => ({ ...prev, [id]: "", link: "" }));
+
+        // التحقق من رابط Zoom إذا تم إدخاله
+        if (id === 'zoom_link' && value) {
+            if (!isValidZoomLink(value)) {
+                setErrors(prev => ({
+                    ...prev,
+                    zoom_link: "الرجاء إدخال رابط زووم صالح"
+                }));
+            }
+        }
     };
 
     const handleFileUpload = (file: File | null) => {
@@ -64,7 +86,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
 
     const validateForm = (): boolean => {
         let isValid = true;
-        const newErrors: FormErrors = { name_ar: "", link: "" };
+        const newErrors: FormErrors = { name_ar: "", link: "", zoom_link: "" };
 
         if (!formData.name_ar) {
             newErrors.name_ar = "اسم الدرس مطلوب";
@@ -73,6 +95,11 @@ export default function CreateLessons({ id, token }: LessonsProps) {
 
         if (!formData.zoom_link && !formData.recorded_video_link) {
             newErrors.link = "يجب إدخال رابط الزوم أو رابط الفيديو المسجل";
+            isValid = false;
+        }
+
+        if (formData.zoom_link && !isValidZoomLink(formData.zoom_link)) {
+            newErrors.zoom_link = "الرجاء إدخال رابط زووم صالح";
             isValid = false;
         }
 
@@ -95,16 +122,15 @@ export default function CreateLessons({ id, token }: LessonsProps) {
 
         try {
             const result = await CreateCourseFun("instructor/lessons", token, formDataToSend);
-                toast.success(result.message || "تم إنشاء الكورس بنجاح");
-                router.push(`/course/${id}/lessons`);
-                setFormData({
-                    name_ar: "",
-                    course_id: id,
-                    recorded_video_link: "",
-                    zoom_link: "",
-                    summary_file: null,
-                });
-            
+            toast.success(result.message || "تم إنشاء الكورس بنجاح");
+            router.push(`/course/${id}/lessons`);
+            setFormData({
+                name_ar: "",
+                course_id: id,
+                recorded_video_link: "",
+                zoom_link: "",
+                summary_file: null,
+            });
         } catch (error: any) {
             console.error("Error creating course:", error);
             toast.error(error.message || "فشل في إنشاء الكورس.");
@@ -142,7 +168,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                     />
 
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">اسم الدرس </Label>
+                        <Label className="block text-sm font-medium text-gray-700">اسم الدرس <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="name_ar"
@@ -155,18 +181,19 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                         {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                     </div>
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">رابط الزوم</Label>
+                        <Label className="block text-sm font-medium text-gray-700">رابط الزوم <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="zoom_link"
                             value={formData.zoom_link}
                             onChange={handleChange}
-                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.zoom_link ? 'border-red-500' : ''}`}
+                            placeholder="https://zoom.us/j/example"
                         />
-                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
+                        {errors.zoom_link && <p className="text-red-500 text-xs mt-1">{errors.zoom_link}</p>}
                     </div>
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل</Label>
+                        <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="recorded_video_link"
@@ -174,13 +201,13 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                             onChange={handleChange}
                             className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
                         />
+                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">ارفق ملخص</Label>
                         <div className="relative mt-2">
                             <DropZone
                                 onFileUpload={handleFileUpload}
-                                // acceptedFileTypes={['image/*', 'application/pdf']}
                             />
                         </div>
                     </div>

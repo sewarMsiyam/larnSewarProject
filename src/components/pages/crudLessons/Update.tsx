@@ -31,6 +31,7 @@ interface FormData {
 interface FormErrors {
     name_ar: string;
     link: string;
+    zoom_link: string;
 }
 
 export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
@@ -54,7 +55,15 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
     const [errors, setErrors] = useState<FormErrors>({
         name_ar: "",
         link: "",
+        zoom_link: ""
     });
+
+    // دالة للتحقق من صحة رابط Zoom
+    const isValidZoomLink = (link: string): boolean => {
+        if (!link) return true; // السماح بحقل فارغ
+        const zoomPattern = /^https?:\/\/[^.]+\.?zoom\.us\/(j|my|w|rec)\/[\w\-]+(\?pwd=[\w-]+\.?\d*)?$/i;
+        return zoomPattern.test(link);
+    };
 
     const fetchCourseData = async () => {
         try {
@@ -91,7 +100,19 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
-        setErrors(prev => ({ ...prev, [id]: "", link: "" }));
+        
+        // إعادة تعيين الأخطاء
+        setErrors(prev => ({ ...prev, [id]: "", link: "", zoom_link: "" }));
+
+        // التحقق من رابط Zoom إذا تم إدخاله
+        if (id === 'zoom_link' && value) {
+            if (!isValidZoomLink(value)) {
+                setErrors(prev => ({
+                    ...prev,
+                    zoom_link: "الرجاء إدخال رابط زووم صالح"
+                }));
+            }
+        }
     };
     
     const getFileIcon = (fileName: string) => {
@@ -126,7 +147,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
 
     const validateForm = (): boolean => {
         let isValid = true;
-        const newErrors: FormErrors = { name_ar: "", link: "" };
+        const newErrors: FormErrors = { name_ar: "", link: "", zoom_link: "" };
 
         if (!formData.name_ar.trim()) {
             newErrors.name_ar = "اسم الدرس مطلوب";
@@ -135,6 +156,11 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
 
         if (!formData.zoom_link && !formData.recorded_video_link) {
             newErrors.link = "يجب إدخال رابط الزوم أو رابط الفيديو المسجل";
+            isValid = false;
+        }
+
+        if (formData.zoom_link && !isValidZoomLink(formData.zoom_link)) {
+            newErrors.zoom_link = "الرجاء إدخال رابط زووم صالح";
             isValid = false;
         }
 
@@ -201,7 +227,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                     />
 
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">اسم الدرس </Label>
+                        <Label className="block text-sm font-medium text-gray-700">اسم الدرس <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="name_ar"
@@ -214,18 +240,19 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                         {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                     </div>
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">رابط الزوم</Label>
+                        <Label className="block text-sm font-medium text-gray-700">رابط الزوم <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="zoom_link"
                             value={formData.zoom_link}
                             onChange={handleChange}
-                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.link ? 'border-red-500' : ''}`}
+                            className={`border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 ${errors.zoom_link ? 'border-red-500' : ''}`}
+                            placeholder="https://zoom.us/j/example"
                         />
-                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
+                        {errors.zoom_link && <p className="text-red-500 text-xs mt-1">{errors.zoom_link}</p>}
                     </div>
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل</Label>
+                        <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل <span className="text-red-500">*</span></Label>
                         <Input
                             type="text"
                             id="recorded_video_link"
@@ -233,6 +260,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                             onChange={handleChange}
                             className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
+                        {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
                     
                     <div className="mb-4">
@@ -267,7 +295,6 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                                                     className="text-red-600  hover:underline mr-4"
                                                 >
                                                     حذف
-                                                     {/* <X size={14} /> */}
                                                 </button>
                                             </div>
                                     </div>
@@ -275,26 +302,8 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                             ) : (
                                 <DropZone
                                     onFileUpload={handleFileUpload}
-                                    // acceptedFileTypes={['application/pdf']}
                                 />
                             )}
-                            {/* {formData.summary_file && (
-                                <p className="text-sm text-gray-500 mt-2">
-                                    الملف الجديد: {formData.summary_file.name}
-                                </p>
-                            )} */}
-                            {/* {isReplacingFile && (
-                                <Button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsReplacingFile(false);
-                                        setFormData(prev => ({ ...prev, summary_file: null }));
-                                    }}
-                                    className="text-red-600 hover:text-red-800 mt-2"
-                                >
-                                    إلغاء التغيير
-                                </Button>
-                            )} */}
                         </div>
                     </div>
                     <div className="text-end">

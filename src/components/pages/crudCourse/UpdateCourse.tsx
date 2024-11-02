@@ -186,6 +186,16 @@ const dayOptions: DayOption[] = [
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
         setErrors(prev => ({ ...prev, [id]: '' }));
+
+        if (id === 'zoom_link' && value) {
+            if (!isValidZoomLink(value)) {
+                setErrors(prev => ({
+                    ...prev,
+                    zoom_link: "الرجاء إدخال رابط زووم صالح"
+                }));
+            }
+        }
+
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -213,6 +223,14 @@ const dayOptions: DayOption[] = [
             course_days: [...prev.course_days, { day: "", from_time: "", to_time: "" }]
         }));
     };
+
+    const isValidZoomLink = (link: string): boolean => {
+        if (!link) return true; 
+        const zoomPattern = /^https?:\/\/[^.]+\.?zoom\.us\/(j|my|w|rec)\/[\w\-]+(\?pwd=[\w-]+\.?\d*)?$/i;
+    
+        return zoomPattern.test(link);
+    };
+
 
      const validateStep = (currentStep: number) => {
         const newErrors: {[key: string]: string} = {};
@@ -263,10 +281,13 @@ const dayOptions: DayOption[] = [
             newErrors.category = "الرجاء اختيار فئة المستهدفة في الكورس";
         }
         if (!formData.image && !selectedImage) {
-    newErrors.image = "الرجاء تحميل صورة الكورس";
-}
+            newErrors.image = "الرجاء تحميل صورة الكورس";
+        }
         if (!formData.introduction_video) {
             newErrors.introduction_video = "الرجاء ادخال رابط الفيديو التشويقي";
+        }
+        if (formData.zoom_link && !isValidZoomLink(formData.zoom_link)) {
+            newErrors.zoom_link = "الرجاء إدخال رابط زووم صالح";
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -397,7 +418,7 @@ if (loading) {
                     {step === 1 && (
                         <>
                             <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700">اسم الكورس (العنوان)</Label>
+                                <Label className="block text-sm font-medium text-gray-700">اسم الكورس (العنوان) <span className="text-red-500">*</span></Label>
                                 <Input
                                     type="text"
                                     id="name_ar"
@@ -412,7 +433,7 @@ if (loading) {
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                                 <div className="mb-4">
-                                    <Label className="block text-sm font-medium text-gray-700">سعر الكورس</Label>
+                                    <Label className="block text-sm font-medium text-gray-700">سعر الكورس  <span className="text-red-500">*</span></Label>
                                     <Input
                                         type="text"
                                         id="price"
@@ -425,7 +446,7 @@ if (loading) {
                                     {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                                 </div>
                                 <div className="mb-4">
-                                    <Label className="block text-sm font-medium text-gray-700">مدة الحصة</Label>
+                                    <Label className="block text-sm font-medium text-gray-700">مدة الحصة  <span className="text-red-500">*</span></Label>
                                     <Input
                                         type="text"
                                         id="duration"
@@ -438,7 +459,7 @@ if (loading) {
                             </div>
 
                             <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700">محتوى الكورس</Label>
+                                <Label className="block text-sm font-medium text-gray-700">محتوى الكورس  <span className="text-red-500">*</span></Label>
                                 <Textarea
                                     id="description_ar"
                                     value={formData.description_ar}
@@ -449,7 +470,7 @@ if (loading) {
                             </div>
 
                             <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700">مميزات الكورس</Label>
+                                <Label className="block text-sm font-medium text-gray-700">مميزات الكورس  <span className="text-red-500">*</span></Label>
                                 <div className="flex flex-row flex-nowrap items-center px-4 border-none rounded-full mt-2 w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                                     {formData.feature_ar.length > 0 && formData.feature_ar.map((feature,index) => (
                                         <div
@@ -482,7 +503,7 @@ if (loading) {
                      {step === 2 && (
                         <>
                             <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700">نتائج الكورس</Label>
+                                <Label className="block text-sm font-medium text-gray-700">نتائج الكورس  <span className="text-red-500">*</span></Label>
                                 <Textarea
                                     id="course_result_desc_ar"
                                     value={formData.course_result_desc_ar}
@@ -507,7 +528,7 @@ if (loading) {
                             </div>
 
                             <div className="mb-6">
-                                <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس </Label>
+                                <Label className="block text-sm font-medium text-gray-700">أيام وأوقات الكورس  <span className="text-red-500">*</span></Label>
                                 <span className="text-xs text-gray-500">(يفضل اختيار 3 أيام بألاسبوع بنفس التوقيت)</span>
 
                                 {formData.course_days.map((day, index) => (
@@ -568,7 +589,7 @@ if (loading) {
                         <>
                         
                             <div className="mb-5">
-                                <Label htmlFor="category"> حدد الكورس لأي فئة </Label>
+                                <Label htmlFor="category"> حدد الكورس لأي فئة  <span className="text-red-500">*</span></Label>
                                 <Select dir="rtl" value={formData.category} onValueChange={(value) => {
                                         setFormData(prev => ({ ...prev, category: value }));
                                         setErrors(prev => ({ ...prev, category: '' }));
@@ -586,7 +607,7 @@ if (loading) {
 
 
                             <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700"> صورة الغلاف</Label>
+                                <Label className="block text-sm font-medium text-gray-700"> صورة الغلاف  <span className="text-red-500">*</span></Label>
                                   <Input
                                     type="file"
                                     id="image"
@@ -613,7 +634,7 @@ if (loading) {
                                 {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                             </div>
                              <div className="mb-4">
-                                <Label className="block text-sm font-medium text-gray-700">رابط الفيديو التعريفي للكورس</Label>
+                                <Label className="block text-sm font-medium text-gray-700">رابط الفيديو التعريفي للكورس  <span className="text-red-500">*</span></Label>
                                 <Input
                                     id="introduction_video"
                                     value={formData.introduction_video}
@@ -630,6 +651,7 @@ if (loading) {
                                     onChange={handleChange}
                                    className="border-none rounded-full mt-2 block w-full bg-gray-100 ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                                 />
+                                 {errors.zoom_link && <p className="text-red-500 text-xs mt-1">{errors.zoom_link}</p>}
                             </div>                            
                         </>
                    )}
