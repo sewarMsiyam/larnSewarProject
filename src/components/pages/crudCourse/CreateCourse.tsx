@@ -462,7 +462,7 @@ const dayOptions: DayOption[] = [
                                     </div>
                                 ))}
 
-                                <div onClick={addCourseDay} className="mt-5">
+                                <div onClick={addCourseDay} className="mt-5 inline-block">
                                     <span className="btn-outLine-primary font-medium py-2.5 px-6 md:px-3 lg:px-6 me-2 relative overflow-hidden border border-primary text-primary">إضافة يوم</span>
                                 </div>
                             </div>

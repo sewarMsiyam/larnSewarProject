@@ -18,7 +18,7 @@ export default async function Courses() {
     }
     const breadcrumbs = [
         { label: 'الرئيسية', href: '/' },
-        { label: 'الكورسات', href: '/instructor', isActive: true }
+        { label: 'الكورسات', href: '/course', isActive: true }
     ]
 
     return (
