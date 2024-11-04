@@ -129,7 +129,7 @@ export default function RegisterForm() {
       if (!response.ok) throw new Error(data.message || "حدث خطأ ما");
 
       toast.success("تم إنشاء الحساب بنجاح!");
-      router.push('/instructor/login')
+      router.push('/instructor/register-stutas')
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "فشل في إنشاء الحساب. حاول مرة أخرى لاحقاً.");
     } finally {

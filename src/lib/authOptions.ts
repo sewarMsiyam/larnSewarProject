@@ -44,11 +44,7 @@ const createCredentialsProvider = (userType: UserType) =>
           },
           body: JSON.stringify({ email, password }),
         });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
+        
         const result = await response.json();
 
         if (result.status === 200 && result.item) {
@@ -61,12 +57,12 @@ const createCredentialsProvider = (userType: UserType) =>
             token: result.item.token,
             userType: userType,
           };
-        } else {
-          throw new Error(result.message || 'Sign in failed.');
         }
+        
+        throw new Error(result.message || 'فشل تسجيل الدخول');
+        
       } catch (error) {
-        console.error('Authentication error:', error);
-        return null;
+        throw new Error(error instanceof Error ? error.message : 'حدث خطأ أثناء تسجيل الدخول');
       }
     },
   });
@@ -110,7 +106,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 1 day
+    maxAge: 24 * 60 * 60, 
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -135,19 +131,15 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // If it's the sign-in page, we can't determine the user type yet
       if (url.startsWith('/student/login')) {
         return url;
       }
-      // For other pages, if it's a relative URL, we prepend the base URL
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`;
       }
-      // If it's already an absolute URL within the same site, we allow it
       if (url.startsWith(baseUrl)) {
         return url;
       }
-      // Default: redirect to the base URL
       return baseUrl;
     },
   },

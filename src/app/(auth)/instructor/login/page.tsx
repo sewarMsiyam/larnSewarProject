@@ -38,12 +38,19 @@ const Login = () => {
       password,
     });
 
-  
+    console.log(result);
     if (result?.error) {
       setLoading(false);
-      setErrorMessage(result.error === 'These credentials do not match our records.'
-        ? 'أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.'
-        : 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+      switch (result.error) {
+        case 'otp is not checked':
+          setErrorMessage('أنت مسجل فعلا بالموقع سيتم التواصل معك عبر الواتساب في اقرب وقت ممكن لتفعيل حسابك');
+          break;
+        case 'These credentials do not match our records.':
+          setErrorMessage('أنت غير مسجل في الموقع، سجل من خلال صفحة التسجيل.');
+          break;
+        default:
+          setErrorMessage('حدث خطأ ما , يجب ان تكون مسجل بالموقع');
+      }
       setSuccessMessage('');
     } else {
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
