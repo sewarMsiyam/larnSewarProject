@@ -94,7 +94,7 @@ export interface Lessons {
     slug: string;
     zoom_link: string;
     status: string;
-    summary_file: string;
+    summary_files: string;
 }
 
 

@@ -1,43 +1,40 @@
 "use client";
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Lessons } from '@/app/api/interfaces';
 import { CreateCourseFun, fetchOneTokenUpdateCourse } from '@/app/api/dataFetch';
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-toastify";
+import { toast ,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
-import DropZone from '@/components/ui/DropZone';
-import { X, Upload, File } from 'lucide-react';
-
+import DropZone from '@/components/ui/MultiDropZone';
 interface LessonsProps {
     id: string;
     lessonId: string;
     token: string;
 }
-
 interface FormData {
     name_ar: string;
     course_id: string;
     recorded_video_link: string;
     zoom_link: string;
     course_name: string;
-    summary_file: File | null;
+    summary_files: File[];
+    current_files?: Array<{
+        id: string;
+        link: string;
+    }>;
 }
-
 interface FormErrors {
     name_ar: string;
     link: string;
     zoom_link: string;
 }
-
 export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
     const t = useTranslations('HomePage');
     const router = useRouter();
-
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [currentSummaryFile, setCurrentSummaryFile] = useState<string | null>(null);
@@ -49,22 +46,19 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
         recorded_video_link: "",
         zoom_link: "",
         course_name: "",
-        summary_file: null,
+        summary_files: [],
+        current_files: [],
     });
-
     const [errors, setErrors] = useState<FormErrors>({
         name_ar: "",
         link: "",
         zoom_link: ""
     });
-
-    // دالة للتحقق من صحة رابط Zoom
     const isValidZoomLink = (link: string): boolean => {
-        if (!link) return true; // السماح بحقل فارغ
+        if (!link) return true;
         const zoomPattern = /^https?:\/\/[^.]+\.?zoom\.us\/(j|my|w|rec)\/[\w\-]+(\?pwd=[\w-]+\.?\d*)?$/i;
         return zoomPattern.test(link);
     };
-
     const fetchCourseData = async () => {
         try {
             setLoading(true);
@@ -77,9 +71,12 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                     course_id: result.item.course_id,
                     recorded_video_link: result.item.recorded_video_link,
                     zoom_link: result.item.zoom_link,
-                    summary_file: null,
+                    summary_files: [],
+                    current_files: Array.isArray(result.item.summary_files)
+                        ? result.item.summary_files
+                        : []
                 }));
-                setCurrentSummaryFile(result.item.summary_file);
+                setCurrentSummaryFile(result.item.summary_files);
             } else {
                 toast.error("Failed to fetch course data");
             }
@@ -90,21 +87,15 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         if (id && token) {
             fetchCourseData();
         }
     }, [id, token]);
-
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
-        
-        // إعادة تعيين الأخطاء
         setErrors(prev => ({ ...prev, [id]: "", link: "", zoom_link: "" }));
-
-        // التحقق من رابط Zoom إذا تم إدخاله
         if (id === 'zoom_link' && value) {
             if (!isValidZoomLink(value)) {
                 setErrors(prev => ({
@@ -114,72 +105,76 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
             }
         }
     };
+    const handleFilesUpload = (files: File[]) => {
+        // التحقق من إجمالي عدد الملفات
+        const totalFiles = (formData.current_files?.length || 0) + formData.summary_files.length + files.length;
+        
+        if (totalFiles > 5) {
+            toast.error("لا يمكن رفع أكثر من 5 ملفات");
+            return;
+        }
     
-    const getFileIcon = (fileName: string) => {
-        const extension = fileName.split('.').pop()?.toLowerCase();
-        return `https://cdn.jsdelivr.net/gh/dmhendricks/file-icon-vectors/dist/icons/vivid/${extension}.svg`;
+        setFormData(prev => ({
+            ...prev,
+            summary_files: [...prev.summary_files, ...files]
+        }));
     };
-
-    const renderFilePreview = (fileName: string) => {
-        return (
-            <div className="relative">
-                <div className="w-32 h-32 flex items-center justify-center bg-gray-200 rounded">
-                    <img 
-                        src={getFileIcon(fileName)}
-                        alt={fileName}
-                        className="w-16 h-16"
-                    />
-                </div>
-            </div>
-        );
-    };
-
-    const handleFileUpload = (file: File | null) => {
-        setFormData(prev => ({ ...prev, summary_file: file }));
-        setIsReplacingFile(true);
-    };
-
-    const removeFile = () => {
-        setCurrentSummaryFile(null);
-        setFormData(prev => ({ ...prev, summary_file: null }));
-        setIsReplacingFile(true);
-    };
-
+    
     const validateForm = (): boolean => {
         let isValid = true;
         const newErrors: FormErrors = { name_ar: "", link: "", zoom_link: "" };
-
         if (!formData.name_ar.trim()) {
             newErrors.name_ar = "اسم الدرس مطلوب";
             isValid = false;
         }
-
         if (!formData.zoom_link && !formData.recorded_video_link) {
             newErrors.link = "يجب إدخال رابط الزوم أو رابط الفيديو المسجل";
             isValid = false;
         }
-
         if (formData.zoom_link && !isValidZoomLink(formData.zoom_link)) {
             newErrors.zoom_link = "الرجاء إدخال رابط زووم صالح";
             isValid = false;
         }
-
         setErrors(newErrors);
         return isValid;
     };
+
+
+    const handleDeleteCurrentFile = (fileId: string) => {
+        setFormData(prev => ({
+            ...prev,
+            current_files: prev.current_files?.filter(file => file.id !== fileId) || []
+        }));
+    };
+
+    const handleDeleteNewFile = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            summary_files: prev.summary_files.filter((_, i) => i !== index)
+        }));
+    };
+
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
         setIsLoading(true);
-
         const formDataToSend = new FormData();
         formDataToSend.append("name_ar", formData.name_ar);
         formDataToSend.append("course_id", formData.course_id);
         formDataToSend.append("recorded_video_link", formData.recorded_video_link);
         formDataToSend.append("zoom_link", formData.zoom_link);
-        if (formData.summary_file) {
-            formDataToSend.append("summary_file", formData.summary_file);
+
+        if (formData.current_files && formData.current_files.length > 0) {
+            formDataToSend.append("current_files", JSON.stringify(
+                formData.current_files.map(file => file.id)
+            ));
+        }
+
+        if (formData.summary_files && formData.summary_files.length > 0) {
+            formData.summary_files.forEach((file, index) => {
+                formDataToSend.append(`summary_files[${index}]`, file);
+            });
         }
 
         try {
@@ -197,10 +192,9 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
             setIsLoading(false);
         }
     };
-
     if (loading) return (
         <div className="flex justify-center items-center h-screen">
-            loading ..
+            جاري التحميل ....
         </div>
     );
 
@@ -216,7 +210,6 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                         رجوع
                     </Link>
                 </div>
-
                 <form onSubmit={handleSubmit}>
                     <Input
                         type="text"
@@ -225,7 +218,6 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                         onChange={handleChange}
                         className="hidden"
                     />
-
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">اسم الدرس <span className="text-red-500">*</span></Label>
                         <Input
@@ -262,47 +254,45 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                         />
                         {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
-                    
+
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">ملخص الدرس</Label>
                         <div className="mt-3">
-                            {!isReplacingFile && currentSummaryFile ? (
-                                <div className="border-2 border-dashed rounded-lg p-4 transition-colors duration-300 bg-[#f3f4f6] hover:border-gray-400">
-                                    <div className="flex items-center justify-between">
-                                        {renderFilePreview(currentSummaryFile)}
-                                        <div className="ml-4 flex-grow">
-                                            <p className="text-sm text-gray-600">{currentSummaryFile.split('/').pop()}</p>
-                                        </div>
-                                        <div className="mt-2 ">
+                            <DropZone
+                                onFilesUpload={handleFilesUpload}
+                                maxFiles={5}
+                                maxSize={5 * 1024 * 1024}
+                            />
+
+                            {formData.current_files && formData.current_files.length > 0 && (
+                                <div className="mt-4">
+                                    <h4 className="text-sm font-medium text-gray-700 mb-2">الملفات الحالية:</h4>
+                                    <div className="flex flex-col gap-2">
+                                        {formData.current_files.map((file) => (
+                                            <div key={file.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
                                                 <a
-                                                    href={currentSummaryFile}
+                                                    href={file.link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-primary hover:underline mr-4"
+                                                    className="flex-1 text-blue-600 hover:underline truncate"
                                                 >
-                                                    عرض الملف
+                                                    {file.link || `ملف ${file.id}`}
                                                 </a>
                                                 <button
                                                     type="button"
-                                                    onClick={() => setIsReplacingFile(true)}
-                                                    className="text-blue-600 hover:underline mr-4"
+                                                    onClick={() => handleDeleteCurrentFile(file.id)}
+                                                    className="text-red-500 hover:text-red-700 p-1"
                                                 >
-                                                    استبدال
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={removeFile}
-                                                    className="text-red-600  hover:underline mr-4"
-                                                >
-                                                    حذف
+                                                    ×
                                                 </button>
                                             </div>
+                                        ))}
                                     </div>
                                 </div>
-                            ) : (
-                                <DropZone
-                                    onFileUpload={handleFileUpload}
-                                />
+                            )}
+
+                            {(!formData.current_files?.length && !formData.summary_files.length) && (
+                                <p className="text-gray-500 mt-2">لا يوجد ملفات مرفقة</p>
                             )}
                         </div>
                     </div>
@@ -313,6 +303,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
                     </div>
                 </form>
             </div>
+            <ToastContainer />
         </>
     );
 }

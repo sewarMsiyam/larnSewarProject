@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
-import DropZone from '@/components/ui/DropZone';
+import DropZone from '@/components/ui/MultiDropZone';
 
 interface LessonsProps {
     id: string;
@@ -23,13 +23,19 @@ interface FormData {
     course_id: string;
     recorded_video_link: string;
     zoom_link: string;
-    summary_file: File | null;
+    summary_files: File[];
 }
 
 interface FormErrors {
     name_ar: string;
     link: string;
     zoom_link: string;
+}
+
+interface DropZoneProps {
+    onFilesUpload: (files: File[]) => void;
+    maxFiles?: number;
+    maxSize?: number;
 }
 
 export default function CreateLessons({ id, token }: LessonsProps) {
@@ -45,7 +51,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
         course_id: id,
         recorded_video_link: "",
         zoom_link: "",
-        summary_file: null,
+        summary_files: [],
     });
 
     const [errors, setErrors] = useState<FormErrors>({
@@ -54,22 +60,17 @@ export default function CreateLessons({ id, token }: LessonsProps) {
         zoom_link: ""
     });
 
-    // دالة للتحقق من صحة رابط Zoom
     const isValidZoomLink = (link: string): boolean => {
         if (!link) return true; 
         const zoomPattern = /^https?:\/\/[^.]+\.?zoom\.us\/(j|my|w|rec)\/[\w\-]+(\?pwd=[\w-]+\.?\d*)?$/i;
-    
         return zoomPattern.test(link);
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
-        
-        // إعادة تعيين الأخطاء
         setErrors(prev => ({ ...prev, [id]: "", link: "" }));
 
-        // التحقق من رابط Zoom إذا تم إدخاله
         if (id === 'zoom_link' && value) {
             if (!isValidZoomLink(value)) {
                 setErrors(prev => ({
@@ -80,8 +81,8 @@ export default function CreateLessons({ id, token }: LessonsProps) {
         }
     };
 
-    const handleFileUpload = (file: File | null) => {
-        setFormData(prev => ({ ...prev, summary_file: file }));
+    const handleFilesUpload = (files: File[]) => {
+        setFormData(prev => ({ ...prev, summary_files: files }));
     };
 
     const validateForm = (): boolean => {
@@ -107,33 +108,52 @@ export default function CreateLessons({ id, token }: LessonsProps) {
         return isValid;
     };
 
+    // const validateFileTypes = (files: File[]): boolean => {
+    //     setIsLoading(false);
+    //     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'application/pdf'];
+        
+    //     for (const file of files) {
+    //         if (!allowedTypes.includes(file.type)) {
+    //             toast.error('يجب أن تكون الملفات من نوع: jpeg, png, jpg, gif, pdf');
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // };
+
+    
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
         setIsLoading(true);
+        
         const formDataToSend = new FormData();
         formDataToSend.append("name_ar", formData.name_ar);
         formDataToSend.append("course_id", formData.course_id);
         formDataToSend.append("recorded_video_link", formData.recorded_video_link);
         formDataToSend.append("zoom_link", formData.zoom_link);
-        if (formData.summary_file) {
-            formDataToSend.append("summary_file", formData.summary_file);
-        }
+        
+        formData.summary_files.forEach((file, index) => {
+            formDataToSend.append(`summary_files[${index}]`, file);
+        });
+
 
         try {
             const result = await CreateCourseFun("instructor/lessons", token, formDataToSend);
-            toast.success(result.message || "تم إنشاء الكورس بنجاح");
+            toast.success(result.message || "تم إنشاء الدرس بنجاح");
             router.push(`/course/${id}/lessons`);
             setFormData({
                 name_ar: "",
                 course_id: id,
                 recorded_video_link: "",
                 zoom_link: "",
-                summary_file: null,
+                summary_files: [],
             });
         } catch (error: any) {
-            console.error("Error creating course:", error);
-            toast.error(error.message || "فشل في إنشاء الكورس.");
+            toast.error(error.message || "فشل في إنشاء الدرس.");
+            console.error("Error creating lesson:", error);
+            setIsLoading(false);
         } finally {
             setIsLoading(false);
         }
@@ -180,6 +200,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                         />
                         {errors.name_ar && <p className="text-red-500 text-xs mt-1">{errors.name_ar}</p>}
                     </div>
+
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الزوم <span className="text-red-500">*</span></Label>
                         <Input
@@ -192,6 +213,7 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                         />
                         {errors.zoom_link && <p className="text-red-500 text-xs mt-1">{errors.zoom_link}</p>}
                     </div>
+
                     <div className="mb-4">
                         <Label className="block text-sm font-medium text-gray-700">رابط الفيديو المسجل <span className="text-red-500">*</span></Label>
                         <Input
@@ -203,21 +225,30 @@ export default function CreateLessons({ id, token }: LessonsProps) {
                         />
                         {errors.link && <p className="text-red-500 text-xs mt-1">{errors.link}</p>}
                     </div>
+
                     <div className="mb-4">
-                        <Label className="block text-sm font-medium text-gray-700">ارفق ملخص</Label>
+                        <Label className="block text-sm font-medium text-gray-700">ارفق ملخص (يمكنك رفع عدة ملفات)</Label>
                         <div className="relative mt-2">
                             <DropZone
-                                onFileUpload={handleFileUpload}
+                                onFilesUpload={handleFilesUpload}
+                                maxFiles={5}
+                                maxSize={5 * 1024 * 1024}
                             />
                         </div>
                     </div>
+
                     <div className="text-end">
-                        <Button type="submit" disabled={isLoading} className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40">
+                        <Button 
+                            type="submit" 
+                            disabled={isLoading} 
+                            className="before:ease relative overflow-hidden btn-primary text-white rounded-2xl font-medium py-2.5 px-6 md:px-3 lg:px-6 m-1 transition-all before:absolute before:right-0 before:top-0 before:h-12 before:w-6 before:translate-x-12 before:rotate-6 before:bg-white before:opacity-10 before:duration-700 hover:before:-translate-x-40"
+                        >
                             {isLoading ? "جاري الإنشاء..." : "نشر الدرس للكورس"}
                         </Button>
                     </div>
                 </form>
             </div>
+            <ToastContainer />
         </>
     );
 }

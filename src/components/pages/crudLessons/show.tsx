@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Loader2 } from "lucide-react";
 
 interface LessonsProps {
     id: string;
@@ -96,9 +97,10 @@ export default function ShowLessons({ id, token }: LessonsProps) {
 
 
     if (loading) return (
-        <div className="flex justify-center items-center h-screen">
-        جاري التحميل ..
-        </div>
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+                <Loader2 className="h-16 w-16 text-primary animate-spin" />
+                <p className="text-lg font-medium text-gray-600">جاري تحميل الكورسات...</p>
+            </div>
     );
 
     return (
@@ -174,24 +176,26 @@ export default function ShowLessons({ id, token }: LessonsProps) {
                                                 <span className="text-gray-500">لا يوجد فيديو مسجل بعد</span>
                                             )}
                                         </td>
-                                        <td className="bg-gray-100 ">
-
-                                            {lesson.summary_file && lesson.summary_file.length > 0 ? (
-                                                <a
-                                                    href={lesson.summary_file ? `https://sewaar.net/${lesson.summary_file}` : ''}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
-                                                >
-                                                    {lesson.summary_file}
-                                                    <span className="ms-1">↗</span>
-                                                </a>
-                                            ) : (
-                                                <span className="text-gray-500">لا يوجد ملفات مرفقة</span>
-                                            )}
-
-
-                                        </td>
+                                        <td className="bg-gray-100">
+                                        {Array.isArray(lesson.summary_files) && lesson.summary_files.length > 0 ? (
+                                            <div className="flex flex-col gap-2">
+                                                {lesson.summary_files.map((file, fileIndex) => (
+                                                    <a
+                                                        key={fileIndex}
+                                                        href={file.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="w-[200px] text-nowrap block text-ellipsis overflow-hidden text-blue-600 hover:underline hover:decoration-sky-500/30"
+                                                    >
+                                                        ملف التلخيص {fileIndex + 1}
+                                                        <span className="ms-1">↗</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <span className="text-gray-500">لا يوجد ملفات مرفقة</span>
+                                        )}
+                                    </td>
                                         <td className="px-5 py-5 font-bold bg-gray-100 rounded-e-2xl ">
                                             <div className="relative">
                                                 <DropdownMenu>
