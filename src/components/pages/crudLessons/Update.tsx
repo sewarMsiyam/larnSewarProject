@@ -165,17 +165,23 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
         formDataToSend.append("recorded_video_link", formData.recorded_video_link);
         formDataToSend.append("zoom_link", formData.zoom_link);
 
-        if (formData.current_files && formData.current_files.length > 0) {
-            formDataToSend.append("current_files", JSON.stringify(
-                formData.current_files.map(file => file.id)
-            ));
-        }
+        // if (formData.current_files && formData.current_files.length > 0) {
+        //     formDataToSend.append("current_files", JSON.stringify(
+        //         formData.current_files.map(file => file.id)
+        //     ));
+        // }
 
         if (formData.summary_files && formData.summary_files.length > 0) {
             formData.summary_files.forEach((file, index) => {
                 formDataToSend.append(`summary_files[${index}]`, file);
             });
         }
+
+        Object.entries(formDataToSend).forEach(([key, value]) => {
+            if (value !== null) {
+                console.log(key, value.toString())
+            }
+        });
 
         try {
             const result = await CreateCourseFun(`instructor/lessons/update/${lessonId}`, token, formDataToSend);
