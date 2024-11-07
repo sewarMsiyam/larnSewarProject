@@ -178,9 +178,7 @@ export default function UpdateLessons({ token, id, lessonId }: LessonsProps) {
         }
 
         Object.entries(formDataToSend).forEach(([key, value]) => {
-            if (value !== null) {
-                console.log(key, value.toString())
-            }
+            console.log(key, value.toString())
         });
 
         try {
