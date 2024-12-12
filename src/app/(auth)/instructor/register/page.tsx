@@ -141,7 +141,7 @@ export default function RegisterForm() {
     <Card className="border-0 p-0 m-0 shadow-none">
       <CardHeader className='p-0'>
         <CardTitle className="text-2xl font-bold">إنشاء حساب معلم</CardTitle>
-        <CardDescription>مرحبا بك انضم إلى سوار اليوم وابدأ رحلتك التعليمية!</CardDescription>
+        <CardDescription>ان كنت تمتلك مهارات التعلم الالكتروني او التدريس اونلاين، نرحب بك لتكون ضمن اسرة منصة سوار</CardDescription>
       </CardHeader>
       <CardContent className='pt-5'>
         <form onSubmit={handleSubmit} className="space-y-6">
