@@ -3,23 +3,47 @@ import LogoFooter from "@/components/home/layout/footer/logoFooter";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
 
+type RouteKey = '/student/login' | '/instructor/login' | '/student/register' | '/instructor/register';
+
+type RouteInfo = {
+  to: string;
+  text: string;
+  description: string;
+};
+
 const RightSection = () => {
     const pathname = usePathname();
-    const routes = {
-        '/student/login': { to: '/instructor/login', text: 'الدخول كـ معلم', description: 'لا تفوت فرصة تطوير مهاراتك وتحقيق طموحاتك! انضم الآن إلى منصتنا التعليمية وابدأ رحلة التعلم نحو مستقبل أفضل!' },
-        '/instructor/login': { to: '/student/login', text: 'الدخول كـ طالب', description: 'إن كنت تمتلك مهارات التعلم الالكتروني أو التدريس اونلاين، نرحب بك لتكون ضمن أسرة منصتنا التعليمية!' },
-        '/student/register': { to: '/instructor/register', text: 'التسجيل كـ معلم', description: 'لا تفوت فرصة تطوير مهاراتك وتحقيق طموحاتك! انضم الآن إلى منصتنا التعليمية وابدأ رحلة التعلم نحو مستقبل أفضل!' },
-        '/instructor/register': { to: '/student/register', text: 'التسجيل كـ طالب', description: 'إن كنت تمتلك مهارات التعلم الالكتروني أو التدريس اونلاين، نرحب بك لتكون ضمن أسرة منصتنا التعليمية!' }
+    const routes: Record<RouteKey, RouteInfo> = {
+        '/student/login': { 
+            to: '/instructor/login', 
+            text: 'الدخول كـ معلم', 
+            description: 'لا تفوت فرصة تطوير مهاراتك وتحقيق طموحاتك! انضم الآن إلى منصتنا التعليمية وابدأ رحلة التعلم نحو مستقبل أفضل!' 
+        },
+        '/instructor/login': { 
+            to: '/student/login', 
+            text: 'الدخول كـ طالب', 
+            description: 'إن كنت تمتلك مهارات التعلم الالكتروني أو التدريس اونلاين، نرحب بك لتكون ضمن أسرة منصتنا التعليمية!' 
+        },
+        '/student/register': { 
+            to: '/instructor/register', 
+            text: 'التسجيل كـ معلم', 
+            description: 'لا تفوت فرصة تطوير مهاراتك وتحقيق طموحاتك! انضم الآن إلى منصتنا التعليمية وابدأ رحلة التعلم نحو مستقبل أفضل!' 
+        },
+        '/instructor/register': { 
+            to: '/student/register', 
+            text: 'التسجيل كـ طالب', 
+            description: 'إن كنت تمتلك مهارات التعلم الالكتروني أو التدريس اونلاين، نرحب بك لتكون ضمن أسرة منصتنا التعليمية!' 
+        }
     };
 
-    const currentRoute = routes[pathname];
+    const currentRoute = pathname ? routes[pathname as RouteKey] : undefined;
     
     return (
         <div className='bg-Auth-gradient lg:basis-1/4'>
             <div className="flex flex-col justify-center items-center h-full p-12 m-auto">
                 <LogoFooter />
                 <p className="text-white text-center opacity-80 my-5">
-                    {currentRoute ? currentRoute.description : ''}
+                    {currentRoute?.description ?? ''}
                 </p>
                 {currentRoute && (
                     <Link

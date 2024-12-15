@@ -53,8 +53,8 @@ const Login = () => {
     } else {
       setLoading(false);
       setSuccessMessage('تم تسجيل الدخول بنجاح!');
-      // router.push('/'); 
-      router.push(callbackUrl);
+      router.push('/profile'); 
+      // router.push(callbackUrl);
     }
   };
 

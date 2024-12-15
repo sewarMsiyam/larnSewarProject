@@ -49,8 +49,8 @@ const Footer = () => {
                     </div>
                     <div className="flex flex-col text-white gap-4 text-sm ">
                         <h5 className="lg:mb-4 font-bold text-base">الخصوصية</h5>
-                        <Link href="/">سياسة الخصوصية</Link>
-                        <Link href="/">الشروط والأحكام</Link>
+                        <Link href="/privacy-policy">سياسة الخصوصية</Link>
+                        <Link href="/terms-conditions">الشروط والأحكام</Link>
                     </div>
                 </div>
                 <div className="pb-5">
