@@ -188,7 +188,6 @@ export async function fetchAll<T>(endpoint: string, mainCategory?: string) {
     return [];
   }
 }
-
 export async function fetchAllCourse<T>(endpoint: string, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory), {
@@ -264,6 +263,24 @@ export async function fetchAllInstructors<T>(endpoint: string, mainCategory?: st
 export async function fetchOne(endpoint: string, id: string, mainCategory?: string) {
   try {
     const response = await fetchRetry(buildUrl(endpoint, mainCategory, id), {
+      headers: {
+        'Accept-Language': 'ar',
+      },
+      timeout: 8000,
+    });
+    const result = await response.json();
+    return result.item ? result.item : null;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+}
+
+
+
+export async function fetchOneP(endpoint: string, ) {
+  try {
+    const response = await fetchRetry(buildUrl(endpoint), {
       headers: {
         'Accept-Language': 'ar',
       },

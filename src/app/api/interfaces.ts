@@ -130,3 +130,15 @@ interface CourseResponse {
   courses: Course[];
   pagination: Pagination;
 }
+
+export interface Privacy {
+    name: string;
+    content: string;
+}
+
+//   export interface InstructorPrivacy {
+//     name: string;
+//     content: string;
+//   }
+
+  
