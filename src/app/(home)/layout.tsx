@@ -28,13 +28,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <AOSWrapper>
       <SessionWrapper>
         <Header session={session}/>
-
-
-        
-        <StudentTerms />
-
-
-
         {children}
         <Footer />
         <Toaster />

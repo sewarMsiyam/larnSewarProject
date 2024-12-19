@@ -49,8 +49,8 @@ export default function PrivacyReg() {
 
     if (loading) {
         return (
-            <div className="w-full">
-                <Skeleton className="h-10 w-40 mb-4" />
+            <div>
+                <Skeleton className="h-5 w-40 mx-3" />
             </div>
         );
     }
