@@ -130,3 +130,28 @@ interface CourseResponse {
   courses: Course[];
   pagination: Pagination;
 }
+
+export interface Privacy {
+    name: string;
+    content: string;
+}
+
+export interface Snettigs {
+    email: string;
+    phone: string;
+    whatsapp: string;
+    linkedin: string;
+    facebook: string;
+    instagram: string;
+    twitter: string;
+    address: string;
+}
+
+
+
+//   export interface InstructorPrivacy {
+//     name: string;
+//     content: string;
+//   }
+
+  

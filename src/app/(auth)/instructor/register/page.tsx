@@ -36,6 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/termsModel"
+import PrivacyReg from '@/components/PrivacyReg';
 
 interface FormData {
   name: string;
@@ -206,117 +207,11 @@ export default function RegisterForm() {
           <FormField label="تأكيد كلمة المرور" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} />
 
           <div className="space-y-3">
-            <label className="flex items-center">
+            <div className="flex items-center">
               <input type="checkbox" className="accent-primary mx-2" required />
               <span>أوافق على</span>
-
-<AlertDialog>
-  <AlertDialogTrigger className="text-[#0abc8c] hover:text-[#09ab7f] mx-1 cursor-pointer">
-    الشروط والأحكام
-  </AlertDialogTrigger>
-  <AlertDialogContent className="max-w-2xl" dir="rtl">
-    <AlertDialogHeader>
-      <div className="flex items-center gap-2 mb-4">
-        <AlertDialogTitle className="text-xl font-bold text-gray-900">
-          الشروط والأحكام - حساب معلم
-        </AlertDialogTitle>
-      </div>
-      <AlertDialogDescription className="space-y-4 text-gray text-start h-[75vh] overflow-y-scroll">
-        {/* المقدمة */}
-        <div className="border-b pb-2">
-          <p className="font-semibold text-[#0abc8c] mb-2">مرحباً بك في منصة سوار التعليمية</p>
-          <p>بإنشائك حساب طالب، فإنك توافق على الالتزام بالشروط والأحكام التالية.</p>
-        </div>
-
-        {/* الشروط الأساسية */}
-        <div>
-          <p className="font-semibold text-gray-700 mb-2">التسجيل والحساب:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>يجب تقديم معلومات صحيحة ودقيقة عند التسجيل</li>
-            <li>الحفاظ على سرية معلومات الدخول</li>
-            <li>عدم مشاركة الحساب مع أشخاص آخرين</li>
-            <li>إخطار المنصة فوراً عند اكتشاف أي استخدام غير مصرح به</li>
-          </ul>
-        </div>
-
-        {/* السلوك والاستخدام */}
-        <div>
-          <p className="font-semibold text-gray-700 mb-2">قواعد السلوك:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>الالتزام بآداب التعلم عن بعد</li>
-            <li>احترام المعلمين والطلاب الآخرين</li>
-            <li>عدم نشر أي محتوى مسيء أو غير لائق</li>
-            <li>المشاركة بإيجابية في الأنشطة التعليمية</li>
-          </ul>
-        </div>
-
-        {/* المحتوى */}
-        <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div>
-        <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div> <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div> <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div> <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div> <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div> <div>
-          <p className="font-semibold text-gray-700 mb-2">المحتوى التعليمي:</p>
-          <ul className="list-disc list-inside space-y-1">
-            <li>المحتوى مخصص للاستخدام الشخصي فقط</li>
-            <li>يمنع تسجيل أو مشاركة المحاضرات</li>
-            <li>احترام حقوق الملكية الفكرية</li>
-          </ul>
-        </div>
-        <div className="border-t pt-2">
-          <p className="text-sm">
-            تحتفظ منصة سوار بالحق في تعليق أو إنهاء الحساب في حالة مخالفة هذه الشروط.
-          </p>
-        </div>
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter className="flex flex-row-reverse gap-2">
-      <AlertDialogAction className="btn-primary text-white hover:bg-[#09ab7f] w-full">
-        موافق
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-            </label>
+              <PrivacyReg />
+            </div>
           </div>
 
           <Button type="submit" className="w-full bg-btn-authColor rounded-xl text-white" disabled={loading}>
