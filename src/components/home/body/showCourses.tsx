@@ -8,7 +8,7 @@ import { fetchAllCourse } from '@/app/api/dataFetch';
 import { Course } from '@/app/api/interfaces';
 import { useTranslations } from 'next-intl';
 import { TabsContent } from "@/components/ui/tabs";
-import CourseCard from '@/components/ui/cardcourses';
+import CourseCard from '@/components/ui/cardcoursesHome';
 import SkeletonCardcourses from '@/components/ui/SkeletonCardcourses';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
